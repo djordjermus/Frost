@@ -27,12 +27,18 @@
     <ClInclude Include="color.api.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="event_system.api.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_src\clock.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_src\color.api.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="_src\event_system.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
