@@ -1,8 +1,11 @@
-﻿// See https://aka.ms/new-console-template for more information
-using Frost.Net;
+﻿using Frost.Net;
+
 var offset = Clock.Timestamp;
-while (true)
-{
-	Console.WriteLine((Clock.Timestamp - offset) * Clock.Period);
-	Thread.Sleep(100);
-}
+EventSystem.Subscribe<MyEvent>(1, fn);
+EventSystem.Subscribe<MyEvent>(1, fn);
+EventSystem.Emit(1, new	MyEvent());
+EventSystem.Emit(2, new	MyEvent());
+
+void fn(MyEvent e) =>
+	Console.WriteLine(e.data);
+class MyEvent { public string data = "Hello World!"; }
