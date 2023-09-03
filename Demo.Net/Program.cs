@@ -1,10 +1,11 @@
-﻿// See https://aka.ms/new-console-template for more information
-using Frost.Net;
+﻿using Frost.Net;
+
 var offset = Clock.Timestamp;
-Frost.Net.Random r = new Frost.Net.Random();
-while (true)
-{
-	var d = r.NextF64(10, 5);
-	Console.WriteLine(d.ToString("0.0000"));
-	Thread.Sleep(100);
-}
+EventSystem.Subscribe<MyEvent>(1, fn);
+EventSystem.Subscribe<MyEvent>(1, fn);
+EventSystem.Emit(1, new	MyEvent());
+EventSystem.Emit(2, new	MyEvent());
+
+void fn(MyEvent e) =>
+	Console.WriteLine(e.data);
+class MyEvent { public string data = "Hello World!"; }

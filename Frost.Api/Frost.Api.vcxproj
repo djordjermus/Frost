@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="clock.api.hpp" />
+    <ClInclude Include="event_system.api.hpp" />
     <ClInclude Include="macro.hpp" />
     <ClInclude Include="primitives.hpp" />
     <ClInclude Include="color.api.hpp" />
@@ -148,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="_src\clock.api.cpp" />
     <ClCompile Include="_src\color.api.cpp" />
+    <ClCompile Include="_src\event_system.api.cpp" />
     <ClCompile Include="_src\random.api.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
