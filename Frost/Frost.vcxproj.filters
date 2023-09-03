@@ -27,6 +27,9 @@
     <ClCompile Include="_src\event_system.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="_src\random.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="color.hpp">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="event_system.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="random.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
