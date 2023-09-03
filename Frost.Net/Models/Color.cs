@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Frost.Net
+namespace Frost.Net.Models
 {
     [StructLayout(LayoutKind.Explicit)]
     public class Color
