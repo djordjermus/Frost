@@ -1,5 +1,6 @@
-#include "../event_system.hpp"
 #include "Frost.Api/event_system.api.hpp"
+#include "../event_system.hpp"
+#include "../log.hpp"
 #include <utility>
 #include <vector>
 #include <map>
@@ -50,6 +51,7 @@ namespace frost
 	std::map<u64, layer_collection> event_system::init_event_system()
 	{
 		event_system_subscribe_relay(relay);
+		event_system_subscribe_relay(log::relay);
 		return std::map<u64, layer_collection>();
 	}
 

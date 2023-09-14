@@ -1,11 +1,19 @@
 ﻿using Frost.Net;
+using System.Text.Json;
 
-var offset = Clock.Timestamp;
-EventSystem.Subscribe<MyEvent>(1, fn);
-EventSystem.Subscribe<MyEvent>(1, fn);
-EventSystem.Emit(1, new	MyEvent());
-EventSystem.Emit(2, new	MyEvent());
+EventSystem.Subscribe<Log.Event>(1, LogHandler);
+while (true)
+{
+	Log.LogError(1, new("{{0}, {1}, {abc}, {3}, {2}, {"), "", "abc", "123", "XYZ");
+	Thread.Sleep(500);
+}
 
-void fn(MyEvent e) =>
-	Console.WriteLine(e.data);
-class MyEvent { public string data = "Hello World!"; }
+void LogHandler(Log.Event e)
+{
+	Console.WriteLine(JsonSerializer.Serialize(e, options: new JsonSerializerOptions() { WriteIndented = true }));
+}
+void MyEventHandler(MyEvent e)
+{
+	Console.WriteLine(e.Text);
+}
+class MyEvent { public string Text { get; init; } = "Hello, World!"; }

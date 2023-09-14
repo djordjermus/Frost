@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace Frost.Net
+namespace Frost.Net.Models
 {
     public struct HDRColor
     {

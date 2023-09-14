@@ -1,33 +1,33 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Collections.Generic;
 namespace Frost.Net
 {
 	public static class EventSystem
 	{
 		public delegate void Handler<T>(T data);
 		public delegate void HandlerRef<T>(T data);
-		public delegate object Redirect(IntPtr pData);
 		private delegate void Relay(ulong tag, ulong activationLayers, IntPtr pData);
 
 		private static Dictionary<ulong, Dictionary<ulong, object>> _handlers = new();
 		private static Dictionary<ulong, Relay> _relays = new();
+		private static ulong _logEventsTag = 0;
 
 		static EventSystem()
 		{
+			_logEventsTag = Log.Interop.GetLogEventTag();
 			Interop.SubscribeRelay(InteropRelay);
 		}
 
-		public static void Subscribe<T>(Layers activationLayers, Handler<T> handler) where T : class
+		public static void Subscribe<T>(ulong tag, Layers activationLayers, Handler<T> handler) where T : class
 		{
 			// Register tagged relay
-			RegisterTaggedRelay<T>();
+			RegisterTaggedRelay<T>(tag);
 
 			// Find or create tagged collection
 			if (!_handlers.TryGetValue((ulong)typeof(T).GetHashCode(), out var collection))
 			{
 				collection = new Dictionary<ulong, object>();
-				_handlers[(ulong)typeof(T).GetHashCode()] = collection;
+				_handlers[tag] = collection;
 			}
 
 			// Find or create layer collection
@@ -37,6 +37,10 @@ namespace Frost.Net
 				collection[activationLayers] = handler;
 		}
 
+		public static void Subscribe<T>(Layers activationLayers, Handler<T> handler) where T : class =>
+			Subscribe((ulong)typeof(T).GetHashCode(), activationLayers, handler);
+		
+
 		public static void Emit<T>(Layers activationLayers, T eventData) where T : class
 		{
 			unsafe
@@ -44,11 +48,13 @@ namespace Frost.Net
 				Interop.Emit((ulong)typeof(T).GetHashCode(), activationLayers.Value, (IntPtr)(&eventData));
 			}
 		}
-		
+
 		private static void EmitInternal<T>(Layers activationLayers, T e) where T : class
 		{
 			if (!_handlers.TryGetValue((ulong)typeof(T).GetHashCode(), out var collection))
+			{
 				return;
+			}
 
 			foreach (var pair in collection)
 			{
@@ -61,8 +67,44 @@ namespace Frost.Net
 
 		private static void InteropRelay(ulong tag, ulong activationLayers, IntPtr pData)
 		{
-			if (_relays.TryGetValue(tag, out var relay))
-				relay(tag, activationLayers, pData);
+			if (tag == _logEventsTag)
+			{
+			 	LogEventsRelay(tag, activationLayers, pData);
+			}
+			else if (_relays.TryGetValue(tag, out var relay))
+			{
+			 	relay(tag, activationLayers, pData);
+			}
+		}
+
+		private static void LogEventsRelay(ulong tag, ulong activationLayers, IntPtr pLogEvent)
+		{
+			unsafe
+			{
+				RawLogEvent* pLog = (RawLogEvent*)pLogEvent;
+				string template = Unmanaged.StringFromUnmanagedWstr(pLog->message_template, (int)pLog->template_length);
+				string message = Unmanaged.StringFromUnmanagedWstr(pLog->message, (int)pLog->message_length);
+				List<string> parameters = new List<string>();
+				for (int i = 0; i < (int)pLog->parameter_count; i++)
+				{
+					var parameter = Unmanaged.StringFromUnmanagedWstr(
+						(IntPtr)((char**)pLog->parameters)[i], 
+						((int*)pLog->parameter_lengths)[i]);
+					parameters.Add(parameter);
+				}
+
+				Log.Event e = new Log.Event()
+				{
+					Template	= template,
+					Message		= message,
+					Parameters	= parameters,
+					TimeStamp	= pLog->timestamp,
+					ThreadId	= pLog->thread_id,
+					Level		= (Log.Level)pLog->level
+				};
+
+				EmitInternal(activationLayers, e);
+			}
 		}
 
 		private static void TaggedDirectRelay<T>(ulong tag, ulong activationLayers, IntPtr pData) where T : class
@@ -74,10 +116,8 @@ namespace Frost.Net
 			}
 		}
 
-		private static void RegisterTaggedRelay<T>() where T : class =>
-			_relays[(ulong)typeof(T).GetHashCode()] = TaggedDirectRelay<T>;
-		
-		
+		private static void RegisterTaggedRelay<T>(ulong tag) where T : class =>
+			_relays[tag] = TaggedDirectRelay<T>;
 
 		internal static class Interop
 		{
@@ -126,15 +166,22 @@ namespace Frost.Net
 				EntryPoint = "event_system_unsubscribe_relay")]
 			public static extern void UnsubscribeRelay(RelaySig relay);
 		}
+
+		private struct RawLogEvent
+		{
+			public IntPtr message_template;
+			public ulong template_length;
+
+			public IntPtr message;
+			public ulong message_length;
+
+			public IntPtr parameters;
+			public IntPtr parameter_lengths;
+			public ulong parameter_count;
+
+			public ulong timestamp;
+			public ulong thread_id;
+			public byte level;
+		}
 	}
 }
-
-/*
- * InteropRelay
- *		|
- *		V
- *   Relay[T]
- *      |
- *      V
- * InternalEmit
- */
