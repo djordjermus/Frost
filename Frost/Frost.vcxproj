@@ -144,7 +144,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source.cpp" />
     <ClCompile Include="_src\clock.cpp" />
     <ClCompile Include="_src\color.cpp" />
     <ClCompile Include="_src\event_system.cpp" />
@@ -156,6 +155,7 @@
     <ClInclude Include="color.hpp" />
     <ClInclude Include="event_system.hpp" />
     <ClInclude Include="log.hpp" />
+    <ClInclude Include="pimpl.hpp" />
     <ClInclude Include="random.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
