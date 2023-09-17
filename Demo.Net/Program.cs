@@ -1,5 +1,14 @@
-﻿using Frost.Net.Sync;
-var mx = new Frost.Net.Sync.Semaphore(0, 1);
-var mx2 = new Frost.Net.Sync.Semaphore(0, 1);
-var result = SyncObject.TryAcquireOne(mx, mx2);
-var x = 5;
+﻿using Frost.Net;
+using Frost.Net.Models;
+
+while (true)
+{
+	var current = SemanticVersion.GetApiVersion();
+	var target = new SemanticVersion()
+	{
+		Major      = 0,
+		Minor      = 8,
+		Patch      = 0,
+	};
+	var result = current.CheckCompatibility(target);
+}

@@ -152,6 +152,7 @@
     <ClCompile Include="_src\event_system.cpp" />
     <ClCompile Include="_src\log.cpp" />
     <ClCompile Include="_src\random.cpp" />
+    <ClCompile Include="_src\semantic_version.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="clock.hpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="sync\mutex.hpp" />
     <ClInclude Include="sync\semaphore.hpp" />
     <ClInclude Include="sync\sync_object.hpp" />
+    <ClInclude Include="semantic_version.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
