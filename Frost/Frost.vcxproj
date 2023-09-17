@@ -144,6 +144,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="sync\_src\mutex.cpp" />
+    <ClCompile Include="sync\_src\semaphore.cpp" />
+    <ClCompile Include="sync\_src\sync_object.cpp" />
     <ClCompile Include="_src\clock.cpp" />
     <ClCompile Include="_src\color.cpp" />
     <ClCompile Include="_src\event_system.cpp" />
@@ -158,6 +161,9 @@
     <ClInclude Include="log.hpp" />
     <ClInclude Include="pimpl.hpp" />
     <ClInclude Include="random.hpp" />
+    <ClInclude Include="sync\mutex.hpp" />
+    <ClInclude Include="sync\semaphore.hpp" />
+    <ClInclude Include="sync\sync_object.hpp" />
     <ClInclude Include="semantic_version.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

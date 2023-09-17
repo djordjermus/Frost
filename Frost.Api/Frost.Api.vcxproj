@@ -147,6 +147,7 @@
     <ClInclude Include="color.api.hpp" />
     <ClInclude Include="random.api.hpp" />
     <ClInclude Include="version.api.hpp" />
+    <ClInclude Include="sync.api.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_src\clock.api.cpp" />
@@ -154,6 +155,7 @@
     <ClCompile Include="_src\event_system.api.cpp" />
     <ClCompile Include="_src\logging.api.cpp" />
     <ClCompile Include="_src\random.api.cpp" />
+    <ClCompile Include="_src\sync.api.cpp" />
     <ClCompile Include="_src\version.api.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
