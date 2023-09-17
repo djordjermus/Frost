@@ -22,8 +22,8 @@ extern "C"
 	FROST_API frost_sync_object* _stdcall sync_get_sync_object_from_semaphore(frost_semaphore* p_impl);
 	FROST_API bool _stdcall sync_destroy_semaphore(frost_semaphore* p_impl);
 
-	FROST_API bool sync_acquire_one(frost_sync_object** sync_objects, i32 count);
-	FROST_API i32 sync_acquire_all(frost_sync_object** sync_objects, i32 count);
-	FROST_API bool sync_try_acquire_one(frost_sync_object** sync_objects, i32 count);
-	FROST_API i32 sync_try_acquire_all(frost_sync_object** sync_objects, i32 count);
+	FROST_API i32 sync_acquire_one(frost_sync_object** sync_objects, i32 count);
+	FROST_API bool sync_acquire_all(frost_sync_object** sync_objects, i32 count);
+	FROST_API i32 sync_try_acquire_one(frost_sync_object** sync_objects, i32 count);
+	FROST_API bool sync_try_acquire_all(frost_sync_object** sync_objects, i32 count);
 }

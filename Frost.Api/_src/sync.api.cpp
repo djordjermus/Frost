@@ -67,7 +67,7 @@ extern "C"
 
 
 
-	FROST_API bool sync_acquire_one(frost_sync_object** sync_objects, i32 count)
+	FROST_API i32 sync_acquire_one(frost_sync_object** sync_objects, i32 count)
 	{
 		if (count > MAXIMUM_WAIT_OBJECTS)
 			return false;
@@ -76,19 +76,19 @@ extern "C"
 		if ((result >= WAIT_OBJECT_0) && (result < (WAIT_OBJECT_0 + count)))
 			return result - WAIT_OBJECT_0;
 		else
-			return false;
+			return -1;
 	}
 
-	FROST_API i32 sync_acquire_all(frost_sync_object** sync_objects, i32 count)
+	FROST_API bool sync_acquire_all(frost_sync_object** sync_objects, i32 count)
 	{
 		if (count > MAXIMUM_WAIT_OBJECTS)
-			return -1;
+			return false;
 
 		auto result = ::WaitForMultipleObjects(count, reinterpret_cast<HANDLE*>(sync_objects), TRUE, ~0ul);
 		return (result >= WAIT_OBJECT_0) && (result < (WAIT_OBJECT_0 + count));
 	}
 
-	FROST_API bool sync_try_acquire_one(frost_sync_object** sync_objects, i32 count)
+	FROST_API i32 sync_try_acquire_one(frost_sync_object** sync_objects, i32 count)
 	{
 		if (count > MAXIMUM_WAIT_OBJECTS)
 			return false;
@@ -97,13 +97,13 @@ extern "C"
 		if ((result >= WAIT_OBJECT_0) && (result < (WAIT_OBJECT_0 + count)))
 			return result - WAIT_OBJECT_0;
 		else
-			return false;
+			return -1;
 	}
 
-	FROST_API i32 sync_try_acquire_all(frost_sync_object** sync_objects, i32 count)
+	FROST_API bool sync_try_acquire_all(frost_sync_object** sync_objects, i32 count)
 	{
 		if (count > MAXIMUM_WAIT_OBJECTS)
-			return -1;
+			return false;
 
 		auto result = ::WaitForMultipleObjects(count, reinterpret_cast<HANDLE*>(sync_objects), TRUE, 0ul);
 		return (result >= WAIT_OBJECT_0) && (result < (WAIT_OBJECT_0 + count));
