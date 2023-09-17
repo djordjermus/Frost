@@ -30,6 +30,9 @@
     <ClCompile Include="_src\log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="_src\semantic_version.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="color.hpp">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pimpl.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="semantic_version.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
