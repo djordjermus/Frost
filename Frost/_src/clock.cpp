@@ -1,8 +1,5 @@
 #include "../clock.hpp"
 
-#if defined(TARGET_BUILD_PLATFORM_WINDOWS)
-#include <Windows.h>
-
 static inline u64 read_frequency();
 static inline u64 read_timestamp();
 
@@ -25,6 +22,9 @@ namespace frost
 		return static_cast<u64>(ret.QuadPart);
 	}
 }
+
+#if defined(TARGET_BUILD_PLATFORM_WINDOWS)
+#include <Windows.h>
 
 static inline u64 read_frequency()
 {
