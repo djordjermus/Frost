@@ -77,21 +77,21 @@ namespace Frost.Net
 			[DllImport(
 				Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "random_generate")]
+				EntryPoint = "?random_generate@random@frost@@SA_KPEA_K@Z")]
 			public static extern ulong Generate(IntPtr pSeed);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "random_generate_range")]
+				EntryPoint = "?random_generate_range@random@frost@@SA_KPEA_K_K1@Z")]
 			public static extern ulong GenerateRange(IntPtr pSeed, ulong min, ulong range);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "random_generate_range_double")]
+				EntryPoint = "?random_generate_range_double@random@frost@@SANPEA_KNN@Z")]
 			public static extern double GenerateF64(IntPtr pSeed, double min, double range);
 		}
 	}
