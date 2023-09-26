@@ -1,14 +1,8 @@
 ﻿using Frost.Net;
-using Frost.Net.Models;
 
+double start = Clock.Timestamp;
 while (true)
 {
-	var current = SemanticVersion.GetApiVersion();
-	var target = new SemanticVersion()
-	{
-		Major      = 0,
-		Minor      = 8,
-		Patch      = 0,
-	};
-	var result = current.CheckCompatibility(target);
+	Console.WriteLine(((Clock.Timestamp - start) * Clock.Period).ToString("0.00"));
+	Thread.Sleep(10);
 }

@@ -74,5 +74,11 @@
     <ClInclude Include="sync\semaphore.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="macro.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="primitives.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

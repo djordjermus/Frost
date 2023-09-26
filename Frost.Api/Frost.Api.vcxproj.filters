@@ -21,9 +21,6 @@
     <ClInclude Include="primitives.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="clock.api.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="color.api.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -44,9 +41,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="_src\clock.api.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="_src\color.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
