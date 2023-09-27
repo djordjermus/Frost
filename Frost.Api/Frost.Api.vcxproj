@@ -143,12 +143,10 @@
     <ClInclude Include="logging.api.hpp" />
     <ClInclude Include="macro.hpp" />
     <ClInclude Include="primitives.hpp" />
-    <ClInclude Include="version.api.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_src\event_system.api.cpp" />
     <ClCompile Include="_src\logging.api.cpp" />
-    <ClCompile Include="_src\version.api.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

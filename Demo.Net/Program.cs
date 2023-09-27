@@ -1,6 +1,4 @@
-﻿using Frost.Net;
-using Frost.Net.Models;
-using Frost.Net.Sync;
+﻿using Frost.Net.Sync;
 var mx1 = new Frost.Net.Sync.Semaphore(2, 4);
 var mx2 = new Frost.Net.Sync.Mutex(false);
 int i = 0;
