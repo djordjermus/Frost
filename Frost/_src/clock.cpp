@@ -17,9 +17,7 @@ namespace frost
 	}
 	u64 clock::timestamp()
 	{
-		LARGE_INTEGER ret;
-		::QueryPerformanceCounter(&ret);
-		return static_cast<u64>(ret.QuadPart);
+		return read_timestamp();
 	}
 }
 
