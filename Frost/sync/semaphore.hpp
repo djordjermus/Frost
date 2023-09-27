@@ -1,22 +1,41 @@
-#include "sync_object.hpp"
+#include "../macro.hpp"
 #include "../pimpl.hpp"
+#include "sync_object.hpp"
+
 #pragma once
 namespace frost::sync
 {
 	class semaphore final : public frost::pimpl_crtp<semaphore>
 	{
 	public:
-		semaphore(i32 count, i32 maximum);
-		semaphore(semaphore& move);
-		semaphore(semaphore&& move) noexcept;
+		FROST_API semaphore(i32 count, i32 maximum);
+		FROST_API semaphore(semaphore& move);
+		FROST_API semaphore(semaphore&& move) noexcept;
 		semaphore& operator=(semaphore& move) = delete;
 		semaphore& operator=(semaphore&& move) = delete;
-		~semaphore();
+		FROST_API ~semaphore();
 
-		bool acquire() const;
-		bool try_acquire() const;
-		bool release() const;
-		bool is_valid() const;
-		sync_object get_sync_object() const;
+		bool FROST_API acquire() const;
+		bool FROST_API try_acquire() const;
+		bool FROST_API release() const;
+		bool FROST_API is_valid() const;
+		sync_object FROST_API get_sync_object() const;
+
+
+		class api final
+		{
+		public:
+			api() = delete;
+			api(api&) = delete;
+			api(api&&) = delete;
+			~api() = delete;
+
+			static pimpl_t<semaphore> FROST_API create_semaphore(i32 count, i32 max);
+			static bool FROST_API acquire_semaphore(pimpl_t<semaphore> p_impl);
+			static bool FROST_API try_acquire_semaphore(pimpl_t<semaphore> p_impl);
+			static bool FROST_API release_semaphore(pimpl_t<semaphore> p_impl);
+			static pimpl_t<sync_object> FROST_API get_sync_object_from_semaphore(pimpl_t<semaphore> p_impl);
+			static bool FROST_API destroy_semaphore(pimpl_t<semaphore> p_impl);
+		};
 	};
 }

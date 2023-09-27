@@ -1,6 +1,5 @@
 #include <math.h>
 #include "../color.hpp"
-#include "Frost.Api/color.api.hpp"
 namespace frost
 {
 #define DEG60 (1.0f / 6.0f)
@@ -19,25 +18,25 @@ namespace frost
 	}
 	rgba8::rgba8(rgba32 rgba)
 	{
-		color_rgba32_to_rgba8(&rgba.r, &this->value);
+		rgba32::color_rgba32_to_rgba8(&rgba.r, &this->value);
 	}
 	rgba8::rgba8(hsva hsva)
 	{
 		float output[4];
-		color_hsva_to_rgba32(&hsva.h, output);
-		color_rgba32_to_rgba8(output, &value);
+		rgba32::color_hsva_to_rgba32(&hsva.h, output);
+		rgba32::color_rgba32_to_rgba8(output, &value);
 	}
 	rgba8::rgba8(hsla hsla)
 	{
 		float output[4];
-		color_hsla_to_rgba32(&hsla.h, output);
-		color_rgba32_to_rgba8(output, &value);
+		rgba32::color_hsla_to_rgba32(&hsla.h, output);
+		rgba32::color_rgba32_to_rgba8(output, &value);
 	}
 	rgba8::rgba8(cmyk cmyk)
 	{
 		float output[4];
-		color_cmyk_to_rgba32(&cmyk.c, output);
-		color_rgba32_to_rgba8(output, &value);
+		rgba32::color_cmyk_to_rgba32(&cmyk.c, output);
+		rgba32::color_rgba32_to_rgba8(output, &value);
 	}
 	void rgba8::color_rgba8_to_rgba32(const u32 input, f32* output)
 	{
@@ -51,7 +50,7 @@ namespace frost
 
 	rgba32::rgba32(u32 value)
 	{
-		color_rgba8_to_rgba32(value, &this->r);
+		rgba8::color_rgba8_to_rgba32(value, &this->r);
 	}
 	rgba32::rgba32(f32 r, f32 g, f32 b, f32 a)
 	{
@@ -62,7 +61,7 @@ namespace frost
 	}
 	rgba32::rgba32(rgba8 rgba)
 	{
-		color_rgba8_to_rgba32(rgba.value, &this->r);
+		rgba8::color_rgba8_to_rgba32(rgba.value, &this->r);
 	}
 	rgba32::rgba32(hsva hsva)
 	{

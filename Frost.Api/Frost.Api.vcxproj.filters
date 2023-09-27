@@ -30,18 +30,12 @@
     <ClInclude Include="version.api.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sync.api.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_src\event_system.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_src\logging.api.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="_src\sync.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_src\version.api.cpp">
