@@ -133,21 +133,21 @@ namespace Frost.Net
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "event_system_emit")]
+				EntryPoint = "?event_system_emit@api@event_system@frost@@SAX_K0PEAX@Z")]
 			public static extern void Emit(ulong tag, ulong layer, IntPtr p_data);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "event_system_subscribe")]
+				EntryPoint = "?event_system_subscribe@api@event_system@frost@@SAX_K0P6AXPEAX@Z@Z")]
 			public static extern void Subscribe(ulong tag, ulong activation_layers, HandlerSig handler);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "event_system_unsubscribe")]
+				EntryPoint = "?event_system_unsubscribe@api@event_system@frost@@SAX_K0P6AXPEAX@Z@Z")]
 			public static extern void Unsubscribe(ulong tag, ulong activation_layers, HandlerSig handler);
 
 
@@ -156,32 +156,34 @@ namespace Frost.Net
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "event_system_subscribe_relay")]
+				EntryPoint = "?event_system_subscribe_relay@api@event_system@frost@@SAXP6AX_K0PEAX@Z@Z")]
 			public static extern void SubscribeRelay(RelaySig relay);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "event_system_unsubscribe_relay")]
+				EntryPoint = "?event_system_unsubscribe_relay@api@event_system@frost@@SAXP6AX_K0PEAX@Z@Z")]
 			public static extern void UnsubscribeRelay(RelaySig relay);
 		}
 
 		private struct RawLogEvent
 		{
-			public IntPtr message_template;
-			public ulong template_length;
+			public RawLogEvent() { }
 
-			public IntPtr message;
-			public ulong message_length;
+			public IntPtr message_template = default;
+			public ulong template_length = default;
 
-			public IntPtr parameters;
-			public IntPtr parameter_lengths;
-			public ulong parameter_count;
+			public IntPtr message = default;
+			public ulong message_length = default;
 
-			public ulong timestamp;
-			public ulong thread_id;
-			public byte level;
+			public IntPtr parameters = default;
+			public IntPtr parameter_lengths = default;
+			public ulong parameter_count = default;
+
+			public ulong timestamp = default;
+			public ulong thread_id = default;
+			public byte level = default;
 		}
 	}
 }

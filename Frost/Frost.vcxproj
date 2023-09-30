@@ -139,11 +139,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Frost.Api\Frost.Api.vcxproj">
-      <Project>{adc3efae-f390-4ff6-8da4-96a17e0b2e1e}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="sync\_src\mutex.cpp" />
     <ClCompile Include="sync\_src\semaphore.cpp" />
     <ClCompile Include="sync\_src\sync_object.cpp" />
