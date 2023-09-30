@@ -1,14 +1,8 @@
-﻿using Frost.Net;
-using Frost.Net.Models;
-
+﻿using Frost.Net.Sync;
+Frost.Net.Random r = new Frost.Net.Random();
 while (true)
 {
-	var current = SemanticVersion.GetApiVersion();
-	var target = new SemanticVersion()
-	{
-		Major      = 0,
-		Minor      = 8,
-		Patch      = 0,
-	};
-	var result = current.CheckCompatibility(target);
+	Console.WriteLine(r.NextF64(5, 5));
+	Thread.Sleep(10);
 }
+

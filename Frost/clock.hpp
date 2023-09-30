@@ -1,4 +1,5 @@
-#include "Frost.Api/primitives.hpp"
+#include "macro.hpp"
+#include "primitives.hpp"
 #pragma once
 namespace frost
 {
@@ -8,8 +9,18 @@ namespace frost
 		~clock() = delete;
 
 	public:
-		static u64 frequency();
-		static f64 period();
-		static u64 timestamp();
+		static u64 FROST_API frequency();
+		static f64 FROST_API period();
+		static u64 FROST_API timestamp();
+
+		class api final 
+		{
+		public:
+			STATIC_CLASS(api);
+
+			static u64 FROST_API frequency();
+			static f64 FROST_API period();
+			static u64 FROST_API timestamp();
+		};
 	};
 }

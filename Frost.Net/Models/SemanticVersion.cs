@@ -42,7 +42,7 @@ namespace Frost.Net.Models
 
 		public static SemanticVersion GetApiVersion()
 		{
-			var version = Interop.GetApiVersion();
+			Interop.GetApiVersion(out Interop.FrostSemanticVersion version);
 
 			return new SemanticVersion()
 			{
@@ -67,14 +67,14 @@ namespace Frost.Net.Models
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "version_get_api_version")]
-			public static extern FrostSemanticVersion GetApiVersion();
+				EntryPoint = "?get_api_version@api@semantic_version@frost@@SAXPEAV23@@Z")]
+			public static extern void GetApiVersion(out FrostSemanticVersion output);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "version_check_compatibility")]
+				EntryPoint = "?check_compatibility@api@semantic_version@frost@@SA_NV23@0@Z")]
 			public static extern bool CheckCompatibility(
 				FrostSemanticVersion version, 
 				FrostSemanticVersion target);
