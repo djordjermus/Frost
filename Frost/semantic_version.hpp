@@ -22,10 +22,7 @@ namespace frost
 		class api final
 		{
 		public:
-			api() = delete;
-			api(api&) = delete;
-			api(api&&) = delete;
-			~api() = delete;
+			STATIC_CLASS(api);
 
 			static bool FROST_API check_compatibility(semantic_version version, semantic_version target);
 			static void FROST_API get_api_version(semantic_version* output);

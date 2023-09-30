@@ -1,5 +1,4 @@
 #include "../semantic_version.hpp"
-#include "Frost.Api/version.api.hpp"
 namespace frost
 {
 	semantic_version::semantic_version(u16 major, u16 minor, u32 patch, const wchar_t* decoration) :

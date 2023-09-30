@@ -19,6 +19,21 @@ namespace frost
 	{
 		return read_timestamp();
 	}
+
+	u64 clock::api::frequency()
+	{
+		static u64 result = read_frequency();
+		return result;
+	}
+	f64 clock::api::period()
+	{
+		static f64 result = 1.0 / read_frequency();
+		return result;
+	}
+	u64 clock::api::timestamp()
+	{
+		return read_timestamp();
+	}
 }
 
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)

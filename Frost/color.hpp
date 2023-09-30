@@ -24,7 +24,13 @@ namespace frost
 		FROST_API rgba8(hsva hsva);
 		FROST_API rgba8(hsla hsla);
 		FROST_API rgba8(cmyk cmyk);
-		static void FROST_API color_rgba8_to_rgba32(const u32 input, f32* output);
+
+		class api final
+		{
+		public:
+			STATIC_CLASS(api);
+			static void FROST_API color_rgba8_to_rgba32(const u32 input, f32* output);
+		};
 	};
 
 	class rgba32 final
@@ -39,15 +45,20 @@ namespace frost
 		FROST_API rgba32(hsla hsla);
 		FROST_API rgba32(cmyk cmyk);
 
-		static void FROST_API color_rgba32_to_rgba8(const f32* input, u32* output);
+		class api final
+		{
+		public:
+			STATIC_CLASS(api);
+			static void FROST_API color_rgba32_to_rgba8(const f32* input, u32* output);
 
-		static void FROST_API color_rgba32_to_hsva(const f32* input, f32* output);
-		static void FROST_API color_rgba32_to_hsla(const f32* input, f32* output);
-		static void FROST_API color_rgba32_to_cmyk(const f32* input, f32* output);
+			static void FROST_API color_rgba32_to_hsva(const f32* input, f32* output);
+			static void FROST_API color_rgba32_to_hsla(const f32* input, f32* output);
+			static void FROST_API color_rgba32_to_cmyk(const f32* input, f32* output);
 
-		static void FROST_API color_hsva_to_rgba32(const f32* input, f32* output);
-		static void FROST_API color_hsla_to_rgba32(const f32* input, f32* output);
-		static void FROST_API color_cmyk_to_rgba32(const f32* input, f32* output);
+			static void FROST_API color_hsva_to_rgba32(const f32* input, f32* output);
+			static void FROST_API color_hsla_to_rgba32(const f32* input, f32* output);
+			static void FROST_API color_cmyk_to_rgba32(const f32* input, f32* output);
+		};
 	};
 
 

@@ -25,10 +25,7 @@ namespace frost::sync
 		class api final
 		{
 		public:
-			api() = delete;
-			api(api&) = delete;
-			api(api&&) = delete;
-			~api() = delete;
+			STATIC_CLASS(api);
 
 			static pimpl_t<semaphore> FROST_API create_semaphore(i32 count, i32 max);
 			static bool FROST_API acquire_semaphore(pimpl_t<semaphore> p_impl);

@@ -25,10 +25,7 @@ namespace frost::sync
 		class api final
 		{
 		public:
-			api() = delete;
-			api(api&) = delete;
-			api(api&&) = delete;
-			~api() = delete;
+			STATIC_CLASS(api);
 
 			static pimpl_t<mutex> FROST_API create_mutex(bool initial_owner);
 			static bool FROST_API acquire_mutex(pimpl_t<mutex> p_impl);

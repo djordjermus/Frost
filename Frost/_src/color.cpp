@@ -18,27 +18,27 @@ namespace frost
 	}
 	rgba8::rgba8(rgba32 rgba)
 	{
-		rgba32::color_rgba32_to_rgba8(&rgba.r, &this->value);
+		rgba32::api::color_rgba32_to_rgba8(&rgba.r, &this->value);
 	}
 	rgba8::rgba8(hsva hsva)
 	{
 		float output[4];
-		rgba32::color_hsva_to_rgba32(&hsva.h, output);
-		rgba32::color_rgba32_to_rgba8(output, &value);
+		rgba32::api::color_hsva_to_rgba32(&hsva.h, output);
+		rgba32::api::color_rgba32_to_rgba8(output, &value);
 	}
 	rgba8::rgba8(hsla hsla)
 	{
 		float output[4];
-		rgba32::color_hsla_to_rgba32(&hsla.h, output);
-		rgba32::color_rgba32_to_rgba8(output, &value);
-	}
+		rgba32::api::color_hsla_to_rgba32(&hsla.h, output);
+		rgba32::api::color_rgba32_to_rgba8(output, &value);
+	}			
 	rgba8::rgba8(cmyk cmyk)
 	{
 		float output[4];
-		rgba32::color_cmyk_to_rgba32(&cmyk.c, output);
-		rgba32::color_rgba32_to_rgba8(output, &value);
+		rgba32::api::color_cmyk_to_rgba32(&cmyk.c, output);
+		rgba32::api::color_rgba32_to_rgba8(output, &value);
 	}
-	void rgba8::color_rgba8_to_rgba32(const u32 input, f32* output)
+	void rgba8::api::color_rgba8_to_rgba32(const u32 input, f32* output)
 	{
 		output[0] = ((input >> 0x00) & 0xFF) / 255.0f;
 		output[1] = ((input >> 0x08) & 0xFF) / 255.0f;
@@ -50,7 +50,7 @@ namespace frost
 
 	rgba32::rgba32(u32 value)
 	{
-		rgba8::color_rgba8_to_rgba32(value, &this->r);
+		rgba8::api::color_rgba8_to_rgba32(value, &this->r);
 	}
 	rgba32::rgba32(f32 r, f32 g, f32 b, f32 a)
 	{
@@ -61,22 +61,22 @@ namespace frost
 	}
 	rgba32::rgba32(rgba8 rgba)
 	{
-		rgba8::color_rgba8_to_rgba32(rgba.value, &this->r);
+		rgba8::api::color_rgba8_to_rgba32(rgba.value, &this->r);
 	}
 	rgba32::rgba32(hsva hsva)
 	{
-		color_hsva_to_rgba32(&hsva.h, &this->r);
+		api::color_hsva_to_rgba32(&hsva.h, &this->r);
 	}
 	rgba32::rgba32(hsla hsla)
 	{
-		color_hsla_to_rgba32(&hsla.h, &this->r);
+		api::color_hsla_to_rgba32(&hsla.h, &this->r);
 	}
 	rgba32::rgba32(cmyk cmyk)
 	{
-		color_cmyk_to_rgba32(&cmyk.c, &this->r);
+		api::color_cmyk_to_rgba32(&cmyk.c, &this->r);
 	}
 
-	void rgba32::color_rgba32_to_rgba8(const f32* input, u32* output)
+	void rgba32::api::color_rgba32_to_rgba8(const f32* input, u32* output)
 	{
 		*output =
 			((static_cast<u32>(input[0] * 255.0f) << 0x00) & 0xFF) |
@@ -85,7 +85,7 @@ namespace frost
 			((static_cast<u32>(input[3] * 255.0f) << 0x18) & 0xFF);
 	}
 
-	void rgba32::color_rgba32_to_hsva(const f32* input, f32* output)
+	void rgba32::api::color_rgba32_to_hsva(const f32* input, f32* output)
 	{
 		float cmax =
 			(input[0] > input[1] ?
@@ -116,7 +116,7 @@ namespace frost
 
 		output[3] = input[3];
 	}
-	void rgba32::color_rgba32_to_hsla(const f32* input, f32* output)
+	void rgba32::api::color_rgba32_to_hsla(const f32* input, f32* output)
 	{
 		float cmax =
 			(input[0] > input[1] ?
@@ -147,7 +147,7 @@ namespace frost
 
 		output[3] = input[3];
 	}
-	void rgba32::color_rgba32_to_cmyk(const f32* input, f32* output)
+	void rgba32::api::color_rgba32_to_cmyk(const f32* input, f32* output)
 	{
 		float max =
 			(input[0] > input[1] ?
@@ -170,7 +170,7 @@ namespace frost
 		}
 	}
 
-	void rgba32::color_hsva_to_rgba32(const f32* input, f32* output)
+	void rgba32::api::color_hsva_to_rgba32(const f32* input, f32* output)
 	{
 		float c = input[2] * input[1];
 		float x = c * (1.0f - fabsf(fmodf(input[0] / DEG60, 2.0f) - 1.0f));
@@ -201,7 +201,7 @@ namespace frost
 			output[0] = c + m; output[1] = 0.0f + m; output[2] = x + m;
 		}
 	}
-	void rgba32::color_hsla_to_rgba32(const f32* input, f32* output)
+	void rgba32::api::color_hsla_to_rgba32(const f32* input, f32* output)
 	{
 		float c = input[1] * (1.0f - fabsf(2 * input[2] - 1.0f));
 		float x = c * (1.0f - fabsf(fmodf(input[0] / DEG60, 2.0f) - 1.0f));
@@ -220,7 +220,7 @@ namespace frost
 		else if (input[0] >= 5 * DEG60 && input[0] < 6 * DEG60)
 			{ output[0] = c + m; output[1] = 0.0f + m; output[2] = x + m; }
 	}
-	void rgba32::color_cmyk_to_rgba32(const f32* input, f32* output)
+	void rgba32::api::color_cmyk_to_rgba32(const f32* input, f32* output)
 	{
 		float one_k = 1.0f - output[3];
 		output[0] = (1.0f - input[0]) * one_k;

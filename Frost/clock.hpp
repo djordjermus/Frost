@@ -12,5 +12,15 @@ namespace frost
 		static u64 FROST_API frequency();
 		static f64 FROST_API period();
 		static u64 FROST_API timestamp();
+
+		class api final 
+		{
+		public:
+			STATIC_CLASS(api);
+
+			static u64 FROST_API frequency();
+			static f64 FROST_API period();
+			static u64 FROST_API timestamp();
+		};
 	};
 }

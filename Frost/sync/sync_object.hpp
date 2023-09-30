@@ -22,10 +22,7 @@ namespace frost::sync
 		class api final
 		{
 		public:
-			api() = delete;
-			api(api&) = delete;
-			api(api&&) = delete;
-			~api() = delete;
+			STATIC_CLASS(api);
 
 			static i32  FROST_API acquire_one(const pimpl_t<sync_object>* synchronization_objects, i32 count);
 			static bool FROST_API acquire_all(const pimpl_t<sync_object>* synchronization_objects, i32 count);
