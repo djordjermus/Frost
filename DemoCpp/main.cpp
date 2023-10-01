@@ -1,18 +1,24 @@
-#include "Frost/sync/mutex.hpp"
+#include "Frost/window.hpp"
 #include "Frost/sync/semaphore.hpp"
 #include <iostream>
-
+void window_proc(frost::window::api::window_event_data* e);
+void hide_window(frost::window::api::window_modification_context* ctx);
 int main()
 {
-	frost::sync::semaphore mx1(2, 4);
-	frost::sync::mutex mx2(false);
+	frost::window::api::window_description desc = {};
+	desc.procedure = window_proc;
+	auto wnd = frost::window::api::create(&desc);
 
-	std::vector<frost::sync::sync_object> s;
-	s.emplace_back(mx1.get_sync_object());
-	s.emplace_back(mx2.get_sync_object());
-	auto result = frost::sync::sync_object::try_acquire_all(s);
-	result = frost::sync::sync_object::acquire_all(s);
-	result = frost::sync::sync_object::try_acquire_all(s);
-	int i = frost::sync::sync_object::try_acquire_one(s);
-	i = frost::sync::sync_object::acquire_one(s);
+	while (true)
+		frost::window::api::message_pump();
+}
+void window_proc(frost::window::api::window_event_data* e)
+{
+	if (e->type == frost::window::api::window_event_data::type_close)
+		frost::window::api::modify(e->target, hide_window, nullptr);
+		
+}
+void hide_window(frost::window::api::window_modification_context* ctx)
+{
+	frost::window::api::set_state(ctx, frost::window::api::window_state::hidden);
 }
