@@ -44,11 +44,6 @@ namespace frost
 			static i32  FROST_API get_width(pimpl_t<window> target);
 			static i32  FROST_API get_height(pimpl_t<window> target);
 	
-			static i32  FROST_API get_client_x(pimpl_t<window> target);
-			static i32  FROST_API get_client_y(pimpl_t<window> target);
-			static i32  FROST_API get_client_width(pimpl_t<window> target);
-			static i32  FROST_API get_client_height(pimpl_t<window> target);
-	
 			static i32  FROST_API get_caption_length(pimpl_t<window> target);
 			static void FROST_API get_caption(pimpl_t<window> target, wchar_t* caption, i32 max_write);
 
