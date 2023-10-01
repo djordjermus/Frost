@@ -13,14 +13,13 @@ namespace frost
 		{
 		public:
 			STATIC_CLASS(api);
-			class window_modification_context;
+			class modification_context;
 
-			enum class window_state : u8;
 			struct window_description;
 			class window_event_data;
 
 			using window_procedure_sig	= void(_stdcall*)(window_event_data* context);
-			using window_modify_sig		= void(_stdcall*)(window_modification_context* context);
+			using window_modify_sig		= void(_stdcall*)(modification_context* context);
 
 
 
@@ -37,7 +36,7 @@ namespace frost
 			static bool FROST_API get_key_color(pimpl_t<window> target);
 			static f32 FROST_API get_opacity(pimpl_t<window> target);
 
-			static window_state FROST_API get_state(pimpl_t<window> target);
+			static u8 FROST_API get_state(pimpl_t<window> target);
 
 			static i32  FROST_API get_x(pimpl_t<window> target);
 			static i32  FROST_API get_y(pimpl_t<window> target);
@@ -47,50 +46,50 @@ namespace frost
 			static i32  FROST_API get_caption_length(pimpl_t<window> target);
 			static void FROST_API get_caption(pimpl_t<window> target, wchar_t* caption, i32 max_write);
 
+			static void FROST_API set_procedure(pimpl_t<window> target, window_procedure_sig procedure);
+			
 			static void FROST_API destroy(pimpl_t<window> p_impl);
 
-			static void FROST_API modify(pimpl_t<window> target, window_modify_sig modify_fn, void* argument);
+
+
+			static void FROST_API modify(pimpl_t<window> target, window_modify_sig modify_fn);
 	
-			static void FROST_API set_procedure(pimpl_t<window> target, window_procedure_sig procedure);
+			static pimpl_t<window> FROST_API get_modification_target(modification_context* context);
+			static void FROST_API set_enabled(modification_context* context, bool enabled);
+			static void FROST_API set_active(modification_context* context, bool active);
+			static void FROST_API set_focused(modification_context* context, bool focused);
 
-			static void FROST_API set_enabled(window_modification_context* target, bool enabled);
-			static void FROST_API set_active(window_modification_context* target, bool active);
-			static void FROST_API set_focused(window_modification_context* target, bool focused);
+			static void FROST_API set_key_color_used(modification_context* context, bool use_key);
+			static void FROST_API set_key_color(modification_context* context, u32 rgba);
+			static void FROST_API set_opacity(modification_context* context, f32 opacity);
 
-			static void FROST_API set_key_color_used(window_modification_context* target, bool use_key);
-			static void FROST_API set_key_color(window_modification_context* target, u32 rgba);
-			static void FROST_API set_opacity(window_modification_context* target, f32 opacity);
+			static void FROST_API set_state(modification_context* context, u8 state);
 
-			static void FROST_API set_state(window_modification_context* target, window_state state);
+			static void FROST_API set_position(modification_context* context, i32 x, i32 y);
+			static void FROST_API set_size(modification_context* context, i32 width, i32 height);
 
-			static void FROST_API set_position(window_modification_context* target, i32 x, i32 y);
-			static void FROST_API set_size(window_modification_context* target, i32 width, i32 height);
+			static void FROST_API set_client_position(modification_context* context, i32 x, i32 y);
+			static void FROST_API set_client_size(modification_context* context, i32 width, i32 height);
 
-			static void FROST_API set_client_position(window_modification_context* target, i32 x, i32 y);
-			static void FROST_API set_client_size(window_modification_context* target, i32 width, i32 height);
-
-			static void FROST_API set_caption(window_modification_context* target, const wchar_t* caption);
+			static void FROST_API set_caption(modification_context* context, const wchar_t* caption);
 	
 			static void FROST_API prepare_message_queue();
 			static void FROST_API message_pump();
 
-			enum class window_state : u8
-			{
-				invalid					= 0xFF,
-				hidden					= 0,
-				minimized				= 1,
-				normal					= 2,
-				maximized				= 3
-			};
+			static constexpr u8 state_invalid	= 0xFF;
+			static constexpr u8 state_hidden	= 0;
+			static constexpr u8 state_minimized	= 1;
+			static constexpr u8 state_normal	= 2;
+			static constexpr u8 state_maximized	= 3;
 
 			struct window_description final
 			{
-				i32 x							=  200;
-				i32 y							=  200;
-				i32 width						= 1280;
-				i32 height						=  720;
+				i32 x					=  200;
+				i32 y					=  200;
+				i32 width				= 1280;
+				i32 height				=  720;
 
-				window_state state				= window_state::normal;
+				u8 state				= state_normal;
 
 				const wchar_t* caption			= L"Frost application | Frost.Api v0.8.0a";
 
@@ -127,28 +126,28 @@ namespace frost
 					struct { i32 delta; } scroll;
 				};
 
-				static constexpr i32 type_create			= 1;
-				static constexpr i32 type_close				= 2;
-				static constexpr i32 type_destroy			= 3;
-
-				static constexpr i32 type_enable			= 4;
-				static constexpr i32 type_activate			= 5;
-				static constexpr i32 type_focus				= 6;
-
-				static constexpr i32 type_move				= 7;
-				static constexpr i32 type_resize			= 8;
-
-				static constexpr i32 type_key_down			= 9;
-				static constexpr i32 type_key_up			= 10;
-				static constexpr i32 type_double_click		= 11;
-
-				static constexpr i32 type_cursor_enter		= 12;
-				static constexpr i32 type_cursor_move		= 13;
-				static constexpr i32 type_cursor_leave		= 14;
-				static constexpr i32 type_mouse_move		= 16;
-				static constexpr i32 type_cursor_scroll		= 17;
 
 			};
+			static constexpr i32 event_type_create			= 1;
+			static constexpr i32 event_type_close			= 2;
+			static constexpr i32 event_type_destroy			= 3;
+
+			static constexpr i32 event_type_enable			= 4;
+			static constexpr i32 event_type_activate		= 5;
+			static constexpr i32 event_type_focus			= 6;
+
+			static constexpr i32 event_type_move			= 7;
+			static constexpr i32 event_type_resize			= 8;
+
+			static constexpr i32 event_type_key_down		= 9;
+			static constexpr i32 event_type_key_up			= 10;
+			static constexpr i32 event_type_double_click	= 11;
+
+			static constexpr i32 event_type_cursor_enter	= 12;
+			static constexpr i32 event_type_cursor_move		= 13;
+			static constexpr i32 event_type_cursor_leave	= 14;
+			static constexpr i32 event_type_mouse_move		= 16;
+			static constexpr i32 event_type_cursor_scroll	= 17;
 
 			static constexpr i32 keycode_null				= 0x00;
 

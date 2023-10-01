@@ -16,10 +16,10 @@ namespace frost
 	static inline void set_key_state(pimpl_t<window> target, u8 key);
 	static inline void reset_key_state(pimpl_t<window> target, u8 key);
 	static inline bool get_key_state(pimpl_t<window> target, u8 key);
-	static inline void wm_window_modify(window::api::window_modification_context* ctx);
+	static inline void wm_window_modify(window::api::modification_context* ctx);
 
-	static int state_to_int(window::api::window_state state);
-	static window::api::window_state int_to_state(int state);
+	static int state_to_int(u8 state);
+	static u8 int_to_state(int state);
 
 	static ATOM get_window_atom();
 	static LRESULT window_procedure(HWND, UINT, WPARAM, LPARAM);
@@ -39,7 +39,7 @@ namespace frost
 		u32   key = {};
 		DWORD thread_id = {};
 
-		window::api::window_state state = {};
+		u8 state = {};
 
 		u8 byte_state[256 / 8] = {};
 
@@ -50,11 +50,10 @@ namespace frost
 		static u64 flag_cursor_inside;
 	};
 
-	class window::api::window_modification_context final
+	class window::api::modification_context final
 	{
 	public:
 		pimpl_t<window> target;
-		void* argument;
 		window::api::window_modify_sig procedure;
 	};
 
@@ -67,12 +66,12 @@ namespace frost
 	pimpl_t<window> window::api::create(const window_description* description)
 	{
 		pimpl_t<window> data = new impl_t<window>();
-		data->state = description->state;
-		data->opacity = 1.0f;
-		data->key = 0;
-		data->flags = impl_t<window>::flag_enabled | impl_t<window>::flag_activated | impl_t<window>::flag_focused;
-		data->thread_id = ::GetCurrentThreadId();
-		data->procedure = description->procedure;
+		data->state		= description->state;
+		data->opacity	= 1.0f;
+		data->key		= 0;
+		data->flags		= impl_t<window>::flag_enabled | impl_t<window>::flag_activated | impl_t<window>::flag_focused;
+		data->thread_id	= ::GetCurrentThreadId();
+		data->procedure	= description->procedure;
 		if (data->procedure == nullptr)
 			data->procedure = null_procedure;
 		data->hwnd = ::CreateWindowExW(
@@ -152,7 +151,7 @@ namespace frost
 		return target->opacity;
 	}
 
-	window::api::window_state window::api::get_state(pimpl_t<window> target)
+	u8 window::api::get_state(pimpl_t<window> target)
 	{
 		return target->state;
 	}
@@ -188,21 +187,19 @@ namespace frost
 		::DestroyWindow(p_impl->hwnd);
 	}
 
-	void window::api::modify(pimpl_t<window> target, window::api::window_modify_sig modify_fn, void* argument)
+	void window::api::modify(pimpl_t<window> target, window::api::window_modify_sig modify_fn)
 	{
 		if (target->thread_id == ::GetCurrentThreadId())
 		{	// Same thread - modify at once
-			window_modification_context ctx;
-			ctx.argument = argument;
+			modification_context ctx;
 			ctx.target = target;
 			ctx.procedure = modify_fn;
 			modify_fn(&ctx);
 		}
 		else
 		{	// Different thread - post thread message to modify
-			auto* ctx = new window_modification_context();
+			auto* ctx = new modification_context();
 			ctx->target = target;
-			ctx->argument = argument;
 			ctx->procedure = modify_fn;
 			::PostThreadMessageW(
 				target->thread_id,
@@ -212,113 +209,118 @@ namespace frost
 		}
 
 	}
+	
+	pimpl_t<window> FROST_API window::api::get_modification_target(modification_context* target)
+	{
+		return target->target;
+	}
 
 	void window::api::set_procedure(pimpl_t<window> target, window::api::window_procedure_sig procedure)
 	{
 		target->procedure = procedure;
 	}
-	void window::api::set_enabled(window_modification_context* target, bool enabled)
+	void window::api::set_enabled(modification_context* context, bool enabled)
 	{
-		::EnableWindow(target->target->hwnd, enabled ? TRUE : FALSE);
+		::EnableWindow(context->target->hwnd, enabled ? TRUE : FALSE);
 	}
-	void window::api::set_active(window_modification_context* target, bool active)
+	void window::api::set_active(modification_context* context, bool active)
 	{
-		if (active && ::GetActiveWindow() != target->target->hwnd)
-			::SetActiveWindow(target->target->hwnd);
-		else if (!active && ::GetActiveWindow() == target->target->hwnd)
+		if (active && ::GetActiveWindow() != context->target->hwnd)
+			::SetActiveWindow(context->target->hwnd);
+		else if (!active && ::GetActiveWindow() == context->target->hwnd)
 			::SetActiveWindow(NULL);
 	}
-	void window::api::set_focused(window_modification_context* target, bool focused)
+	void window::api::set_focused(modification_context* context, bool focused)
 	{
-		if (focused && ::GetFocus() != target->target->hwnd)
-			::SetFocus(target->target->hwnd);
-		else if (!focused && ::GetFocus() == target->target->hwnd)
+		if (focused && ::GetFocus() != context->target->hwnd)
+			::SetFocus(context->target->hwnd);
+		else if (!focused && ::GetFocus() == context->target->hwnd)
 			::SetFocus(NULL);
 	}
 
-	void window::api::set_key_color_used(window_modification_context* target, bool use_key)
+	void window::api::set_key_color_used(modification_context* context, bool use_key)
 	{
 		update_lwa(
-			target->target,
-			&target->target->key,
-			target->target->opacity);
+			context->target,
+			&context->target->key,
+			context->target->opacity);
 	}
-	void window::api::set_key_color(window_modification_context* target, u32 rgba)
+	void window::api::set_key_color(modification_context* context, u32 rgba)
 	{
 		u32 abgr = RGB(255, 0, 255);
 		rgba8::api::rgba8_to_abgr8(rgba, &abgr);
 		update_lwa(
-			target->target,
+			context->target,
 			&abgr,
-			target->target->opacity);
+			context->target->opacity);
 	}
-	void window::api::set_opacity(window_modification_context* target, f32 opacity)
+	void window::api::set_opacity(modification_context* context, f32 opacity)
 	{
 		update_lwa(
-			target->target,
-			is_key_color_used(target->target) ? &target->target->key : nullptr,
+			context->target,
+			is_key_color_used(context->target) ? &context->target->key : nullptr,
 			opacity);
 	}
 
-	void window::api::set_state(window_modification_context* target, window_state state)
+	void window::api::set_state(modification_context* context, u8 state)
 	{
-		::ShowWindow(target->target->hwnd, state_to_int(state));
-		target->target->state = state;
+		::ShowWindow(context->target->hwnd, state_to_int(state));
+		context->target->state = state;
 	}
 
-	void window::api::set_position(window_modification_context* target, i32 x, i32 y)
+	void window::api::set_position(modification_context* context, i32 x, i32 y)
 	{
 		::SetWindowPos(
-			target->target->hwnd,
+			context->target->hwnd,
 			nullptr,
 			x, y, 0, 0,
 			SWP_NOSIZE);
 	}
-	void window::api::set_size(window_modification_context* target, i32 width, i32 height)
+	void window::api::set_size(modification_context* context, i32 width, i32 height)
 	{
 		::SetWindowPos(
-			target->target->hwnd,
+			context->target->hwnd,
 			nullptr,
 			0, 0, width, height,
 			SWP_NOMOVE);
 	}
 
-	void window::api::set_client_position(window_modification_context* target, i32 x, i32 y)
+	void window::api::set_client_position(modification_context* context, i32 x, i32 y)
 	{
 		RECT rect = { x, y, 0, 0 };
 		::AdjustWindowRectEx(
 			&rect,
-			::GetWindowLongW(target->target->hwnd, GWL_STYLE),
+			::GetWindowLongW(context->target->hwnd, GWL_STYLE),
 			FALSE,
-			::GetWindowLongW(target->target->hwnd, GWL_EXSTYLE));
+			::GetWindowLongW(context->target->hwnd, GWL_EXSTYLE));
 
 		::SetWindowPos(
-			target->target->hwnd,
+			context->target->hwnd,
 			nullptr,
 			rect.left, rect.top,
 			0, 0,
 			SWP_NOSIZE);
 	}
-	void window::api::set_client_size(window_modification_context* target, i32 width, i32 height)
+	void window::api::set_client_size(modification_context* context, i32 width, i32 height)
 	{
 		RECT rect = { 0, 0, width, height };
 		::AdjustWindowRectEx(
 			&rect,
-			::GetWindowLongW(target->target->hwnd, GWL_STYLE),
+			::GetWindowLongW(context->target->hwnd, GWL_STYLE),
 			FALSE,
-			::GetWindowLongW(target->target->hwnd, GWL_EXSTYLE));
+			::GetWindowLongW(context->target->hwnd, GWL_EXSTYLE));
 
 		::SetWindowPos(
-			target->target->hwnd,
+			context->target->hwnd,
 			nullptr,
 			0, 0,
 			rect.right - rect.left, rect.bottom - rect.top,
 			SWP_NOMOVE);
 	}
 
-	void window::api::set_caption(window_modification_context* target, const wchar_t* caption)
+	void window::api::set_caption(modification_context* context, const wchar_t* caption)
 	{
-		::SetWindowTextW(target->target->hwnd, caption);
+		::SetWindowTextW(context->target->hwnd, caption);
 	}
 
 	void window::api::prepare_message_queue()
@@ -392,28 +394,28 @@ namespace frost
 		return (target->byte_state[index] & (1 << offset)) != 0;
 	}
 
-	static int state_to_int(window::api::window_state state)
+	static int state_to_int(u8 state)
 	{
 		switch (state)
 		{
-		case window::api::window_state::hidden:		return SW_HIDE;
-		case window::api::window_state::minimized:	return SW_SHOWMINIMIZED;
-		case window::api::window_state::normal:		return SW_SHOWNORMAL;
-		case window::api::window_state::maximized:	return SW_SHOWMAXIMIZED;
+		case window::api::state_hidden:		return SW_HIDE;
+		case window::api::state_minimized:	return SW_SHOWMINIMIZED;
+		case window::api::state_normal:		return SW_SHOWNORMAL;
+		case window::api::state_maximized:	return SW_SHOWMAXIMIZED;
 		default:
 			return -1;
 		}
 	}
-	static window::api::window_state int_to_state(int state)
+	static u8 int_to_state(int state)
 	{
 		switch (state)
 		{
-		case SW_HIDE:			return window::api::window_state::hidden;
-		case SW_SHOWMINIMIZED:	return window::api::window_state::minimized;
-		case SW_SHOWNORMAL:		return window::api::window_state::normal;
-		case SW_SHOWMAXIMIZED:	return window::api::window_state::maximized;
+		case SW_HIDE:			return window::api::state_hidden;
+		case SW_SHOWMINIMIZED:	return window::api::state_minimized;
+		case SW_SHOWNORMAL:		return window::api::state_normal;
+		case SW_SHOWMAXIMIZED:	return window::api::state_maximized;
 		default:
-			return window::api::window_state::invalid;
+			return window::api::state_invalid;
 		}
 	}
 
@@ -436,7 +438,7 @@ namespace frost
 		return _atom;
 	}
 
-	static inline void wm_window_modify(window::api::window_modification_context* ctx)
+	static inline void wm_window_modify(window::api::modification_context* ctx)
 	{
 		ctx->procedure(ctx);
 		delete ctx;
@@ -461,7 +463,7 @@ namespace frost
 			{
 				window::api::window_event_data e;
 				e.target = data;
-				e.type = window::api::window_event_data::type_mouse_move;
+				e.type = window::api::event_type_mouse_move;
 				e.mouse_move.delta_x = rid.data.mouse.lLastX;
 				e.mouse_move.delta_y = rid.data.mouse.lLastY;
 				data->procedure(&e);
@@ -500,7 +502,7 @@ namespace frost
 
 					window::api::window_event_data e;
 					e.target = data;
-					e.type = window::api::window_event_data::type_key_down;
+					e.type = window::api::event_type_key_down;
 					e.key_down.key = static_cast<u8>(buttons[i]);
 					e.key_down.character = L'\0';
 					data->procedure(&e);
@@ -511,7 +513,7 @@ namespace frost
 
 					window::api::window_event_data e;
 					e.target = data;
-					e.type = window::api::window_event_data::type_key_up;
+					e.type = window::api::event_type_key_up;
 					e.key_up.key = static_cast<u8>(buttons[i]);
 					e.key_down.character = L'\0';
 					data->procedure(&e);
@@ -522,7 +524,7 @@ namespace frost
 			{
 				window::api::window_event_data e;
 				e.target = data;
-				e.type = window::api::window_event_data::type_cursor_scroll;
+				e.type = window::api::event_type_cursor_scroll;
 				e.scroll.delta = ((i16)(u16)mouse.usButtonData) / WHEEL_DELTA;
 				data->procedure(&e);
 			}
@@ -531,7 +533,7 @@ namespace frost
 			{
 				window::api::window_event_data e;
 				e.target = data;
-				e.type = window::api::window_event_data::type_cursor_scroll;
+				e.type = window::api::event_type_cursor_scroll;
 				e.scroll.delta = ((i16)(u16)mouse.usButtonData) / WHEEL_DELTA;
 				data->procedure(&e);
 			}
@@ -554,21 +556,21 @@ namespace frost
 			window::api::window_event_data e;
 			e.target = data;
 			e.type = (keyboard.Flags & RI_KEY_BREAK) == RI_KEY_BREAK ?
-				window::api::window_event_data::type_key_up :
-				window::api::window_event_data::type_key_down;
+				window::api::event_type_key_up :
+				window::api::event_type_key_down;
 
 			u8 keycode = static_cast<u8>(keyboard.MakeCode);
 			if ((keyboard.Flags & RI_KEY_E0) || (keyboard.Flags & RI_KEY_E1))
 				keycode |= 0x80;
 
 			auto hkl = ::GetKeyboardLayout(::GetCurrentThreadId());
-			if (e.type == window::api::window_event_data::type_key_down)
+			if (e.type == window::api::event_type_key_down)
 			{
 				set_key_state(data, keycode);
 				e.key_down.key = keycode;
 				e.key_down.character = ::MapVirtualKeyExW(keyboard.VKey, MAPVK_VK_TO_CHAR, hkl);
 			}
-			else if (e.type == window::api::window_event_data::type_key_up)
+			else if (e.type == window::api::event_type_key_up)
 			{
 				reset_key_state(data, keycode);
 				e.key_up.key = keycode;
@@ -594,9 +596,9 @@ namespace frost
 		{
 			window::api::window_event_data e;
 			e.target = data;
-			e.type = window::api::window_event_data::type_double_click;
-			e.double_click.x = data->last_cursor_position.x / (data->client_rect.right - data->client_rect.left);
-			e.double_click.y = data->last_cursor_position.y / (data->client_rect.bottom - data->client_rect.top);
+			e.type = window::api::event_type_double_click;
+			e.double_click.x = data->last_cursor_position.x / static_cast<f32>(data->client_rect.right - data->client_rect.left);
+			e.double_click.y = data->last_cursor_position.y / static_cast<f32>(data->client_rect.bottom - data->client_rect.top);
 			switch (msg)
 			{
 			case WM_LBUTTONDBLCLK:
@@ -636,9 +638,9 @@ namespace frost
 			{
 				window::api::window_event_data e;
 				e.target = data;
-				e.type = window::api::window_event_data::type_cursor_move;
-				e.cursor_move.x = data->last_cursor_position.x / (data->client_rect.right - data->client_rect.left);;
-				e.cursor_move.y = data->last_cursor_position.y / (data->client_rect.bottom - data->client_rect.top);;
+				e.type = window::api::event_type_cursor_move;
+				e.cursor_move.x = data->last_cursor_position.x / static_cast<f32>(data->client_rect.right - data->client_rect.left);;
+				e.cursor_move.y = data->last_cursor_position.y / static_cast<f32>(data->client_rect.bottom - data->client_rect.top);;
 				data->procedure(&e);
 			}
 		}
@@ -648,9 +650,9 @@ namespace frost
 			{
 				window::api::window_event_data e;
 				e.target = data;
-				e.type = window::api::window_event_data::type_cursor_enter;
-				e.cursor_enter.x = data->last_cursor_position.x / (data->client_rect.right - data->client_rect.left);;
-				e.cursor_enter.y = data->last_cursor_position.y / (data->client_rect.bottom - data->client_rect.top);;
+				e.type = window::api::event_type_cursor_enter;
+				e.cursor_enter.x = data->last_cursor_position.x / static_cast<f32>(data->client_rect.right - data->client_rect.left);;
+				e.cursor_enter.y = data->last_cursor_position.y / static_cast<f32>(data->client_rect.bottom - data->client_rect.top);;
 				data->procedure(&e);
 			}
 			data->flags |= impl_t<window>::flag_cursor_inside;
@@ -669,9 +671,9 @@ namespace frost
 		{
 			window::api::window_event_data e;
 			e.target = data;
-			e.type = window::api::window_event_data::type_cursor_leave;
-			e.cursor_leave.x = data->last_cursor_position.x / (data->client_rect.right - data->client_rect.left);;
-			e.cursor_leave.y = data->last_cursor_position.y / (data->client_rect.bottom - data->client_rect.top);;
+			e.type = window::api::event_type_cursor_leave;
+			e.cursor_leave.x = data->last_cursor_position.x / static_cast<f32>(data->client_rect.right - data->client_rect.left);;
+			e.cursor_leave.y = data->last_cursor_position.y / static_cast<f32>(data->client_rect.bottom - data->client_rect.top);;
 			data->procedure(&e);
 		}
 		return ::DefWindowProcW(hwnd, msg, w, l);
@@ -686,7 +688,7 @@ namespace frost
 		{
 			window::api::window_event_data e;
 			e.target = data;
-			e.type = window::api::window_event_data::type_move;
+			e.type = window::api::event_type_move;
 			e.move.x = static_cast<WORD>(l & 0xFFFF);
 			e.move.y = static_cast<WORD>((l >> sizeof(WORD)) & 0xFFFF);
 			data->procedure(&e);
@@ -703,7 +705,7 @@ namespace frost
 		{
 			window::api::window_event_data e;
 			e.target = data;
-			e.type = window::api::window_event_data::type_resize;
+			e.type = window::api::event_type_resize;
 			e.resize.width = static_cast<WORD>(l & 0xFFFF);
 			e.resize.height = static_cast<WORD>((l >> sizeof(WORD)) & 0xFFFF);
 			data->procedure(&e);
@@ -722,7 +724,7 @@ namespace frost
 			{
 				window::api::window_event_data e;
 				e.target = data;
-				e.type = window::api::window_event_data::type_enable;
+				e.type = window::api::event_type_enable;
 				e.enable.enabled = true;
 				data->procedure(&e);
 			}
@@ -735,7 +737,7 @@ namespace frost
 			{
 				window::api::window_event_data e;
 				e.target = data;
-				e.type = window::api::window_event_data::type_enable;
+				e.type = window::api::event_type_enable;
 				e.enable.enabled = true;
 				data->procedure(&e);
 			}
@@ -754,7 +756,7 @@ namespace frost
 			{
 				window::api::window_event_data e;
 				e.target = data;
-				e.type = window::api::window_event_data::type_activate;
+				e.type = window::api::event_type_activate;
 				e.activate.activated = false;
 				data->procedure(&e);
 			}
@@ -767,7 +769,7 @@ namespace frost
 			{
 				window::api::window_event_data e;
 				e.target = data;
-				e.type = window::api::window_event_data::type_activate;
+				e.type = window::api::event_type_activate;
 				e.activate.activated = true;
 				data->procedure(&e);
 			}
@@ -786,7 +788,7 @@ namespace frost
 			{
 				window::api::window_event_data e;
 				e.target = data;
-				e.type = window::api::window_event_data::type_focus;
+				e.type = window::api::event_type_focus;
 				e.focus.focused = true;
 				data->procedure(&e);
 			}
@@ -799,7 +801,7 @@ namespace frost
 			{
 				window::api::window_event_data e;
 				e.target = data;
-				e.type = window::api::window_event_data::type_focus;
+				e.type = window::api::event_type_focus;
 				e.focus.focused = true;
 				data->procedure(&e);
 			}
@@ -816,7 +818,7 @@ namespace frost
 		{
 			window::api::window_event_data e;
 			e.target = data;
-			e.type = window::api::window_event_data::type_create;
+			e.type = window::api::event_type_create;
 			data->procedure(&e);
 		}
 		return ::DefWindowProcW(hwnd, msg, w, l);
@@ -829,7 +831,7 @@ namespace frost
 		{
 			window::api::window_event_data e;
 			e.target = data;
-			e.type = window::api::window_event_data::type_close;
+			e.type = window::api::event_type_close;
 			data->procedure(&e);
 		}
 		return 0;
@@ -842,7 +844,7 @@ namespace frost
 		{
 			window::api::window_event_data e;
 			e.target = data;
-			e.type = window::api::window_event_data::type_destroy;
+			e.type = window::api::event_type_destroy;
 			data->procedure(&e);
 		}
 		delete data;
@@ -853,11 +855,12 @@ namespace frost
 	{
 		if (static_cast<bool>(w))
 			return 0;
-		return DefWindowProc(hwnd, msg, w, l);
+		return DefWindowProcW(hwnd, msg, w, l);
 	}
+	
 	static LRESULT wm_nchittest(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 	{
-		return HTCAPTION;
+		return HTCLIENT;
 	}
 	
 	static LRESULT window_procedure(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
@@ -904,4 +907,6 @@ namespace frost
 		return ::DefWindowProcW(hwnd, msg, w, l);
 	}
 }
+#else
+static_assert("PLATFORM NOT SUPPORTED!")
 #endif
