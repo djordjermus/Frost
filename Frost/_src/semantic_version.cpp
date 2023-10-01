@@ -30,7 +30,7 @@ namespace frost
 	void semantic_version::api::get_api_version(semantic_version* output)
 	{
 		output->major_version	= 0;
-		output->minor_version	= 8;
+		output->minor_version	= 11;
 		output->patch			= 0;
 		output->decoration		= L"alpha";
 	}
