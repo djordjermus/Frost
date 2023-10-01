@@ -16,7 +16,6 @@ namespace frost
 			class window_modification_context;
 
 			enum class window_state : u8;
-			enum class window_style : u8;
 			struct window_description;
 			class window_event_data;
 
@@ -39,7 +38,6 @@ namespace frost
 			static f32 FROST_API get_opacity(pimpl_t<window> target);
 
 			static window_state FROST_API get_state(pimpl_t<window> target);
-			static window_style FROST_API get_style(pimpl_t<window> target);
 
 			static i32  FROST_API get_x(pimpl_t<window> target);
 			static i32  FROST_API get_y(pimpl_t<window> target);
@@ -69,7 +67,6 @@ namespace frost
 			static void FROST_API set_opacity(window_modification_context* target, f32 opacity);
 
 			static void FROST_API set_state(window_modification_context* target, window_state state);
-			static void FROST_API set_style(window_modification_context* target, window_style style);
 
 			static void FROST_API set_position(window_modification_context* target, i32 x, i32 y);
 			static void FROST_API set_size(window_modification_context* target, i32 width, i32 height);
@@ -91,16 +88,6 @@ namespace frost
 				maximized				= 3
 			};
 
-			enum class window_style : u8
-			{
-				none					= 0,
-				user_resizable			= 0b0000'0001,
-				titled					= 0b0000'0010,
-				minimize_box			= 0b0000'0100,
-				maximize_box			= 0b0000'1000,
-				all						= 0b1111'1111
-			};
-
 			struct window_description final
 			{
 				i32 x							=  200;
@@ -109,7 +96,6 @@ namespace frost
 				i32 height						=  720;
 
 				window_state state				= window_state::normal;
-				window_style style				= window_style::all;
 
 				const wchar_t* caption			= L"Frost application | Frost.Api v0.8.0a";
 
@@ -136,12 +122,12 @@ namespace frost
 
 					struct { wchar_t character; u8 key; } key_down;
 					struct { wchar_t character; u8 key; } key_up;
-					struct { i32 x; i32 y; u8 key; } double_click;
+					struct { f32 x; f32 y; u8 key; } double_click;
 
 			
-					struct { i32 x; i32 y; } cursor_enter;
-					struct { i32 x; i32 y; } cursor_move;
-					struct { i32 x; i32 y; } cursor_leave;
+					struct { f32 x; f32 y; } cursor_enter;
+					struct { f32 x; f32 y; } cursor_move;
+					struct { f32 x; f32 y; } cursor_leave;
 					struct { i32 delta_x; i32 delta_y; } mouse_move;
 					struct { i32 delta; } scroll;
 				};

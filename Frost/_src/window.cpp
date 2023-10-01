@@ -20,8 +20,6 @@ namespace frost
 
 	static int state_to_int(window::api::window_state state);
 	static window::api::window_state int_to_state(int state);
-	static DWORD style_to_dw(window::api::window_style style);
-	static window::api::window_style dw_to_style(DWORD style);
 
 	static ATOM get_window_atom();
 	static LRESULT window_procedure(HWND, UINT, WPARAM, LPARAM);
@@ -43,7 +41,6 @@ namespace frost
 		DWORD thread_id = {};
 
 		window::api::window_state state = {};
-		window::api::window_style style = {};
 
 		u8 byte_state[256 / 8] = {};
 
@@ -72,7 +69,6 @@ namespace frost
 	{
 		pimpl_t<window> data = new impl_t<window>();
 		data->state = description->state;
-		data->style = description->style;
 		data->opacity = 1.0f;
 		data->key = 0;
 		data->flags = impl_t<window>::flag_enabled | impl_t<window>::flag_activated | impl_t<window>::flag_focused;
@@ -84,7 +80,7 @@ namespace frost
 			WS_EX_LAYERED,
 			(LPCWSTR)get_window_atom(),
 			description->caption,
-			style_to_dw(description->style),
+			0ul,
 			description->x,
 			description->y,
 			description->width,
@@ -94,12 +90,12 @@ namespace frost
 			nullptr,
 			data);
 
-		data->track_mouse_event.cbSize = sizeof(data->track_mouse_event);
-		data->track_mouse_event.hwndTrack = data->hwnd;
-		data->track_mouse_event.dwHoverTime = 0;
-		data->track_mouse_event.dwFlags = TME_LEAVE;
+		data->track_mouse_event.cbSize		= sizeof(data->track_mouse_event);
+		data->track_mouse_event.hwndTrack	= data->hwnd;
+		data->track_mouse_event.dwHoverTime	= 0;
+		data->track_mouse_event.dwFlags		= TME_LEAVE;
 
-		::SetWindowLongW(data->hwnd, GWL_STYLE, style_to_dw(description->style));
+		::SetWindowLongW(data->hwnd, GWL_STYLE, 0l);
 		::SetWindowPos(data->hwnd, nullptr, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOREPOSITION | SWP_ASYNCWINDOWPOS | SWP_NOZORDER);
 		::SetLayeredWindowAttributes(data->hwnd, 0, 255, 0);
 
@@ -116,7 +112,7 @@ namespace frost
 		::RegisterRawInputDevices(rid, sizeof(rid) / sizeof(*rid), sizeof(*rid));
 
 		::ShowWindow(data->hwnd, state_to_int(description->state));
-
+		::InvalidateRect(data->hwnd, nullptr, TRUE);
 		return data;
 	}
 
@@ -157,13 +153,9 @@ namespace frost
 		return target->opacity;
 	}
 
-	window::api::window_state get_state(pimpl_t<window> target)
+	window::api::window_state window::api::get_state(pimpl_t<window> target)
 	{
 		return target->state;
-	}
-	window::api::window_style get_style(pimpl_t<window> target)
-	{
-		return target->style;
 	}
 
 	i32 window::api::get_x(pimpl_t<window> target)
@@ -290,11 +282,6 @@ namespace frost
 	{
 		::ShowWindow(target->target->hwnd, state_to_int(state));
 		target->target->state = state;
-	}
-	void window::api::set_style(window_modification_context* target, window_style style)
-	{
-		::SetWindowLongW(target->target->hwnd, GWL_STYLE, style_to_dw(style));
-		target->target->style = style;
 	}
 
 	void window::api::set_position(window_modification_context* target, i32 x, i32 y)
@@ -448,34 +435,6 @@ namespace frost
 			return window::api::window_state::invalid;
 		}
 	}
-	static DWORD style_to_dw(window::api::window_style style)
-	{
-		DWORD result = 0;
-		if (((u8)style & (u8)window::api::window_style::user_resizable) != 0)
-			result |= WS_SIZEBOX;
-		if (((u8)style & (u8)window::api::window_style::titled) != 0)
-			result |= WS_SYSMENU | WS_CAPTION ^ WS_BORDER;
-		if (((u8)style & (u8)window::api::window_style::minimize_box) != 0)
-			result |= WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX ^ WS_BORDER;
-		if (((u8)style & (u8)window::api::window_style::maximize_box) != 0)
-			result |= WS_SYSMENU | WS_CAPTION | WS_MAXIMIZEBOX ^ WS_BORDER;
-
-		return result;
-	}
-	static window::api::window_style dw_to_style(DWORD style)
-	{
-		window::api::window_style result = window::api::window_style::none;
-		if ((style & WS_SIZEBOX) != 0)
-			result = (window::api::window_style)((u8)result | (u8)window::api::window_style::user_resizable);
-		if ((style & WS_CAPTION) != 0)
-			result = (window::api::window_style)((u8)result | (u8)window::api::window_style::titled);
-		if ((style & WS_MINIMIZEBOX) != 0)
-			result = (window::api::window_style)((u8)result | (u8)window::api::window_style::minimize_box);
-		if ((style & WS_MAXIMIZEBOX) != 0)
-			result = (window::api::window_style)((u8)result | (u8)window::api::window_style::maximize_box);
-
-		return result;
-	}
 
 	static ATOM get_window_atom()
 	{
@@ -487,7 +446,7 @@ namespace frost
 			wc.lpszClassName = L"FROST_API_WINDOW_CLASS_99999";
 			wc.cbWndExtra = sizeof(void*);
 			wc.style = CS_DBLCLKS | CS_OWNDC | CS_VREDRAW | CS_HREDRAW;
-			wc.hbrBackground = ::CreateSolidBrush(RGB(255, 0, 255));
+			wc.hbrBackground = nullptr;
 			wc.lpfnWndProc = window_procedure;
 
 			_atom = ::RegisterClassExW(&wc);
@@ -655,8 +614,8 @@ namespace frost
 			window::api::window_event_data e;
 			e.target = data;
 			e.type = window::api::window_event_data::type_double_click;
-			e.double_click.x = data->last_cursor_position.x;
-			e.double_click.y = data->last_cursor_position.y;
+			e.double_click.x = data->last_cursor_position.x / (data->client_rect.right - data->client_rect.left);
+			e.double_click.y = data->last_cursor_position.y / (data->client_rect.bottom - data->client_rect.top);
 			switch (msg)
 			{
 			case WM_LBUTTONDBLCLK:
@@ -697,8 +656,8 @@ namespace frost
 				window::api::window_event_data e;
 				e.target = data;
 				e.type = window::api::window_event_data::type_cursor_move;
-				e.move.x = data->last_cursor_position.x;
-				e.move.y = data->last_cursor_position.y;
+				e.cursor_move.x = data->last_cursor_position.x / (data->client_rect.right - data->client_rect.left);;
+				e.cursor_move.y = data->last_cursor_position.y / (data->client_rect.bottom - data->client_rect.top);;
 				data->procedure(&e);
 			}
 		}
@@ -709,8 +668,8 @@ namespace frost
 				window::api::window_event_data e;
 				e.target = data;
 				e.type = window::api::window_event_data::type_cursor_enter;
-				e.move.x = data->last_cursor_position.x;
-				e.move.y = data->last_cursor_position.y;
+				e.cursor_enter.x = data->last_cursor_position.x / (data->client_rect.right - data->client_rect.left);;
+				e.cursor_enter.y = data->last_cursor_position.y / (data->client_rect.bottom - data->client_rect.top);;
 				data->procedure(&e);
 			}
 			data->flags |= impl_t<window>::flag_cursor_inside;
@@ -730,8 +689,8 @@ namespace frost
 			window::api::window_event_data e;
 			e.target = data;
 			e.type = window::api::window_event_data::type_cursor_leave;
-			e.move.x = data->last_cursor_position.x;
-			e.move.y = data->last_cursor_position.y;
+			e.cursor_leave.x = data->last_cursor_position.x / (data->client_rect.right - data->client_rect.left);;
+			e.cursor_leave.y = data->last_cursor_position.y / (data->client_rect.bottom - data->client_rect.top);;
 			data->procedure(&e);
 		}
 		return ::DefWindowProcW(hwnd, msg, w, l);
@@ -909,13 +868,25 @@ namespace frost
 		return ::DefWindowProcW(hwnd, msg, w, l);
 	}
 
+	static LRESULT wm_nccalcsize(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
+	{
+		if (static_cast<bool>(w))
+			return 0;
+		return DefWindowProc(hwnd, msg, w, l);
+	}
+	static LRESULT wm_nchittest(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
+	{
+		return HTCAPTION;
+	}
+	
 	static LRESULT window_procedure(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 	{
 		switch (msg)
 		{
 		case WM_INPUT:
 			return wm_input(hwnd, msg, w, l);
-
+		case WM_NCHITTEST:
+			return wm_nchittest(hwnd, msg, w, l);
 		case WM_LBUTTONDBLCLK:
 		case WM_RBUTTONDBLCLK:
 		case WM_MBUTTONDBLCLK:
@@ -942,6 +913,8 @@ namespace frost
 
 		case WM_CREATE:
 			return wm_create(hwnd, msg, w, l);
+		case WM_NCCALCSIZE:
+			return wm_nccalcsize(hwnd, msg, w, l);
 		case WM_CLOSE:
 			return wm_close(hwnd, msg, w, l);
 		case WM_DESTROY:
