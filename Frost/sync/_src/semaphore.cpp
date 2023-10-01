@@ -4,6 +4,10 @@
 #include <Windows.h>
 namespace frost::sync
 {
+	semaphore::semaphore() :
+		pimpl_crtp<semaphore>(nullptr) {}
+	semaphore::semaphore(pimpl_t<semaphore> pimpl) :
+		pimpl_crtp<semaphore>(pimpl) {}
 	semaphore::semaphore(i32 count, i32 max) :
 		pimpl_crtp<semaphore>(api::create_semaphore(count, max)) {}
 	semaphore::semaphore(semaphore& move) :

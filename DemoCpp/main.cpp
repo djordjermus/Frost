@@ -1,12 +1,13 @@
 #include "Frost/sync/mutex.hpp"
 #include "Frost/sync/semaphore.hpp"
+#include "Frost/sync/sync_object.hpp"
 #include <iostream>
 
 int main()
 {
 	frost::sync::semaphore mx1(2, 4);
 	frost::sync::mutex mx2(false);
-
+	frost::sync::sync_object so;
 	std::vector<frost::sync::sync_object> s;
 	s.emplace_back(mx1.get_sync_object());
 	s.emplace_back(mx2.get_sync_object());
