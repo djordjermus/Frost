@@ -31,7 +31,6 @@ namespace frost
 		HWND  hwnd = {};
 		void* argument = {};
 		window::api::window_procedure_sig procedure = {};
-		RECT  window_rect = {};
 		RECT  client_rect = {};
 		TRACKMOUSEEVENT track_mouse_event = {};
 		POINT last_cursor_position = {};
@@ -160,34 +159,17 @@ namespace frost
 
 	i32 window::api::get_x(pimpl_t<window> target)
 	{
-		return target->window_rect.left;
+		return target->client_rect.left;
 	}
 	i32 window::api::get_y(pimpl_t<window> target)
 	{
-		return target->window_rect.top;
+		return target->client_rect.top;
 	}
 	i32 window::api::get_width(pimpl_t<window> target)
 	{
-		return target->window_rect.right - target->window_rect.left;
-	}
-	i32 window::api::get_height(pimpl_t<window> target)
-	{
-		return target->window_rect.bottom - target->window_rect.top;
-	}
-
-	i32 window::api::get_client_x(pimpl_t<window> target)
-	{
-		return target->window_rect.left + target->client_rect.left;
-	}
-	i32 window::api::get_client_y(pimpl_t<window> target)
-	{
-		return target->window_rect.top + target->client_rect.top;
-	}
-	i32 window::api::get_client_width(pimpl_t<window> target)
-	{
 		return target->client_rect.right - target->client_rect.left;
 	}
-	i32 window::api::get_client_height(pimpl_t<window> target)
+	i32 window::api::get_height(pimpl_t<window> target)
 	{
 		return target->client_rect.bottom - target->client_rect.top;
 	}
@@ -358,7 +340,6 @@ namespace frost
 
 	static inline void update_rects(pimpl_t<window> target)
 	{
-		::GetWindowRect(target->hwnd, &target->window_rect);
 		::GetClientRect(target->hwnd, &target->client_rect);
 	}
 	static inline void update_state(pimpl_t<window> target)
