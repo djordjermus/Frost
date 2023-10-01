@@ -429,7 +429,7 @@ namespace frost
 			wc.lpszClassName = L"FROST_API_WINDOW_CLASS_99999";
 			wc.cbWndExtra = sizeof(void*);
 			wc.style = CS_DBLCLKS | CS_OWNDC | CS_VREDRAW | CS_HREDRAW;
-			wc.hbrBackground = nullptr;
+			wc.hbrBackground = ::CreateSolidBrush(RGB(32, 32, 32));
 			wc.lpfnWndProc = window_procedure;
 
 			_atom = ::RegisterClassExW(&wc);
@@ -869,8 +869,6 @@ namespace frost
 		{
 		case WM_INPUT:
 			return wm_input(hwnd, msg, w, l);
-		case WM_NCHITTEST:
-			return wm_nchittest(hwnd, msg, w, l);
 		case WM_LBUTTONDBLCLK:
 		case WM_RBUTTONDBLCLK:
 		case WM_MBUTTONDBLCLK:
@@ -897,12 +895,17 @@ namespace frost
 
 		case WM_CREATE:
 			return wm_create(hwnd, msg, w, l);
-		case WM_NCCALCSIZE:
-			return wm_nccalcsize(hwnd, msg, w, l);
 		case WM_CLOSE:
 			return wm_close(hwnd, msg, w, l);
 		case WM_DESTROY:
 			return wm_destroy(hwnd, msg, w, l);
+
+		case WM_NCCALCSIZE:
+			return wm_nccalcsize(hwnd, msg, w, l);
+		case WM_NCHITTEST:
+			return wm_nchittest(hwnd, msg, w, l);
+		case WM_NCPAINT:
+			return 0;
 		}
 		return ::DefWindowProcW(hwnd, msg, w, l);
 	}
