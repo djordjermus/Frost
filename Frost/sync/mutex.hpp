@@ -8,6 +8,8 @@ namespace frost::sync
 	class mutex final : public frost::pimpl_crtp<mutex>
 	{
 	public:
+		FROST_API mutex();
+		FROST_API mutex(pimpl_t<mutex> pimpl);
 		FROST_API mutex(bool auto_acquire);
 		FROST_API mutex(mutex& move);
 		FROST_API mutex(mutex&& move) noexcept;

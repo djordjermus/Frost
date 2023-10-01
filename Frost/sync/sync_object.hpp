@@ -9,10 +9,12 @@ namespace frost::sync
 	{
 	public:
 		FROST_API sync_object();
-		FROST_API sync_object(pimpl_crtp<sync_object> pimpl);
+		FROST_API sync_object(pimpl_t<sync_object> pimpl);
 		FROST_API sync_object(const sync_object& copy);
 		FROST_API sync_object(const sync_object&& copy) noexcept;
 		~sync_object() = default;
+
+		bool FROST_API is_valid() const;
 
 		static i32  FROST_API acquire_one(const std::vector<sync_object>& synchronization_objects);
 		static bool FROST_API acquire_all(const std::vector<sync_object>& synchronization_objects);

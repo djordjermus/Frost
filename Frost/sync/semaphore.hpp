@@ -8,6 +8,8 @@ namespace frost::sync
 	class semaphore final : public frost::pimpl_crtp<semaphore>
 	{
 	public:
+		FROST_API semaphore();
+		FROST_API semaphore(pimpl_t<semaphore> pimpl);
 		FROST_API semaphore(i32 count, i32 maximum);
 		FROST_API semaphore(semaphore& move);
 		FROST_API semaphore(semaphore&& move) noexcept;

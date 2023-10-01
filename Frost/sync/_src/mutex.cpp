@@ -4,6 +4,10 @@
 #include <Windows.h>
 namespace frost::sync
 {
+	mutex::mutex() :
+		pimpl_crtp<mutex>(nullptr) {}
+	mutex::mutex(pimpl_t<mutex> pimpl) :
+		pimpl_crtp<mutex>(pimpl) {}
 	mutex::mutex(bool auto_acquire) :
 		pimpl_crtp<mutex>(api::create_mutex(auto_acquire)) {}
 	mutex::mutex(mutex& move) :
