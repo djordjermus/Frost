@@ -1,4 +1,3 @@
-#include <string>
 #include "macro.hpp"
 #include "primitives.hpp"
 #include "pimpl.hpp"
@@ -47,9 +46,6 @@ namespace frost
 			static i32  FROST_API get_y(pimpl_t<window> target);
 			static i32  FROST_API get_width(pimpl_t<window> target);
 			static i32  FROST_API get_height(pimpl_t<window> target);
-	
-			static i32  FROST_API get_caption_length(pimpl_t<window> target);
-			static void FROST_API get_caption(pimpl_t<window> target, wchar_t* caption, i32 max_write);
 
 			static void FROST_API set_procedure(pimpl_t<window> target, window_procedure_sig procedure);
 			
@@ -75,8 +71,6 @@ namespace frost
 
 			static void FROST_API set_client_position(modification_context* context, i32 x, i32 y);
 			static void FROST_API set_client_size(modification_context* context, i32 width, i32 height);
-
-			static void FROST_API set_caption(modification_context* context, const wchar_t* caption);
 	
 			static void FROST_API prepare_message_queue();
 			static void FROST_API message_pump();
@@ -95,8 +89,6 @@ namespace frost
 				i32 height				=  720;
 
 				u8 state				= state_normal;
-
-				const wchar_t* caption			= L"Frost application | Frost.Api v0.8.0a";
 
 				window_procedure_sig procedure	= nullptr;
 			};
@@ -416,8 +408,6 @@ namespace frost
 			i32 height				=	720;
 
 			state state				= state::normal;
-
-			std::wstring caption	= L"Frost application | Frost.Api v0.8.0a";
 
 			api::window_procedure_sig procedure	= nullptr; // TODO REPLACE
 		};

@@ -3,7 +3,7 @@
 
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
 #include <Windows.h>
-
+#include <WindowsX.h>
 namespace frost
 {
 	static const u32 wm_procedure = 0xBFFF;
@@ -77,8 +77,8 @@ namespace frost
 		data->hwnd = ::CreateWindowExW(
 			WS_EX_LAYERED,
 			(LPCWSTR)get_window_atom(),
-			description->caption,
-			0ul,
+			nullptr,
+			WS_SIZEBOX,
 			description->x,
 			description->y,
 			description->width,
@@ -93,7 +93,7 @@ namespace frost
 		data->track_mouse_event.dwHoverTime	= 0;
 		data->track_mouse_event.dwFlags		= TME_LEAVE;
 
-		::SetWindowLongW(data->hwnd, GWL_STYLE, 0l);
+		::SetWindowLongPtrW(data->hwnd, GWL_STYLE, WS_SIZEBOX);
 		::SetWindowPos(data->hwnd, nullptr, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOREPOSITION | SWP_ASYNCWINDOWPOS | SWP_NOZORDER);
 		::SetLayeredWindowAttributes(data->hwnd, 0, 255, 0);
 
@@ -110,7 +110,6 @@ namespace frost
 		::RegisterRawInputDevices(rid, sizeof(rid) / sizeof(*rid), sizeof(*rid));
 
 		::ShowWindow(data->hwnd, state_to_int(description->state));
-		::InvalidateRect(data->hwnd, nullptr, TRUE);
 		return data;
 	}
 
@@ -171,15 +170,6 @@ namespace frost
 	i32 window::api::get_height(pimpl_t<window> target)
 	{
 		return target->client_rect.bottom - target->client_rect.top;
-	}
-
-	i32 window::api::get_caption_length(pimpl_t<window> target)
-	{
-		return ::GetWindowTextW(target->hwnd, nullptr, 0);
-	}
-	void window::api::get_caption(pimpl_t<window> target, wchar_t* caption, i32 max_write)
-	{
-		::GetWindowTextW(target->hwnd, caption, max_write);
 	}
 
 	void window::api::destroy(pimpl_t<window> p_impl)
@@ -318,11 +308,6 @@ namespace frost
 			SWP_NOMOVE);
 	}
 
-	void window::api::set_caption(modification_context* context, const wchar_t* caption)
-	{
-		::SetWindowTextW(context->target->hwnd, caption);
-	}
-
 	void window::api::prepare_message_queue()
 	{
 		MSG msg;
@@ -342,7 +327,7 @@ namespace frost
 
 	static inline void update_rects(pimpl_t<window> target)
 	{
-		::GetClientRect(target->hwnd, &target->client_rect);
+		::GetWindowRect(target->hwnd, &target->client_rect);
 	}
 	static inline void update_state(pimpl_t<window> target)
 	{
@@ -352,8 +337,8 @@ namespace frost
 	}
 	static inline void update_last_cursor_pos(pimpl_t<window> target, LPARAM l)
 	{
-		target->last_cursor_position.x = static_cast<WORD>(l & 0xFFFF);
-		target->last_cursor_position.y = static_cast<WORD>((l >> sizeof(WORD)) & 0xFFFF);
+		target->last_cursor_position.x = GET_X_LPARAM(l);
+		target->last_cursor_position.y = GET_Y_LPARAM(l);
 	}
 	static inline void update_lwa(pimpl_t<window> target, u32* key, f32 opacity)
 	{
@@ -428,8 +413,8 @@ namespace frost
 			wc.cbSize = sizeof(wc);
 			wc.lpszClassName = L"FROST_API_WINDOW_CLASS_99999";
 			wc.cbWndExtra = sizeof(void*);
-			wc.style = CS_DBLCLKS | CS_OWNDC | CS_VREDRAW | CS_HREDRAW;
-			wc.hbrBackground = ::CreateSolidBrush(RGB(32, 32, 32));
+			wc.style = CS_DBLCLKS | CS_VREDRAW | CS_HREDRAW;
+			wc.hbrBackground = nullptr;
 			wc.lpfnWndProc = window_procedure;
 
 			_atom = ::RegisterClassExW(&wc);
@@ -860,7 +845,35 @@ namespace frost
 	
 	static LRESULT wm_nchittest(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 	{
-		return HTCLIENT;
+		auto data = get_data(hwnd);
+		WORD x = GET_X_LPARAM(l);
+		WORD y = GET_Y_LPARAM(l);
+		constexpr LONG edge_margin = 1;
+
+		// EDGE DETECTION
+		if (x >= data->client_rect.left && x <= (data->client_rect.left + edge_margin))
+			if (y >= data->client_rect.top && y <= (data->client_rect.top + edge_margin))
+				return HTTOPLEFT;
+			else if (y <= data->client_rect.bottom && y >= (data->client_rect.bottom - edge_margin))
+				return HTBOTTOMLEFT;
+			else
+				return HTLEFT;
+		else if (x <= data->client_rect.right && x >= (data->client_rect.right - edge_margin))
+			if (y >= data->client_rect.top && y <= (data->client_rect.top + edge_margin))
+				return HTTOPRIGHT;
+			else if (y <= data->client_rect.bottom && y >= (data->client_rect.bottom - edge_margin))
+				return HTBOTTOMRIGHT;
+			else
+				return HTRIGHT;
+		else if (y >= data->client_rect.top && y <= (data->client_rect.top + edge_margin))
+			return HTTOP;
+		else if (y <= data->client_rect.bottom && y >= (data->client_rect.bottom - edge_margin))
+			return HTBOTTOM;
+
+		if (y > data->client_rect.top && y < (data->client_rect.top + 20))
+			return HTCAPTION;
+		else
+			return HTCLIENT;
 	}
 	
 	static LRESULT window_procedure(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
@@ -869,6 +882,7 @@ namespace frost
 		{
 		case WM_INPUT:
 			return wm_input(hwnd, msg, w, l);
+
 		case WM_LBUTTONDBLCLK:
 		case WM_RBUTTONDBLCLK:
 		case WM_MBUTTONDBLCLK:
@@ -904,8 +918,8 @@ namespace frost
 			return wm_nccalcsize(hwnd, msg, w, l);
 		case WM_NCHITTEST:
 			return wm_nchittest(hwnd, msg, w, l);
-		case WM_NCPAINT:
-			return 0;
+		case WM_NCACTIVATE:
+			return 0; // PREVENT DRAWING STANDARD BORDER AT ALL
 		}
 		return ::DefWindowProcW(hwnd, msg, w, l);
 	}
