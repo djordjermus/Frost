@@ -29,12 +29,12 @@ namespace frost::sync
 		public:
 			STATIC_CLASS(api);
 
-			static pimpl_t<semaphore> FROST_API create_semaphore(i32 count, i32 max);
-			static bool FROST_API acquire_semaphore(pimpl_t<semaphore> p_impl);
-			static bool FROST_API try_acquire_semaphore(pimpl_t<semaphore> p_impl);
-			static bool FROST_API release_semaphore(pimpl_t<semaphore> p_impl);
-			static pimpl_t<sync_object> FROST_API get_sync_object_from_semaphore(pimpl_t<semaphore> p_impl);
-			static bool FROST_API destroy_semaphore(pimpl_t<semaphore> p_impl);
+			static pimpl_t<semaphore> FROST_API create(i32 count, i32 max);
+			static bool FROST_API acquire(pimpl_t<semaphore> p_impl);
+			static bool FROST_API try_acquire(pimpl_t<semaphore> p_impl);
+			static bool FROST_API release(pimpl_t<semaphore> p_impl);
+			static pimpl_t<sync_object> FROST_API get_sync_object(pimpl_t<semaphore> p_impl);
+			static bool FROST_API destroy(pimpl_t<semaphore> p_impl);
 		};
 	};
 }
