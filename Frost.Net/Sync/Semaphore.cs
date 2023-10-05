@@ -66,7 +66,7 @@ namespace Frost.Net.Sync
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?get_sync_object_from@api@semaphore@sync@frost@@SAPEAV?$impl_t@Vsync_object@sync@frost@@@4@PEAV?$impl_t@Vsemaphore@sync@frost@@@4@@Z")]
+				EntryPoint = "?get_sync_object@api@semaphore@sync@frost@@SAPEAV?$impl_t@Vsync_object@sync@frost@@@4@PEAV?$impl_t@Vsemaphore@sync@frost@@@4@@Z")]
 			public static extern IntPtr GetSyncObjectFromSemaphore(IntPtr pImpl);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]

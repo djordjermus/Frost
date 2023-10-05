@@ -59,7 +59,7 @@ namespace Frost.Net.Sync
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?release_mutex@api@mutex@sync@frost@@SA_NPEAV?$impl_t@Vmutex@sync@frost@@@4@@Z")]
+				EntryPoint = "?release@api@mutex@sync@frost@@SA_NPEAV?$impl_t@Vmutex@sync@frost@@@4@@Z")]
 			public static extern bool ReleaseMutex(IntPtr pImpl);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]

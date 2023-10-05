@@ -70,28 +70,28 @@ namespace Frost.Net.Sync
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?acquire_one@api@sync_object@sync@frost@@SAJAEBV?$vector@PEAV?$impl_t@Vsync_object@sync@frost@@@frost@@V?$allocator@PEAV?$impl_t@Vsync_object@sync@frost@@@frost@@@std@@@std@@@Z")]
+				EntryPoint = "?acquire_one@api@sync_object@sync@frost@@SAJPEBQEAV?$impl_t@Vsync_object@sync@frost@@@4@J@Z")]
 			public static extern int AcquireOne(IntPtr pArray, int count);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?acquire_all@api@sync_object@sync@frost@@SA_NAEBV?$vector@PEAV?$impl_t@Vsync_object@sync@frost@@@frost@@V?$allocator@PEAV?$impl_t@Vsync_object@sync@frost@@@frost@@@std@@@std@@@Z")]
+				EntryPoint = "?acquire_all@api@sync_object@sync@frost@@SA_NPEBQEAV?$impl_t@Vsync_object@sync@frost@@@4@J@Z")]
 			public static extern bool AcquireAll(IntPtr pArray, int count);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?try_acquire_one@api@sync_object@sync@frost@@SAJAEBV?$vector@PEAV?$impl_t@Vsync_object@sync@frost@@@frost@@V?$allocator@PEAV?$impl_t@Vsync_object@sync@frost@@@frost@@@std@@@std@@@Z")]
+				EntryPoint = "?try_acquire_one@api@sync_object@sync@frost@@SAJPEBQEAV?$impl_t@Vsync_object@sync@frost@@@4@J@Z")]
 			public static extern int TryAcquireOne(IntPtr pArray, int count);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?try_acquire_all@api@sync_object@sync@frost@@SA_NAEBV?$vector@PEAV?$impl_t@Vsync_object@sync@frost@@@frost@@V?$allocator@PEAV?$impl_t@Vsync_object@sync@frost@@@frost@@@std@@@std@@@Z")]
+				EntryPoint = "?try_acquire_all@api@sync_object@sync@frost@@SA_NPEBQEAV?$impl_t@Vsync_object@sync@frost@@@4@J@Z")]
 			public static extern bool TryAcquireAll(IntPtr pArray, int count);
 		}
 	}
