@@ -5,6 +5,10 @@ namespace Frost.Net
 {
 	public static class Log
 	{
+		public static readonly Layers defaultLayers = new(0b01);
+
+
+
 		public static void Verbose(Layers activationLayers, string template, params string[] parameters)
 		{
 			unsafe
@@ -56,7 +60,7 @@ namespace Frost.Net
 			}
 		}
 
-		public static void Warn(Layers activationLayers, string template, params string[] parameters)
+		public static void Warning(Layers activationLayers, string template, params string[] parameters)
 		{
 			unsafe
 			{
@@ -107,6 +111,39 @@ namespace Frost.Net
 			}
 		}
 
+
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Verbose(string template, params string[] parameters) =>
+			Verbose(defaultLayers, template, parameters);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Debug(string template, params string[] parameters) =>
+			Debug(defaultLayers, template, parameters);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Info(string template, params string[] parameters) =>
+			Info(defaultLayers, template, parameters);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Warning(string template, params string[] parameters) =>
+			Warning(defaultLayers, template, parameters);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Error(string template, params string[] parameters) =>
+			Error(defaultLayers, template, parameters);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Critical(string template, params string[] parameters) =>
+			Critical(defaultLayers, template, parameters);
+
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Subscribe(EventSystem.Handler<Event> handler) =>
+			EventSystem.Subscribe(defaultLayers, handler);
+
+
+
 		public sealed class Event
 		{
 			public string Template { get; init; } = "";
@@ -126,6 +163,8 @@ namespace Frost.Net
 			Error	= 16,
 			Fatal	= 32,
 		}
+
+
 
 		private static ulong[] ExtractParamsLengths(string[] parameters)
 		{
@@ -149,6 +188,8 @@ namespace Frost.Net
 			}
 			return result;
 		}
+
+
 
 		internal static class Interop
 		{

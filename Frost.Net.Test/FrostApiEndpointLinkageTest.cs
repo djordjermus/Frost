@@ -1,4 +1,5 @@
 ﻿using Frost.Net.Sync;
+using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,6 +86,18 @@ namespace Frost.Net.Test
 			EventSystem.Emit(0b01, new EventData() { value = 0b01 });
 			EventSystem.Emit(0b10, new EventData() { value = 0b10 });
 			EventSystem.Emit(0b11, new EventData() { value = 0b11 });
+		}
+
+		[TestMethod]
+		public void TestLog()
+		{
+			EventSystem.Subscribe(1, (Log.Event l) => Console.WriteLine(l.Message));
+			Log.Verbose(1, "{1}, {0}!", "World", "Hello");
+			Log.Debug(1, "{1}, {0}!", "World", "Hello");
+			Log.Info(1, "{1}, {0}!", "World", "Hello");
+			Log.Warning(1, "{1}, {0}!", "World", "Hello");
+			Log.Error(1, "{1}, {0}!", "World", "Hello");
+			Log.Critical(1, "{1}, {0}!", "World", "Hello");
 		}
 	}
 }
