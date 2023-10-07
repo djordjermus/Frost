@@ -1,6 +1,8 @@
 #include "macro.hpp"
 #include "primitives.hpp"
 #include "pimpl.hpp"
+#include "sync/sync_object.hpp"
+
 #pragma once
 namespace frost
 {
@@ -19,17 +21,18 @@ namespace frost
 
 			class modification_context;
 
-			struct window_description;
-			class window_event_data;
+			struct description;
+			struct resize_margins;
+			class event_data;
 
-			using window_procedure_sig	= void(_stdcall*)(window_event_data* context);
-			using window_modify_sig		= void(_stdcall*)(modification_context* context);
+			using procedure_sig	= void(_stdcall*)(event_data* context);
+			using modify_sig	= void(_stdcall*)(modification_context* context);
+			
 
 
+			static pimpl_t<window> FROST_API create(const description* description);
 
-			static pimpl_t<window> FROST_API create(const window_description* description);
-
-			static window_procedure_sig FROST_API get_procedure(pimpl_t<window> target);
+			static procedure_sig FROST_API get_procedure(pimpl_t<window> target);
 			static bool FROST_API get_key_state(pimpl_t<window> target, u8 keycode);
 
 			static bool FROST_API is_enabled(pimpl_t<window> target);
@@ -47,13 +50,18 @@ namespace frost
 			static i32  FROST_API get_width(pimpl_t<window> target);
 			static i32  FROST_API get_height(pimpl_t<window> target);
 
-			static void FROST_API set_procedure(pimpl_t<window> target, window_procedure_sig procedure);
+			static handle FROST_API get_data(pimpl_t<window> target);
+
+			static pimpl_t<sync::sync_object> FROST_API get_sync_object(pimpl_t<window> p_impl);
+
+			static void FROST_API set_procedure(pimpl_t<window> target, procedure_sig procedure);
+			static void FROST_API set_data(pimpl_t<window> target, handle data);
 			
 			static void FROST_API destroy(pimpl_t<window> p_impl);
 
 
 
-			static void FROST_API modify(pimpl_t<window> target, window_modify_sig modify_fn);
+			static void FROST_API modify(pimpl_t<window> target, modify_sig modify_fn);
 	
 			static pimpl_t<window> FROST_API get_modification_target(modification_context* context);
 			static void FROST_API set_enabled(modification_context* context, bool enabled);
@@ -81,8 +89,9 @@ namespace frost
 			static constexpr u8 state_normal	= 2;
 			static constexpr u8 state_maximized	= 3;
 
-			struct window_description final
+			struct description final
 			{
+			public:
 				i32 x					=  200;
 				i32 y					=  200;
 				i32 width				= 1280;
@@ -90,10 +99,20 @@ namespace frost
 
 				u8 state				= state_normal;
 
-				window_procedure_sig procedure	= nullptr;
+				procedure_sig procedure	= nullptr;
+				void* data				= nullptr;
 			};
 
-			class window_event_data final
+			struct resize_margins final
+			{
+			public:
+				i32 left	= 0;
+				i32 top		= 0;
+				i32 right	= 0;
+				i32 bottom	= 0;
+			};
+
+			class event_data final
 			{
 			public:
 				u64 type;
@@ -409,7 +428,7 @@ namespace frost
 
 			state state				= state::normal;
 
-			api::window_procedure_sig procedure	= nullptr; // TODO REPLACE
+			api::procedure_sig procedure	= nullptr; // TODO REPLACE
 		};
 	};
 }

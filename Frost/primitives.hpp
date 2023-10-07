@@ -15,6 +15,7 @@ using i64 = signed long long;
 using f32 = float;
 using f64 = double;
 
+using handle = void*;
 
 
 /* ASSERTIONS */

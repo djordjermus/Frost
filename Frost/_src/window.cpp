@@ -7,7 +7,7 @@
 namespace frost
 {
 	static const u32 wm_procedure = 0xBFFF;
-	static inline void null_procedure(window::api::window_event_data* e) { /* DO NOTHING*/ }
+	static inline void null_procedure(window::api::event_data* e) { /* DO NOTHING*/ }
 	static inline pimpl_t<window> get_data(HWND hwnd) { return reinterpret_cast<pimpl_t<window>>(::GetWindowLongPtrW(hwnd, GWLP_USERDATA)); }
 	static inline void update_rects(pimpl_t<window> target);
 	static inline void update_state(pimpl_t<window> target);
@@ -29,8 +29,8 @@ namespace frost
 	{
 	public:
 		HWND  hwnd = {};
-		void* argument = {};
-		window::api::window_procedure_sig procedure = {};
+		handle data = {};
+		window::api::procedure_sig procedure = {};
 		RECT  client_rect = {};
 		TRACKMOUSEEVENT track_mouse_event = {};
 		POINT last_cursor_position = {};
@@ -54,16 +54,16 @@ namespace frost
 	{
 	public:
 		pimpl_t<window> target;
-		window::api::window_modify_sig procedure;
+		window::api::modify_sig procedure;
 	};
 
-	u64 impl_t<window>::flag_enabled = (1 << 0);
-	u64 impl_t<window>::flag_activated = (1 << 1);
-	u64 impl_t<window>::flag_focused = (1 << 2);
-	u64 impl_t<window>::flag_use_key = (1 << 3);
+	u64 impl_t<window>::flag_enabled       = (1 << 0);
+	u64 impl_t<window>::flag_activated     = (1 << 1);
+	u64 impl_t<window>::flag_focused       = (1 << 2);
+	u64 impl_t<window>::flag_use_key       = (1 << 3);
 	u64 impl_t<window>::flag_cursor_inside = (1 << 4);
 
-	pimpl_t<window> window::api::create(const window_description* description)
+	pimpl_t<window> window::api::create(const description* description)
 	{
 		pimpl_t<window> data = new impl_t<window>();
 		data->state		= description->state;
@@ -72,13 +72,14 @@ namespace frost
 		data->flags		= impl_t<window>::flag_enabled | impl_t<window>::flag_activated | impl_t<window>::flag_focused;
 		data->thread_id	= ::GetCurrentThreadId();
 		data->procedure	= description->procedure;
+		data->data		= description->data;
 		if (data->procedure == nullptr)
 			data->procedure = null_procedure;
 		data->hwnd = ::CreateWindowExW(
 			WS_EX_LAYERED,
 			(LPCWSTR)get_window_atom(),
 			nullptr,
-			WS_SIZEBOX,
+			WS_CLIPCHILDREN,
 			description->x,
 			description->y,
 			description->width,
@@ -92,17 +93,15 @@ namespace frost
 		data->track_mouse_event.hwndTrack	= data->hwnd;
 		data->track_mouse_event.dwHoverTime	= 0;
 		data->track_mouse_event.dwFlags		= TME_LEAVE;
-
-		::SetWindowLongPtrW(data->hwnd, GWL_STYLE, WS_SIZEBOX);
-		::SetWindowPos(data->hwnd, nullptr, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOREPOSITION | SWP_ASYNCWINDOWPOS | SWP_NOZORDER);
+		
 		::SetLayeredWindowAttributes(data->hwnd, 0, 255, 0);
 
 		::RAWINPUTDEVICE rid[2];
 		for (auto& raw : rid)
 		{
-			raw.hwndTarget = data->hwnd;
-			raw.dwFlags = 0x00;
-			raw.usUsagePage = 0x01; // Generic desktop controlls
+			raw.hwndTarget	= data->hwnd;
+			raw.dwFlags		= 0x00;
+			raw.usUsagePage	= 0x01; // Generic desktop controlls
 		}
 		rid[0].usUsage = 0x02;	// MOUSE
 		rid[1].usUsage = 0x06;	// KEYBOARD
@@ -113,7 +112,7 @@ namespace frost
 		return data;
 	}
 
-	window::api::window_procedure_sig window::api::get_procedure(pimpl_t<window> target)
+	window::api::procedure_sig window::api::get_procedure(pimpl_t<window> target)
 	{
 		return target->procedure;
 	}
@@ -171,13 +170,24 @@ namespace frost
 	{
 		return target->client_rect.bottom - target->client_rect.top;
 	}
+	
+	handle window::api::get_data(pimpl_t<window> target)
+	{
+		return target->data;
+	}
+
+	
+	pimpl_t<sync::sync_object> window::api::get_sync_object(pimpl_t<window> p_impl)
+	{
+		return reinterpret_cast<pimpl_t<sync::sync_object>>(p_impl->hwnd);
+	}
 
 	void window::api::destroy(pimpl_t<window> p_impl)
 	{
 		::DestroyWindow(p_impl->hwnd);
 	}
 
-	void window::api::modify(pimpl_t<window> target, window::api::window_modify_sig modify_fn)
+	void window::api::modify(pimpl_t<window> target, window::api::modify_sig modify_fn)
 	{
 		if (target->thread_id == ::GetCurrentThreadId())
 		{	// Same thread - modify at once
@@ -200,15 +210,20 @@ namespace frost
 
 	}
 	
-	pimpl_t<window> FROST_API window::api::get_modification_target(modification_context* target)
+	pimpl_t<window> window::api::get_modification_target(modification_context* target)
 	{
 		return target->target;
 	}
-
-	void window::api::set_procedure(pimpl_t<window> target, window::api::window_procedure_sig procedure)
+	void window::api::set_procedure(pimpl_t<window> target, window::api::procedure_sig procedure)
 	{
 		target->procedure = procedure;
 	}
+	
+	void window::api::set_data(pimpl_t<window> target, handle data)
+	{
+		target->data = data;
+	}
+
 	void window::api::set_enabled(modification_context* context, bool enabled)
 	{
 		::EnableWindow(context->target->hwnd, enabled ? TRUE : FALSE);
@@ -422,7 +437,7 @@ namespace frost
 
 		return _atom;
 	}
-
+	
 	static inline void wm_window_modify(window::api::modification_context* ctx)
 	{
 		ctx->procedure(ctx);
@@ -446,7 +461,7 @@ namespace frost
 			if ((mouse.usFlags & MOUSE_MOVE_RELATIVE) == MOUSE_MOVE_RELATIVE &&
 				(rid.data.mouse.lLastX != 0 || rid.data.mouse.lLastY != 0))
 			{
-				window::api::window_event_data e;
+				window::api::event_data e;
 				e.target = data;
 				e.type = window::api::event_type_mouse_move;
 				e.mouse_move.delta_x = rid.data.mouse.lLastX;
@@ -485,7 +500,7 @@ namespace frost
 				{
 					set_key_state(data, static_cast<u8>(buttons[i]));
 
-					window::api::window_event_data e;
+					window::api::event_data e;
 					e.target = data;
 					e.type = window::api::event_type_key_down;
 					e.key_down.key = static_cast<u8>(buttons[i]);
@@ -496,7 +511,7 @@ namespace frost
 				{
 					reset_key_state(data, static_cast<u8>(buttons[i]));
 
-					window::api::window_event_data e;
+					window::api::event_data e;
 					e.target = data;
 					e.type = window::api::event_type_key_up;
 					e.key_up.key = static_cast<u8>(buttons[i]);
@@ -507,7 +522,7 @@ namespace frost
 
 			if ((mouse.usButtonFlags & RI_MOUSE_WHEEL) != 0)
 			{
-				window::api::window_event_data e;
+				window::api::event_data e;
 				e.target = data;
 				e.type = window::api::event_type_cursor_scroll;
 				e.scroll.delta = ((i16)(u16)mouse.usButtonData) / WHEEL_DELTA;
@@ -516,7 +531,7 @@ namespace frost
 
 			if ((mouse.usButtonFlags & RI_MOUSE_HWHEEL) != 0)
 			{
-				window::api::window_event_data e;
+				window::api::event_data e;
 				e.target = data;
 				e.type = window::api::event_type_cursor_scroll;
 				e.scroll.delta = ((i16)(u16)mouse.usButtonData) / WHEEL_DELTA;
@@ -538,7 +553,7 @@ namespace frost
 			scanCode |= (keyboard.Flags & RI_KEY_E0) ? 0xe000 : 0;
 			scanCode |= (keyboard.Flags & RI_KEY_E1) ? 0xe100 : 0;
 
-			window::api::window_event_data e;
+			window::api::event_data e;
 			e.target = data;
 			e.type = (keyboard.Flags & RI_KEY_BREAK) == RI_KEY_BREAK ?
 				window::api::event_type_key_up :
@@ -579,7 +594,7 @@ namespace frost
 
 		if (data->procedure)
 		{
-			window::api::window_event_data e;
+			window::api::event_data e;
 			e.target = data;
 			e.type = window::api::event_type_double_click;
 			e.double_click.x = data->last_cursor_position.x / static_cast<f32>(data->client_rect.right - data->client_rect.left);
@@ -621,7 +636,7 @@ namespace frost
 		{	// MOVE
 			if (data->procedure)
 			{
-				window::api::window_event_data e;
+				window::api::event_data e;
 				e.target = data;
 				e.type = window::api::event_type_cursor_move;
 				e.cursor_move.x = data->last_cursor_position.x / static_cast<f32>(data->client_rect.right - data->client_rect.left);;
@@ -633,7 +648,7 @@ namespace frost
 		{	// ENTER
 			if (data->procedure)
 			{
-				window::api::window_event_data e;
+				window::api::event_data e;
 				e.target = data;
 				e.type = window::api::event_type_cursor_enter;
 				e.cursor_enter.x = data->last_cursor_position.x / static_cast<f32>(data->client_rect.right - data->client_rect.left);;
@@ -654,7 +669,7 @@ namespace frost
 
 		if (data->procedure)
 		{
-			window::api::window_event_data e;
+			window::api::event_data e;
 			e.target = data;
 			e.type = window::api::event_type_cursor_leave;
 			e.cursor_leave.x = data->last_cursor_position.x / static_cast<f32>(data->client_rect.right - data->client_rect.left);;
@@ -671,7 +686,7 @@ namespace frost
 		update_state(data);
 		if (data->procedure)
 		{
-			window::api::window_event_data e;
+			window::api::event_data e;
 			e.target = data;
 			e.type = window::api::event_type_move;
 			e.move.x = static_cast<WORD>(l & 0xFFFF);
@@ -688,7 +703,7 @@ namespace frost
 		update_state(data);
 		if (data->procedure)
 		{
-			window::api::window_event_data e;
+			window::api::event_data e;
 			e.target = data;
 			e.type = window::api::event_type_resize;
 			e.resize.width = static_cast<WORD>(l & 0xFFFF);
@@ -707,7 +722,7 @@ namespace frost
 
 			if (data->procedure)
 			{
-				window::api::window_event_data e;
+				window::api::event_data e;
 				e.target = data;
 				e.type = window::api::event_type_enable;
 				e.enable.enabled = true;
@@ -720,7 +735,7 @@ namespace frost
 
 			if (data->procedure)
 			{
-				window::api::window_event_data e;
+				window::api::event_data e;
 				e.target = data;
 				e.type = window::api::event_type_enable;
 				e.enable.enabled = true;
@@ -739,7 +754,7 @@ namespace frost
 
 			if (data->procedure)
 			{
-				window::api::window_event_data e;
+				window::api::event_data e;
 				e.target = data;
 				e.type = window::api::event_type_activate;
 				e.activate.activated = false;
@@ -752,7 +767,7 @@ namespace frost
 
 			if (data->procedure)
 			{
-				window::api::window_event_data e;
+				window::api::event_data e;
 				e.target = data;
 				e.type = window::api::event_type_activate;
 				e.activate.activated = true;
@@ -771,7 +786,7 @@ namespace frost
 
 			if (data->procedure)
 			{
-				window::api::window_event_data e;
+				window::api::event_data e;
 				e.target = data;
 				e.type = window::api::event_type_focus;
 				e.focus.focused = true;
@@ -784,7 +799,7 @@ namespace frost
 
 			if (data->procedure)
 			{
-				window::api::window_event_data e;
+				window::api::event_data e;
 				e.target = data;
 				e.type = window::api::event_type_focus;
 				e.focus.focused = true;
@@ -801,7 +816,7 @@ namespace frost
 		auto data = get_data(hwnd);
 		if (data->procedure)
 		{
-			window::api::window_event_data e;
+			window::api::event_data e;
 			e.target = data;
 			e.type = window::api::event_type_create;
 			data->procedure(&e);
@@ -814,7 +829,7 @@ namespace frost
 		auto data = get_data(hwnd);
 		if (data->procedure)
 		{
-			window::api::window_event_data e;
+			window::api::event_data e;
 			e.target = data;
 			e.type = window::api::event_type_close;
 			data->procedure(&e);
@@ -827,7 +842,7 @@ namespace frost
 		auto data = get_data(hwnd);
 		if (data->procedure)
 		{
-			window::api::window_event_data e;
+			window::api::event_data e;
 			e.target = data;
 			e.type = window::api::event_type_destroy;
 			data->procedure(&e);
@@ -848,26 +863,27 @@ namespace frost
 		auto data = get_data(hwnd);
 		WORD x = GET_X_LPARAM(l);
 		WORD y = GET_Y_LPARAM(l);
-		constexpr LONG edge_margin = 1;
+		constexpr LONG edge_margin = 5;
 
 		// EDGE DETECTION
-		if (x >= data->client_rect.left && x <= (data->client_rect.left + edge_margin))
-			if (y >= data->client_rect.top && y <= (data->client_rect.top + edge_margin))
+		if (x >= data->client_rect.left && x < (data->client_rect.left + edge_margin))
+			if (y >= data->client_rect.top && y < (data->client_rect.top + edge_margin))
 				return HTTOPLEFT;
-			else if (y <= data->client_rect.bottom && y >= (data->client_rect.bottom - edge_margin))
+			else if (y < data->client_rect.bottom && y >= (data->client_rect.bottom - edge_margin))
 				return HTBOTTOMLEFT;
 			else
 				return HTLEFT;
-		else if (x <= data->client_rect.right && x >= (data->client_rect.right - edge_margin))
-			if (y >= data->client_rect.top && y <= (data->client_rect.top + edge_margin))
+		else if (x < data->client_rect.right && x >= (data->client_rect.right - edge_margin))
+			if (y >= data->client_rect.top && y < (data->client_rect.top + edge_margin))
 				return HTTOPRIGHT;
-			else if (y <= data->client_rect.bottom && y >= (data->client_rect.bottom - edge_margin))
+			else if (y < data->client_rect.bottom && y >= (data->client_rect.bottom - edge_margin))
 				return HTBOTTOMRIGHT;
 			else
 				return HTRIGHT;
-		else if (y >= data->client_rect.top && y <= (data->client_rect.top + edge_margin))
+		else 
+			if (y >= data->client_rect.top && y < (data->client_rect.top + edge_margin))
 			return HTTOP;
-		else if (y <= data->client_rect.bottom && y >= (data->client_rect.bottom - edge_margin))
+		else if (y < data->client_rect.bottom && y >= (data->client_rect.bottom - edge_margin))
 			return HTBOTTOM;
 
 		if (y > data->client_rect.top && y < (data->client_rect.top + 20))
@@ -876,10 +892,26 @@ namespace frost
 			return HTCLIENT;
 	}
 	
+	static LRESULT wm_paint(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
+	{
+		auto data	= get_data(hwnd);
+		auto hdc	= ::GetDC(hwnd);
+		auto color  = reinterpret_cast<rgba8&>(data->data);
+		auto br		= ::CreateSolidBrush(RGB(color.r, color.g, color.b));
+		RECT rect = RECT { 0, 0, data->client_rect.right - data->client_rect.left, data->client_rect.bottom - data->client_rect.top };
+		::FillRect(hdc, &rect, br);
+		::ReleaseDC(hwnd, hdc);
+		::DeleteObject(br);
+		return ::DefWindowProcW(hwnd, msg, w, l);
+	}
+
 	static LRESULT window_procedure(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 	{
 		switch (msg)
 		{
+		case WM_PAINT:
+			return wm_paint(hwnd, msg, w, l);
+
 		case WM_INPUT:
 			return wm_input(hwnd, msg, w, l);
 
