@@ -48,8 +48,6 @@ namespace frost
 
 	protected:
 		pimpl_crtp() : _ptr(nullptr) {}
-		pimpl_crtp(void* ptr) : _ptr(reinterpret_cast<pimpl_t<T>>(ptr)) {}
-
 
 	private:
 		pimpl_t<T> _ptr;
