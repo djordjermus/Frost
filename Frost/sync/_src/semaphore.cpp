@@ -6,7 +6,7 @@ namespace frost::sync
 {
 	semaphore::semaphore() :
 		pimpl_crtp<semaphore>() {}
-	semaphore::semaphore(pimpl_t<semaphore> pimpl) :
+	semaphore::semaphore(pimpl_crtp<semaphore> pimpl) :
 		pimpl_crtp<semaphore>(pimpl) {}
 	semaphore::semaphore(i32 count, i32 max) :
 		pimpl_crtp<semaphore>(api::create(count, max)) {}
@@ -37,34 +37,32 @@ namespace frost::sync
 	}
 	sync_object semaphore::get_sync_object() const
 	{
-		auto result = sync_object();
-		result.swap_pimpl(api::get_sync_object(get_pimpl()));
-		return result;
+		return sync_object(api::get_sync_object(get_pimpl()));
 	}
 
-	pimpl_t<semaphore> semaphore::api::create(i32 count, i32 max)
+	pimpl_crtp<semaphore> semaphore::api::create(i32 count, i32 max)
 	{
 		return reinterpret_cast<pimpl_t<semaphore>>(::CreateSemaphoreW(nullptr, count, max, nullptr));
 	}
-	bool semaphore::api::acquire(pimpl_t<semaphore> p_impl)
+	bool semaphore::api::acquire(pimpl_crtp<semaphore> p_impl)
 	{
-		return ::WaitForSingleObjectEx(p_impl, ~0ul, FALSE) == WAIT_OBJECT_0;
+		return ::WaitForSingleObjectEx(reinterpret_cast<handle&>(p_impl), ~0ul, FALSE) == WAIT_OBJECT_0;
 	}
-	bool semaphore::api::try_acquire(pimpl_t<semaphore> p_impl)
+	bool semaphore::api::try_acquire(pimpl_crtp<semaphore> p_impl)
 	{
-		return ::WaitForSingleObjectEx(p_impl, 0ul, FALSE) == WAIT_OBJECT_0;
+		return ::WaitForSingleObjectEx(reinterpret_cast<handle&>(p_impl), 0ul, FALSE) == WAIT_OBJECT_0;
 	}
-	bool semaphore::api::release(pimpl_t<semaphore> p_impl)
+	bool semaphore::api::release(pimpl_crtp<semaphore> p_impl)
 	{
-		return ::ReleaseSemaphore(p_impl, 1, nullptr) == TRUE;
+		return ::ReleaseSemaphore(reinterpret_cast<handle&>(p_impl), 1, nullptr) == TRUE;
 	}
-	pimpl_t<sync_object> semaphore::api::get_sync_object(pimpl_t<semaphore> p_impl)
+	pimpl_crtp<sync_object> semaphore::api::get_sync_object(pimpl_crtp<semaphore> p_impl)
 	{
-		return reinterpret_cast<pimpl_t<sync_object>>(p_impl);
+		return reinterpret_cast<pimpl_crtp<sync_object>&>(p_impl);
 	}
-	bool semaphore::api::destroy(pimpl_t<semaphore> p_impl)
+	bool semaphore::api::destroy(pimpl_crtp<semaphore> p_impl)
 	{
-		return ::CloseHandle(p_impl) == TRUE;
+		return ::CloseHandle(reinterpret_cast<handle&>(p_impl)) == TRUE;
 	}
 }
 #else

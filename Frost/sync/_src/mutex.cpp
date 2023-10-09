@@ -6,7 +6,7 @@ namespace frost::sync
 {
 	mutex::mutex() :
 		pimpl_crtp<mutex>() {}
-	mutex::mutex(pimpl_t<mutex> pimpl) :
+	mutex::mutex(pimpl_crtp<mutex> pimpl) :
 		pimpl_crtp<mutex>(pimpl) {}
 	mutex::mutex(bool auto_acquire) :
 		pimpl_crtp<mutex>(api::create(auto_acquire)) {}
@@ -37,36 +37,34 @@ namespace frost::sync
 	}
 	sync_object mutex::get_sync_object() const
 	{
-		auto result = sync_object();
-		result.swap_pimpl(api::get_sync_object(get_pimpl()));
-		return result;
+		return sync_object(api::get_sync_object(get_pimpl()));
 	}
 
 
 
-	pimpl_t<mutex> mutex::api::create(bool initial_owner)
+	pimpl_crtp<mutex> mutex::api::create(bool initial_owner)
 	{
 		return reinterpret_cast<pimpl_t<mutex>>(::CreateMutexW(nullptr, static_cast<BOOL>(initial_owner), nullptr));
 	}
-	bool mutex::api::acquire(pimpl_t<mutex> p_impl)
+	bool mutex::api::acquire(pimpl_crtp<mutex> p_impl)
 	{
-		return ::WaitForSingleObjectEx(p_impl, ~0ul, FALSE) == WAIT_OBJECT_0;
+		return ::WaitForSingleObjectEx(reinterpret_cast<handle&>(p_impl), ~0ul, FALSE) == WAIT_OBJECT_0;
 	}
-	bool mutex::api::try_acquire(pimpl_t<mutex> p_impl)
+	bool mutex::api::try_acquire(pimpl_crtp<mutex> p_impl)
 	{
-		return ::WaitForSingleObjectEx(p_impl, 0ul, FALSE) == WAIT_OBJECT_0;
+		return ::WaitForSingleObjectEx(reinterpret_cast<handle&>(p_impl), 0ul, FALSE) == WAIT_OBJECT_0;
 	}
-	bool mutex::api::release(pimpl_t<mutex> p_impl)
+	bool mutex::api::release(pimpl_crtp<mutex> p_impl)
 	{
-		return ::ReleaseMutex(p_impl);
+		return ::ReleaseMutex(reinterpret_cast<handle&>(p_impl));
 	}
-	pimpl_t<sync_object> mutex::api::get_sync_object(pimpl_t<mutex> p_impl)
+	pimpl_crtp<sync_object> mutex::api::get_sync_object(pimpl_crtp<mutex> p_impl)
 	{
-		return reinterpret_cast<pimpl_t<sync_object>>(p_impl);
+		return reinterpret_cast<pimpl_t<sync_object>>(reinterpret_cast<handle&>(p_impl));
 	}
-	bool mutex::api::destroy(pimpl_t<mutex> p_impl)
+	bool mutex::api::destroy(pimpl_crtp<mutex> p_impl)
 	{
-		return ::CloseHandle(p_impl) == TRUE;
+		return ::CloseHandle(reinterpret_cast<handle&>(p_impl)) == TRUE;
 	}
 }
 #else

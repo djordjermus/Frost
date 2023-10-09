@@ -9,7 +9,7 @@ namespace frost::sync
 	{
 	public:
 		FROST_API sync_object();
-		FROST_API sync_object(pimpl_t<sync_object> pimpl);
+		FROST_API sync_object(pimpl_crtp<sync_object> pimpl);
 		FROST_API sync_object(const sync_object& copy);
 		FROST_API sync_object(const sync_object&& copy) noexcept;
 		~sync_object() = default;
@@ -26,10 +26,10 @@ namespace frost::sync
 		public:
 			STATIC_CLASS(api);
 
-			static i32  FROST_API acquire_one(const pimpl_t<sync_object>* synchronization_objects, i32 count);
-			static bool FROST_API acquire_all(const pimpl_t<sync_object>* synchronization_objects, i32 count);
-			static i32  FROST_API try_acquire_one(const pimpl_t<sync_object>* synchronization_objects, i32 count);
-			static bool FROST_API try_acquire_all(const pimpl_t<sync_object>* synchronization_objects, i32 count);
+			static i32  FROST_API acquire_one(const pimpl_crtp<sync_object>* synchronization_objects, i32 count);
+			static bool FROST_API acquire_all(const pimpl_crtp<sync_object>* synchronization_objects, i32 count);
+			static i32  FROST_API try_acquire_one(const pimpl_crtp<sync_object>* synchronization_objects, i32 count);
+			static bool FROST_API try_acquire_all(const pimpl_crtp<sync_object>* synchronization_objects, i32 count);
 		};
 	};
 }

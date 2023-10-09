@@ -9,7 +9,7 @@ namespace frost::sync
 	{
 	public:
 		FROST_API mutex();
-		FROST_API mutex(pimpl_t<mutex> pimpl);
+		FROST_API mutex(pimpl_crtp<mutex> pimpl);
 		FROST_API mutex(bool auto_acquire);
 		FROST_API mutex(mutex& move);
 		FROST_API mutex(mutex&& move) noexcept;
@@ -29,12 +29,12 @@ namespace frost::sync
 		public:
 			STATIC_CLASS(api);
 
-			static pimpl_t<mutex> FROST_API create(bool initial_owner);
-			static bool FROST_API acquire(pimpl_t<mutex> p_impl);
-			static bool FROST_API try_acquire(pimpl_t<mutex> p_impl);
-			static bool FROST_API release(pimpl_t<mutex> p_impl);
-			static pimpl_t<sync_object> FROST_API get_sync_object(pimpl_t<mutex> p_impl);
-			static bool FROST_API destroy(pimpl_t<mutex> p_impl);
+			static pimpl_crtp<mutex> FROST_API create(bool initial_owner);
+			static bool FROST_API acquire(pimpl_crtp<mutex> p_impl);
+			static bool FROST_API try_acquire(pimpl_crtp<mutex> p_impl);
+			static bool FROST_API release(pimpl_crtp<mutex> p_impl);
+			static pimpl_crtp<sync_object> FROST_API get_sync_object(pimpl_crtp<mutex> p_impl);
+			static bool FROST_API destroy(pimpl_crtp<mutex> p_impl);
 		};
 	};
 }

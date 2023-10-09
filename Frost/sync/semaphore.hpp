@@ -9,7 +9,7 @@ namespace frost::sync
 	{
 	public:
 		FROST_API semaphore();
-		FROST_API semaphore(pimpl_t<semaphore> pimpl);
+		FROST_API semaphore(pimpl_crtp<semaphore> pimpl);
 		FROST_API semaphore(i32 count, i32 maximum);
 		FROST_API semaphore(semaphore& move);
 		FROST_API semaphore(semaphore&& move) noexcept;
@@ -29,12 +29,12 @@ namespace frost::sync
 		public:
 			STATIC_CLASS(api);
 
-			static pimpl_t<semaphore> FROST_API create(i32 count, i32 max);
-			static bool FROST_API acquire(pimpl_t<semaphore> p_impl);
-			static bool FROST_API try_acquire(pimpl_t<semaphore> p_impl);
-			static bool FROST_API release(pimpl_t<semaphore> p_impl);
-			static pimpl_t<sync_object> FROST_API get_sync_object(pimpl_t<semaphore> p_impl);
-			static bool FROST_API destroy(pimpl_t<semaphore> p_impl);
+			static pimpl_crtp<semaphore> FROST_API create(i32 count, i32 max);
+			static bool FROST_API acquire(pimpl_crtp<semaphore> p_impl);
+			static bool FROST_API try_acquire(pimpl_crtp<semaphore> p_impl);
+			static bool FROST_API release(pimpl_crtp<semaphore> p_impl);
+			static pimpl_crtp<sync_object> FROST_API get_sync_object(pimpl_crtp<semaphore> p_impl);
+			static bool FROST_API destroy(pimpl_crtp<semaphore> p_impl);
 		};
 	};
 }
