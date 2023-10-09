@@ -8,6 +8,25 @@ namespace frost
 	class pimpl_crtp
 	{
 	public:
+		pimpl_crtp(pimpl_t<T> ptr) : _ptr(ptr) {}
+		pimpl_crtp(pimpl_crtp& move) : _ptr(move._ptr)
+		{
+			move._ptr = nullptr;
+		}
+		pimpl_crtp(pimpl_crtp&& move) : _ptr(move._ptr)
+		{
+			move._ptr = nullptr;
+		}
+
+		T* operator->()
+		{
+			return reinterpret_cast<T*>(_ptr);
+		}
+		const T* operator->() const
+		{
+			return reinterpret_cast<T*>(_ptr);
+		}
+
 		pimpl_t<T> get_pimpl() const
 		{
 			return _ptr;
@@ -30,14 +49,6 @@ namespace frost
 	protected:
 		pimpl_crtp() : _ptr(nullptr) {}
 		pimpl_crtp(void* ptr) : _ptr(reinterpret_cast<pimpl_t<T>>(ptr)) {}
-		pimpl_crtp(pimpl_crtp& move) : _ptr(move._ptr)
-		{
-			move._ptr = nullptr;
-		}
-		pimpl_crtp(pimpl_crtp&& move) : _ptr(move._ptr)
-		{
-			move._ptr = nullptr;
-		}
 
 
 	private:
