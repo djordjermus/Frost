@@ -5,7 +5,7 @@
 namespace frost::sync
 {
 	semaphore::semaphore() :
-		pimpl_crtp<semaphore>(nullptr) {}
+		pimpl_crtp<semaphore>() {}
 	semaphore::semaphore(pimpl_t<semaphore> pimpl) :
 		pimpl_crtp<semaphore>(pimpl) {}
 	semaphore::semaphore(i32 count, i32 max) :

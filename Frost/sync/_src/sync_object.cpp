@@ -6,7 +6,7 @@
 namespace frost::sync
 {
 	sync_object::sync_object() :
-		pimpl_crtp<sync_object>(nullptr) {}
+		pimpl_crtp<sync_object>() {}
 	sync_object::sync_object(pimpl_t<sync_object> pimpl) :
 		pimpl_crtp<sync_object>(pimpl) {}
 	sync_object::sync_object(const sync_object& copy) :

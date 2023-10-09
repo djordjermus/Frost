@@ -5,7 +5,7 @@
 namespace frost::sync
 {
 	mutex::mutex() :
-		pimpl_crtp<mutex>(nullptr) {}
+		pimpl_crtp<mutex>() {}
 	mutex::mutex(pimpl_t<mutex> pimpl) :
 		pimpl_crtp<mutex>(pimpl) {}
 	mutex::mutex(bool auto_acquire) :
