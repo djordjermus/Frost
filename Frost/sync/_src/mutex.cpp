@@ -38,9 +38,7 @@ namespace frost::sync
 	}
 	sync_object mutex::get_sync_object() const
 	{
-		auto result = sync_object();
-		result.swap_pimpl((pimpl_t<sync_object>)frost::api::mutex::get_sync_object((frost::api::mutex*)get_pimpl()));
-		return result;
+		return sync_object((pimpl_t<sync_object>)frost::api::mutex::get_sync_object((frost::api::mutex*)get_pimpl()));
 	}
 
 

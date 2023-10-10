@@ -8,6 +8,8 @@ namespace frost::sync
 	class sync_object final : public frost::pimpl_crtp<sync_object>
 	{
 	public:
+		using unmanaged = frost::pimpl_crtp<sync_object>;
+
 		sync_object();
 		sync_object(pimpl_t<sync_object> pimpl);
 		sync_object(const sync_object& copy);

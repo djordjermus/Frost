@@ -8,6 +8,8 @@ namespace frost::sync
 	class mutex final : public frost::pimpl_crtp<mutex>
 	{
 	public:
+		using unmanaged = frost::pimpl_crtp<mutex>;
+
 		mutex();
 		mutex(pimpl_t<mutex> pimpl);
 		mutex(bool auto_acquire);
