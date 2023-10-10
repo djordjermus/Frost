@@ -17,7 +17,7 @@ namespace Frost.Net
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?frequency@api@clock@frost@@SA_KXZ")]
+				EntryPoint = "?get_frequency@clock@api@frost@@SA_KXZ")]
 			public static extern ulong GetFrequency();
 
 
@@ -25,7 +25,7 @@ namespace Frost.Net
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?period@api@clock@frost@@SANXZ")]
+				EntryPoint = "?get_period@clock@api@frost@@SANXZ")]
 			public static extern double GetPeriod();
 
 
@@ -33,7 +33,7 @@ namespace Frost.Net
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?timestamp@api@clock@frost@@SA_KXZ")]
+				EntryPoint = "?get_timestamp@clock@api@frost@@SA_KXZ")]
 			public static extern ulong GetTimestamp();
 
 		}

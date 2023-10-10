@@ -38,42 +38,42 @@ namespace Frost.Net.Sync
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?create_mutex@api@mutex@sync@frost@@SAPEAV?$impl_t@Vmutex@sync@frost@@@4@_N@Z")]
+				EntryPoint = "?create@mutex@api@frost@@SAPEAV123@_N@Z")]
 			public static extern IntPtr CreateMutex(bool autoAcquire);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?acquire_mutex@api@mutex@sync@frost@@SA_NPEAV?$impl_t@Vmutex@sync@frost@@@4@@Z")]
+				EntryPoint = "?acquire@mutex@api@frost@@SA_NPEAV123@@Z")]
 			public static extern bool AcquireMutex(IntPtr pImpl);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?try_acquire_mutex@api@mutex@sync@frost@@SA_NPEAV?$impl_t@Vmutex@sync@frost@@@4@@Z")]
+				EntryPoint = "?try_acquire@mutex@api@frost@@SA_NPEAV123@@Z")]
 			public static extern bool TryAcquireMutex(IntPtr pImpl);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?release_mutex@api@mutex@sync@frost@@SA_NPEAV?$impl_t@Vmutex@sync@frost@@@4@@Z")]
+				EntryPoint = "?release@mutex@api@frost@@SA_NPEAV123@@Z")]
 			public static extern bool ReleaseMutex(IntPtr pImpl);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?get_sync_object_from_mutex@api@mutex@sync@frost@@SAPEAV?$impl_t@Vsync_object@sync@frost@@@4@PEAV?$impl_t@Vmutex@sync@frost@@@4@@Z")]
+				EntryPoint = "?get_sync_object@mutex@api@frost@@SAPEAVsync_object@23@PEAV123@@Z")]
 			public static extern IntPtr GetSyncObjectFromMutex(IntPtr pImpl);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?destroy_mutex@api@mutex@sync@frost@@SA_NPEAV?$impl_t@Vmutex@sync@frost@@@4@@Z")]
+				EntryPoint = "?destroy@mutex@api@frost@@SA_NPEAV123@@Z")]
 			public static extern bool DestroyMutex(IntPtr pImpl);
 		}
 	}

@@ -29,29 +29,9 @@ namespace frost
 				event_data);
 		}
 
-
-
-		static void FROST_API subscribe_tagged(u64 tag, u64 activation_layers, handler<void> procedure);
+		static void subscribe_tagged(u64 tag, u64 activation_layers, handler<void> procedure);
  
-		static void FROST_API emit_tagged(u64 tag, u64 layers, void* event_data);
-
-		class api final
-		{
-		public:
-			STATIC_CLASS(api);
-
-			typedef void(_stdcall* finalizer_sig)(void* p_data);
-			typedef void(_stdcall* handler_sig)(void* p_data);
-			typedef void(_stdcall* relay_sig)(u64 tag, u64 layer, void* p_data);
-
-			static void FROST_API event_system_emit(u64 tag, u64 layer, void* p_data);
-
-			static void FROST_API event_system_subscribe(u64 tag, u64 activation_layers, handler_sig handler);
-			static void FROST_API event_system_unsubscribe(u64 tag, u64 activation_layers, handler_sig handler);
-
-			static void FROST_API event_system_subscribe_relay(relay_sig relay);
-			static void FROST_API event_system_unsubscribe_relay(relay_sig relay);
-		};
+		static void emit_tagged(u64 tag, u64 layers, void* event_data);
 
 	private:
 		using handler_collection = std::vector<event_system::handler<void>>;

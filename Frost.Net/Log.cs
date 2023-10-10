@@ -56,7 +56,7 @@ namespace Frost.Net
 			}
 		}
 
-		public static void Warn(Layers activationLayers, string template, params string[] parameters)
+		public static void Warning(Layers activationLayers, string template, params string[] parameters)
 		{
 			unsafe
 			{
@@ -156,14 +156,14 @@ namespace Frost.Net
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?logging_get_log_event_tag@api@log@frost@@SA_KXZ")]
+				EntryPoint = "?get_log_event_tag@logging@api@frost@@SA_KXZ")]
 			public static extern ulong GetLogEventTag();
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?logging_log_verbose@api@log@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
+				EntryPoint = "?verbose@logging@api@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
 			public static extern void LogVerbose(
 				IntPtr message_template,
 				ulong template_length,
@@ -176,7 +176,7 @@ namespace Frost.Net
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?logging_log_debug@api@log@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
+				EntryPoint = "?debug@logging@api@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
 			public static extern void LogDebug(
 				IntPtr message_template,
 				ulong template_length,
@@ -189,7 +189,7 @@ namespace Frost.Net
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?logging_log_info@api@log@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
+				EntryPoint = "?info@logging@api@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
 			public static extern void LogInfo(
 				IntPtr message_template,
 				ulong template_length,
@@ -202,7 +202,7 @@ namespace Frost.Net
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?logging_log_warning@api@log@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
+				EntryPoint = "?warning@logging@api@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
 			public static extern void LogWarning(
 				IntPtr message_template,
 				ulong template_length,
@@ -215,7 +215,7 @@ namespace Frost.Net
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?logging_log_error@api@log@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
+				EntryPoint = "?error@logging@api@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
 			public static extern void LogError(
 				IntPtr message_template,
 				ulong template_length,
@@ -228,7 +228,7 @@ namespace Frost.Net
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?logging_log_critical@api@log@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
+				EntryPoint = "?critical@logging@api@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
 			public static extern void LogCritical(
 				IntPtr message_template,
 				ulong template_length,

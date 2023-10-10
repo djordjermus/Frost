@@ -38,42 +38,42 @@ namespace Frost.Net.Sync
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?create_semaphore@api@semaphore@sync@frost@@SAPEAV?$impl_t@Vsemaphore@sync@frost@@@4@JJ@Z")]
+				EntryPoint = "?create@semaphore@api@frost@@SAPEAV123@JJ@Z")]
 			public static extern IntPtr CreateSemaphore(int count, int maximum);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?acquire_semaphore@api@semaphore@sync@frost@@SA_NPEAV?$impl_t@Vsemaphore@sync@frost@@@4@@Z")]
+				EntryPoint = "?acquire@semaphore@api@frost@@SA_NPEAV123@@Z")]
 			public static extern bool AcquireSemaphore(IntPtr pImpl);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?try_acquire_semaphore@api@semaphore@sync@frost@@SA_NPEAV?$impl_t@Vsemaphore@sync@frost@@@4@@Z")]
+				EntryPoint = "?try_acquire@semaphore@api@frost@@SA_NPEAV123@@Z")]
 			public static extern bool TryAcquireSemaphore(IntPtr pImpl);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?release_semaphore@api@semaphore@sync@frost@@SA_NPEAV?$impl_t@Vsemaphore@sync@frost@@@4@@Z")]
+				EntryPoint = "?release@semaphore@api@frost@@SA_NPEAV123@@Z")]
 			public static extern bool ReleaseSemaphore(IntPtr pImpl);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?get_sync_object_from_semaphore@api@semaphore@sync@frost@@SAPEAV?$impl_t@Vsync_object@sync@frost@@@4@PEAV?$impl_t@Vsemaphore@sync@frost@@@4@@Z")]
+				EntryPoint = "?get_sync_object@semaphore@api@frost@@SAPEAVsync_object@23@PEAV123@@Z")]
 			public static extern IntPtr GetSyncObjectFromSemaphore(IntPtr pImpl);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?destroy_semaphore@api@semaphore@sync@frost@@SA_NPEAV?$impl_t@Vsemaphore@sync@frost@@@4@@Z")]
+				EntryPoint = "?destroy@semaphore@api@frost@@SA_NPEAV123@@Z")]
 			public static extern bool DestroySemaphore(IntPtr pImpl);
 		}
 	}
