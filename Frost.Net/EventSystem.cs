@@ -45,7 +45,9 @@ namespace Frost.Net
 		{
 			unsafe
 			{
+#pragma warning disable CS8500
 				Interop.Emit((ulong)typeof(T).GetHashCode(), activationLayers.Value, (IntPtr)(&eventData));
+#pragma warning restore CS8500
 			}
 		}
 
@@ -111,8 +113,10 @@ namespace Frost.Net
 		{
 			unsafe
 			{
+#pragma warning disable CS8500
 				T eventData = *(T*)pData.ToPointer();
-				EmitInternal<T>(activationLayers, eventData);
+#pragma warning restore CS8500
+				EmitInternal(activationLayers, eventData);
 			}
 		}
 
