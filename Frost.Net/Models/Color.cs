@@ -138,14 +138,14 @@ namespace Frost.Net.Models
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "?color_rgba8_to_rgba32@api@rgba8@frost@@SAXKPEAM@Z")]
+                EntryPoint = "?rgba8_to_rgba32@color@api@frost@@SAXKPEAM@Z")]
             public extern static void Rgba8ToRgba32(int input, IntPtr output);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "?color_rgba32_to_rgba8@api@rgba32@frost@@SAXPEBMPEAK@Z")]
+                EntryPoint = "?rgba32_to_rgba8@color@api@frost@@SAXPEBMPEAK@Z")]
             public extern static void Rgba32ToRgba8(IntPtr input, IntPtr output);
 
 
@@ -154,21 +154,21 @@ namespace Frost.Net.Models
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "?color_rgba32_to_hsva@api@rgba32@frost@@SAXPEBMPEAM@Z")]
+                EntryPoint = "?rgba32_to_hsva@color@api@frost@@SAXPEBMPEAM@Z")]
             public extern static void Rgba32ToHsva(IntPtr input, IntPtr output);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "?color_rgba32_to_hsla@api@rgba32@frost@@SAXPEBMPEAM@Z")]
+                EntryPoint = "?rgba32_to_hsla@color@api@frost@@SAXPEBMPEAM@Z")]
             public extern static void Rgba32ToHsla(IntPtr input, IntPtr output);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "?color_rgba32_to_cmyk@api@rgba32@frost@@SAXPEBMPEAM@Z")]
+                EntryPoint = "?rgba32_to_cmyk@color@api@frost@@SAXPEBMPEAM@Z")]
             public extern static void Rgba32ToCmyk(IntPtr input, IntPtr output);
 
 
@@ -177,21 +177,21 @@ namespace Frost.Net.Models
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "?color_hsva_to_rgba32@api@rgba32@frost@@SAXPEBMPEAM@Z")]
+                EntryPoint = "?hsva_to_rgba32@color@api@frost@@SAXPEBMPEAM@Z")]
             public extern static void HsvaToRgba32(IntPtr input, IntPtr output);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "?color_hsla_to_rgba32@api@rgba32@frost@@SAXPEBMPEAM@Z")]
+                EntryPoint = "?hsla_to_rgba32@color@api@frost@@SAXPEBMPEAM@Z")]
             public extern static void HslaToRgba32(IntPtr input, IntPtr output);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "?color_cmyk_to_rgba32@api@rgba32@frost@@SAXPEBMPEAM@Z")]
+                EntryPoint = "?cmyk_to_rgba32@color@api@frost@@SAXPEBMPEAM@Z")]
             public extern static void CmykToRgba32(IntPtr input, IntPtr output);
         }
     }

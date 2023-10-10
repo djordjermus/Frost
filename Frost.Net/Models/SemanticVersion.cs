@@ -67,14 +67,14 @@ namespace Frost.Net.Models
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?get_api_version@api@semantic_version@frost@@SAXPEAV23@@Z")]
+				EntryPoint = "?get_api_version@semantic_version@api@frost@@SAXPEAV123@@Z")]
 			public static extern void GetApiVersion(out FrostSemanticVersion output);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?check_compatibility@api@semantic_version@frost@@SA_NV23@0@Z")]
+				EntryPoint = "?check_compatibility@semantic_version@api@frost@@SA_NV123@0@Z")]
 			public static extern bool CheckCompatibility(
 				FrostSemanticVersion version, 
 				FrostSemanticVersion target);

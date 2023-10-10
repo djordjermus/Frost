@@ -7,4 +7,18 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Frost.Api\Frost.Api.vcxproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Frost.Api.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="xcopy ..\x64\$(ConfigurationName)\Frost.Api.dll .\ /FYC" />
+  </Target>
+
 </Project>

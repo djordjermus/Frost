@@ -45,7 +45,9 @@ namespace Frost.Net
 		{
 			unsafe
 			{
+#pragma warning disable CS8500
 				Interop.Emit((ulong)typeof(T).GetHashCode(), activationLayers.Value, (IntPtr)(&eventData));
+#pragma warning restore CS8500
 			}
 		}
 
@@ -111,8 +113,10 @@ namespace Frost.Net
 		{
 			unsafe
 			{
+#pragma warning disable CS8500
 				T eventData = *(T*)pData.ToPointer();
-				EmitInternal<T>(activationLayers, eventData);
+#pragma warning restore CS8500
+				EmitInternal(activationLayers, eventData);
 			}
 		}
 
@@ -133,21 +137,21 @@ namespace Frost.Net
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?event_system_emit@api@event_system@frost@@SAX_K0PEAX@Z")]
+				EntryPoint = "?emit@event_system@api@frost@@SAX_K0PEAX@Z")]
 			public static extern void Emit(ulong tag, ulong layer, IntPtr p_data);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?event_system_subscribe@api@event_system@frost@@SAX_K0P6AXPEAX@Z@Z")]
+				EntryPoint = "?subscribe@event_system@api@frost@@SAX_K0P6AXPEAX@Z@Z")]
 			public static extern void Subscribe(ulong tag, ulong activation_layers, HandlerSig handler);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?event_system_unsubscribe@api@event_system@frost@@SAX_K0P6AXPEAX@Z@Z")]
+				EntryPoint = "?unsubscribe@event_system@api@frost@@SAX_K0P6AXPEAX@Z@Z")]
 			public static extern void Unsubscribe(ulong tag, ulong activation_layers, HandlerSig handler);
 
 
@@ -156,14 +160,14 @@ namespace Frost.Net
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?event_system_subscribe_relay@api@event_system@frost@@SAXP6AX_K0PEAX@Z@Z")]
+				EntryPoint = "?subscribe_relay@event_system@api@frost@@SAXP6AX_K0PEAX@Z@Z")]
 			public static extern void SubscribeRelay(RelaySig relay);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?event_system_unsubscribe_relay@api@event_system@frost@@SAXP6AX_K0PEAX@Z@Z")]
+				EntryPoint = "?unsubscribe_relay@event_system@api@frost@@SAXP6AX_K0PEAX@Z@Z")]
 			public static extern void UnsubscribeRelay(RelaySig relay);
 		}
 
