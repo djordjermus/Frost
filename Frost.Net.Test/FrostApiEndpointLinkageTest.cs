@@ -95,13 +95,13 @@ namespace Frost.Net.Test
 		[TestMethod]
 		public void TestLog()
 		{
-			EventSystem.Subscribe(1, (Log.Event l) => Console.WriteLine(l.Message));
-			Log.Verbose(1, "{1}, {0}!", "World", "Hello");
-			Log.Debug(1, "{1}, {0}!", "World", "Hello");
-			Log.Info(1, "{1}, {0}!", "World", "Hello");
-			Log.Warning(1, "{1}, {0}!", "World", "Hello");
-			Log.Error(1, "{1}, {0}!", "World", "Hello");
-			Log.Critical(1, "{1}, {0}!", "World", "Hello");
+			EventSystem.Subscribe(1, (Log.Event l) => Console.WriteLine($"[{l.Level}]{l.Message}"));
+			Log.Verbose("{1}, {0}!", "World", "Hello");
+			Log.Debug("{1}, {0}!", "World", "Hello");
+			Log.Info("{1}, {0}!", "World", "Hello");
+			Log.Warning("{1}, {0}!", "World", "Hello");
+			Log.Error("{1}, {0}!", "World", "Hello");
+			Log.Critical("{1}, {0}!", "World", "Hello");
 		}
 	}
 }
