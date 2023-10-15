@@ -21,6 +21,12 @@ public:
 	~ref() { dec(_ptr); }
 
 	/* OPERATORS */
+	ref& operator=(T* ptr)
+	{
+		dec(_ptr);
+		_ptr = inc(ptr);
+		return *this;
+	}
 	ref& operator=(ref& reference)
 	{
 		dec(_ptr);
@@ -42,5 +48,10 @@ public:
 	T* get()
 	{
 		return _ptr;
+	}
+
+	T* const* get_array()
+	{
+		return &_ptr;
 	}
 };
