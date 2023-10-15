@@ -42,16 +42,16 @@
     <ClInclude Include="sync_object.api.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mutex.api.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="semaphore.api.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="object.api.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ref.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="internal\mutex.api.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="internal\semaphore.api.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -77,13 +77,13 @@
     <ClCompile Include="_src\sync_object.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_src\mutex.api.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="_src\semaphore.api.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="_src\object.api.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="internal\_src\mutex.api.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="internal\_src\semaphore.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
