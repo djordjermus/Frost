@@ -51,6 +51,9 @@
     <ClInclude Include="object.api.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ref.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_src\clock.api.cpp">

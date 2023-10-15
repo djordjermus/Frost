@@ -1,4 +1,5 @@
-#include "Frost.api/object.api.hpp"
+#include "Frost.Api/object.api.hpp"
+#include "Frost.Api/ref.hpp"
 #include <iostream>
 class my_object : public frost::api::object
 {
@@ -11,9 +12,9 @@ public:
 };
 int main()
 {
-	auto* obj = my_object::create(5);
-	obj->acquire_reference();
-	obj->release_reference();
+	ref<my_object> obj = my_object::create(5);
+	ref<my_object> obj2 = obj;
+	obj = nullptr;
 }
 my_object::my_object(u64 value) : _value(value) {}
 my_object::~my_object() { std::cout << "delete my_object " << _value << '\n'; }

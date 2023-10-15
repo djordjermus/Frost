@@ -137,6 +137,7 @@
     <ClInclude Include="primitives.hpp" />
     <ClInclude Include="color.api.hpp" />
     <ClInclude Include="random.api.hpp" />
+    <ClInclude Include="ref.hpp" />
     <ClInclude Include="semantic_version.api.hpp" />
     <ClInclude Include="event_system.api.hpp" />
     <ClInclude Include="logging.api.hpp" />
