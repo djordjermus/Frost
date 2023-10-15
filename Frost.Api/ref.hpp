@@ -14,9 +14,9 @@ public:
 		_ptr(nullptr) {}
 	ref(T* ptr) :
 		_ptr(inc(ptr)) {}
-	ref(ref& reference) :
+	ref(const ref& reference) :
 		_ptr(inc(reference._ptr)) {}
-	ref(ref&& reference) noexcept :
+	ref(const ref&& reference) noexcept :
 		_ptr(inc(reference._ptr)) {}
 	~ref() { dec(_ptr); }
 
@@ -27,7 +27,7 @@ public:
 		_ptr = inc(ptr);
 		return *this;
 	}
-	ref& operator=(ref& reference)
+	ref& operator=(const ref& reference)
 	{
 		dec(_ptr);
 		_ptr = inc(reference._ptr);
@@ -39,18 +39,25 @@ public:
 		_ptr = inc(reference._ptr);
 		return *this;
 	}
-	T* operator->()
+
+	operator bool() const { return _ptr != nullptr; }
+	bool operator == (T* ptr) const { return _ptr == ptr; }
+	bool operator != (T* ptr) const { return _ptr != ptr; }
+	bool operator == (ref rhs) const { return _ptr == rhs._ptr; }
+	bool operator != (ref rhs) const { return _ptr != rhs._ptr; }
+
+	T* operator->() const
 	{
 		return _ptr;
 	}
 
 	/* METHODS */
-	T* get()
+	T* get() const
 	{
 		return _ptr;
 	}
 
-	T* const* get_array()
+	T* const* get_array() const
 	{
 		return &_ptr;
 	}
