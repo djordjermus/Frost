@@ -154,12 +154,12 @@ namespace Frost.Net
 
 		public enum Level
 		{
-			Verbose	= 1,
-			Debug	= 2,
-			Info	= 4,
-			Warning	= 8,
-			Error	= 16,
-			Fatal	= 32,
+			Verbose		= 1,
+			Debug		= 2,
+			Info		= 4,
+			Warning		= 8,
+			Error		= 16,
+			Critical	= 32,
 		}
 
 		private static ulong[] ExtractParamsLengths(string[] parameters)
