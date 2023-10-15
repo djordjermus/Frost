@@ -17,6 +17,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Sync\" />
+  </ItemGroup>
+
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="xcopy ..\x64\$(ConfigurationName)\Frost.Api.dll .\ /FYC" />
   </Target>

@@ -1,8 +1,6 @@
-using Frost.Net.Sync;
-
 namespace Frost.Net.Test
 {
-	[TestClass]
+    [TestClass]
 	public class FrostApiEndpointLinkageTest
 	{
 		class EventData { public int value; }
@@ -27,30 +25,30 @@ namespace Frost.Net.Test
 		[TestMethod]
 		public void TestSyncSemaphoreApi()
 		{
-			using var sf = new Sync.Semaphore(2, 2);
-			sf.Acquire();
-			sf.TryAcquire();
-			sf.Release();
+			var sf = Sync.CreateSemaphore(2, 2);
+			sf.Lock();
+			sf.TryLock();
+			sf.Unlock();
 		}
 
 		[TestMethod]
 		public void TestSyncMutexApi()
 		{
-			using var mx = new Sync.Mutex(false);
-			mx.Acquire();
-			mx.TryAcquire();
-			mx.Release();
+			var mx = Sync.CreateMutex(false);
+			mx.Lock();
+			mx.TryLock();
+			mx.Unlock();
 		}
 
 		[TestMethod]
 		public void TestSyncApi()
 		{
-			using var mx = new Sync.Mutex(false);
-			using var sf = new Sync.Semaphore(2, 2);
-			SyncObject.AcquireOne(sf, mx);
-			SyncObject.AcquireAll(sf, mx);
-			SyncObject.TryAcquireOne(sf, mx);
-			SyncObject.TryAcquireAll(sf, mx);
+			var mx = Sync.CreateMutex(false);
+			var sf = Sync.CreateSemaphore(2, 2);
+			Sync.LockOne(sf, mx);
+			Sync.LockAll(sf, mx);
+			Sync.TryLockOne(sf, mx);
+			Sync.TryLockAll(sf, mx);
 		}
 
 		[TestMethod]
