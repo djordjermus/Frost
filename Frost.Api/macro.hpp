@@ -1,8 +1,8 @@
 #pragma once
 #if defined(FROST_API_BUILD_DLL)
-#define FROST_API __declspec(dllexport) _stdcall
+#define FROST_API __declspec(dllexport)
 #else
-#define FROST_API __declspec(dllimport) _stdcall
+#define FROST_API __declspec(dllimport)
 #endif
 
 //

@@ -3,16 +3,16 @@
 #pragma once
 namespace frost::api
 {
-	class logging final
+	class FROST_API logging final
 	{
 	public:
 		STATIC_CLASS(logging);
 
 		struct log_event;
 
-		static u64 FROST_API get_log_event_tag();
+		static u64 _stdcall get_log_event_tag();
 
-		static void FROST_API verbose(
+		static void _stdcall verbose(
 			const wchar_t* message_template,
 			u64 template_length,
 			const wchar_t** params,
@@ -20,7 +20,7 @@ namespace frost::api
 			u64 param_count,
 			u64 activation_layers);
 
-		static void FROST_API debug(
+		static void _stdcall debug(
 			const wchar_t* message_template,
 			u64 template_length,
 			const wchar_t** params,
@@ -28,7 +28,7 @@ namespace frost::api
 			u64 param_count,
 			u64 activation_layers);
 
-		static void FROST_API info(
+		static void _stdcall info(
 			const wchar_t* message_template,
 			u64 template_length,
 			const wchar_t** params,
@@ -36,7 +36,7 @@ namespace frost::api
 			u64 param_count,
 			u64 activation_layers);
 
-		static void FROST_API warning(
+		static void _stdcall warning(
 			const wchar_t* message_template,
 			u64 template_length,
 			const wchar_t** params,
@@ -44,7 +44,7 @@ namespace frost::api
 			u64 param_count,
 			u64 activation_layers);
 
-		static void FROST_API error(
+		static void _stdcall error(
 			const wchar_t* message_template,
 			u64 template_length,
 			const wchar_t** params,
@@ -52,7 +52,7 @@ namespace frost::api
 			u64 param_count,
 			u64 activation_layers);
 
-		static void FROST_API critical(
+		static void _stdcall critical(
 			const wchar_t* message_template,
 			u64 template_length,
 			const wchar_t** params,
