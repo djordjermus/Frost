@@ -48,6 +48,9 @@
     <ClInclude Include="semaphore.api.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="object.api.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_src\clock.api.cpp">
@@ -75,6 +78,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_src\semaphore.api.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="_src\object.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

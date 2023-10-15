@@ -1,19 +1,20 @@
-#include "Frost/sync/mutex.hpp"
-#include "Frost/sync/semaphore.hpp"
-#include "Frost/sync/sync_object.hpp"
+#include "Frost.api/object.api.hpp"
 #include <iostream>
-
+class my_object : public frost::api::object
+{
+	u64 _value;
+protected:
+	my_object(u64 value);
+	~my_object();
+public:
+	static my_object* create(u64 value);
+};
 int main()
 {
-	frost::sync::semaphore mx1(2, 4);
-	frost::sync::mutex mx2(false);
-	frost::sync::sync_object so;
-	std::vector<frost::sync::sync_object> s;
-	s.emplace_back(mx1.get_sync_object());
-	s.emplace_back(mx2.get_sync_object());
-	auto result = frost::sync::sync_object::try_acquire_all(s);
-	result = frost::sync::sync_object::acquire_all(s);
-	result = frost::sync::sync_object::try_acquire_all(s);
-	int i = frost::sync::sync_object::try_acquire_one(s);
-	i = frost::sync::sync_object::acquire_one(s);
+	auto* obj = my_object::create(5);
+	obj->acquire_reference();
+	obj->release_reference();
 }
+my_object::my_object(u64 value) : _value(value) {}
+my_object::~my_object() { std::cout << "delete my_object " << _value << '\n'; }
+my_object* my_object::create(u64 value) { return new my_object(value); }

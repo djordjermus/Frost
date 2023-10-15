@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClInclude Include="clock.api.hpp" />
     <ClInclude Include="macro.hpp" />
+    <ClInclude Include="object.api.hpp" />
     <ClInclude Include="primitives.hpp" />
     <ClInclude Include="color.api.hpp" />
     <ClInclude Include="random.api.hpp" />
@@ -149,6 +150,7 @@
     <ClCompile Include="_src\event_system.api.cpp" />
     <ClCompile Include="_src\logging.api.cpp" />
     <ClCompile Include="_src\mutex.api.cpp" />
+    <ClCompile Include="_src\object.api.cpp" />
     <ClCompile Include="_src\semaphore.api.cpp" />
     <ClCompile Include="_src\sync_object.api.cpp" />
     <ClCompile Include="_src\random.api.cpp" />
