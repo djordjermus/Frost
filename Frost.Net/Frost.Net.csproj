@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Sync\**" />
+    <EmbeddedResource Remove="Sync\**" />
+    <None Remove="Sync\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Frost.Api\Frost.Api.vcxproj" />
   </ItemGroup>
 
@@ -15,10 +21,6 @@
     <None Update="Frost.Api.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Sync\" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
