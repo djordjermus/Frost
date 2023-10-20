@@ -3,25 +3,15 @@ using System.Runtime.InteropServices;
 
 namespace Frost.Net
 {
-    public class Sync : FrostObject
-    {
-        protected Sync(IntPtr handle) :
-            base(handle) { }
-
-        public static Sync CreateMutex(bool initialOwner) =>
-            new Mutex(Interop.CreateMutex(initialOwner));
-        public static Sync CreateSemaphore(int count, int max) =>
-			new Semaphore(Interop.CreateSemaphore(count, max));
+    public interface ISynchronizable : IFrostObject
+	{
+        protected IntPtr Handle { get; }
+		public bool Lock();
+		public bool TryLock();
+		public bool Unlock();
 
 
-
-		public bool Lock() => Interop.Lock(Handle);
-		public bool TryLock() => Interop.TryLock(Handle);
-		public bool Unlock() => Interop.Unlock(Handle);
-
-
-
-		public static int LockOne(params Sync[] syncObjects)
+		public static int LockOne(params ISynchronizable[] syncObjects)
         {
             unsafe
             {
@@ -33,8 +23,7 @@ namespace Frost.Net
                     return Interop.LockOne((IntPtr)ptr, arr.Length);
             }
         }
-
-        public static bool LockAll(params Sync[] syncObjects)
+        public static bool LockAll(params ISynchronizable[] syncObjects)
         {
             unsafe
             {
@@ -47,8 +36,7 @@ namespace Frost.Net
                     return Interop.LockAll((IntPtr)ptr, arr.Length);
             }
         }
-
-        public static int TryLockOne(params Sync[] syncObjects)
+        public static int TryLockOne(params ISynchronizable[] syncObjects)
         {
             unsafe
             {
@@ -60,8 +48,7 @@ namespace Frost.Net
                     return Interop.TryLockOne((IntPtr)ptr, arr.Length);
             }
         }
-
-        public static bool TryLockAll(params Sync[] syncObjects)
+        public static bool TryLockAll(params ISynchronizable[] syncObjects)
         {
             unsafe
             {
@@ -82,37 +69,21 @@ namespace Frost.Net
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "?create_mutex@sync_object@api@frost@@SAPEAV123@_N@Z")]
-            public static extern IntPtr CreateMutex(bool initialOwner);
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            [DllImport(
-                dllName: Settings.frostApiPath,
-                CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "?create_semaphore@sync_object@api@frost@@SAPEAV123@JJ@Z")]
-            public static extern IntPtr CreateSemaphore(int count, int max);
-
-
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            [DllImport(
-                dllName: Settings.frostApiPath,
-                CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "?lock@sync_object@api@frost@@SA_NPEAV123@@Z")]
+                EntryPoint = "?lock@synchronizable@api@frost@@SA_NPEAV123@@Z")]
             public static extern bool Lock(IntPtr target);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "?try_lock@sync_object@api@frost@@SA_NPEAV123@@Z")]
+                EntryPoint = "?try_lock@synchronizable@api@frost@@SA_NPEAV123@@Z")]
             public static extern bool TryLock(IntPtr target);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "?unlock@sync_object@api@frost@@SA_NPEAV123@@Z")]
+                EntryPoint = "?unlock@synchronizable@api@frost@@SA_NPEAV123@@Z")]
             public static extern bool Unlock(IntPtr target);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -129,43 +100,44 @@ namespace Frost.Net
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "?lock_one@sync_object@api@frost@@SAJPEBQEAV123@J@Z")]
+                EntryPoint = "?lock_one@synchronizable@api@frost@@SAJPEBQEAV123@J@Z")]
             public static extern int LockOne(IntPtr pArray, int count);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "?lock_all@sync_object@api@frost@@SA_NPEBQEAV123@J@Z")]
+                EntryPoint = "?lock_all@synchronizable@api@frost@@SA_NPEBQEAV123@J@Z")]
             public static extern bool LockAll(IntPtr pArray, int count);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "?try_lock_one@sync_object@api@frost@@SAJPEBQEAV123@J@Z")]
+                EntryPoint = "?try_lock_one@synchronizable@api@frost@@SAJPEBQEAV123@J@Z")]
             public static extern int TryLockOne(IntPtr pArray, int count);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "?try_lock_all@sync_object@api@frost@@SA_NPEBQEAV123@J@Z")]
+                EntryPoint = "?try_lock_all@synchronizable@api@frost@@SA_NPEBQEAV123@J@Z")]
             public static extern bool TryLockAll(IntPtr pArray, int count);
         }
 
 
-
-		private sealed class Mutex : Sync
+        /*
+		private sealed class Mutex : ISynchronizable
 		{
 			public Mutex(IntPtr handle) :
                 base(handle) { }
 		}
 
-		private sealed class Semaphore : Sync
+		private sealed class Semaphore : ISynchronizable
 		{
 			public Semaphore(IntPtr handle) :
                 base(handle) { }
 		}
+         */
 	}
 }

@@ -1,24 +1,23 @@
-#include "../internal/mutex.api.hpp"
-#include "../internal/semaphore.api.hpp"
+#include "../synchronizable.api.hpp"
 
-bool frost::api::sync_object::lock(sync_object* target) { return target->lock(); }
-bool frost::api::sync_object::try_lock(sync_object* target) { return target->try_lock(); }
-bool frost::api::sync_object::unlock(sync_object* target) { return target->unlock(); }
-void* frost::api::sync_object::get_system_handle(sync_object* target) { return target->get_system_handle(); }
+bool frost::api::synchronizable::lock(synchronizable* target) { return target->lock(); }
+bool frost::api::synchronizable::try_lock(synchronizable* target) { return target->try_lock(); }
+bool frost::api::synchronizable::unlock(synchronizable* target) { return target->unlock(); }
+void* frost::api::synchronizable::get_internal_handle(synchronizable* target) { return target->get_internal_handle(); }
 
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
 #include <memory>
 #include <Windows.h>
-frost::api::sync_object* _stdcall frost::api::sync_object::create_mutex(bool initial_owner)
-{
-	return frost::api::mutex::create(initial_owner);
-}
-frost::api::sync_object* _stdcall frost::api::sync_object::create_semaphore(i32 count, i32 max)
-{
-	return frost::api::semaphore::create(count, max);
-}
+//frost::api::sync_object* _stdcall frost::api::sync_object::create_mutex(bool initial_owner)
+//{
+//	return frost::api::mutex::create(initial_owner);
+//}
+//frost::api::sync_object* _stdcall frost::api::sync_object::create_semaphore(i32 count, i32 max)
+//{
+//	return frost::api::semaphore::create(count, max);
+//}
 
-i32  frost::api::sync_object::lock_one(frost::api::sync_object*const* target_list, i32 count)
+i32  frost::api::synchronizable::lock_one(frost::api::synchronizable*const* target_list, i32 count)
 {
 	if (count > MAXIMUM_WAIT_OBJECTS)
 		return false;
@@ -28,7 +27,7 @@ i32  frost::api::sync_object::lock_one(frost::api::sync_object*const* target_lis
 		return false;
 
 	for (i32 i = 0; i < count; i++)
-		data[i] = target_list[i]->get_system_handle();
+		data[i] = target_list[i]->get_internal_handle();
 
 	auto result = ::WaitForMultipleObjects(static_cast<DWORD>(count), reinterpret_cast<HANDLE*>(data), FALSE, ~0u);
 
@@ -40,7 +39,7 @@ i32  frost::api::sync_object::lock_one(frost::api::sync_object*const* target_lis
 	else
 		return -1;
 }
-bool frost::api::sync_object::lock_all(frost::api::sync_object*const* target_list, i32 count)
+bool frost::api::synchronizable::lock_all(frost::api::synchronizable*const* target_list, i32 count)
 {
 	if (count > MAXIMUM_WAIT_OBJECTS)
 		return false;
@@ -50,7 +49,7 @@ bool frost::api::sync_object::lock_all(frost::api::sync_object*const* target_lis
 		return false;
 
 	for (i32 i = 0; i < count; i++)
-		data[i] = target_list[i]->get_system_handle();
+		data[i] = target_list[i]->get_internal_handle();
 
 	auto result = ::WaitForMultipleObjects(static_cast<DWORD>(count), reinterpret_cast<HANDLE*>(data), TRUE, ~0u);
 
@@ -59,7 +58,7 @@ bool frost::api::sync_object::lock_all(frost::api::sync_object*const* target_lis
 
 	return (result >= WAIT_OBJECT_0) && (result < (WAIT_OBJECT_0 + count));
 }
-i32  frost::api::sync_object::try_lock_one(frost::api::sync_object*const* target_list, i32 count)
+i32  frost::api::synchronizable::try_lock_one(frost::api::synchronizable*const* target_list, i32 count)
 {
 	if (count > MAXIMUM_WAIT_OBJECTS)
 		return false;
@@ -69,7 +68,7 @@ i32  frost::api::sync_object::try_lock_one(frost::api::sync_object*const* target
 		return false;
 
 	for (i32 i = 0; i < count; i++)
-		data[i] = target_list[i]->get_system_handle();
+		data[i] = target_list[i]->get_internal_handle();
 
 	auto result = ::WaitForMultipleObjects(static_cast<DWORD>(count), reinterpret_cast<HANDLE*>(data), FALSE, 0u);
 
@@ -81,7 +80,7 @@ i32  frost::api::sync_object::try_lock_one(frost::api::sync_object*const* target
 	else
 		return -1;
 }
-bool frost::api::sync_object::try_lock_all(frost::api::sync_object*const* target_list, i32 count)
+bool frost::api::synchronizable::try_lock_all(frost::api::synchronizable*const* target_list, i32 count)
 {
 	if (count > MAXIMUM_WAIT_OBJECTS)
 		return false;
@@ -91,7 +90,7 @@ bool frost::api::sync_object::try_lock_all(frost::api::sync_object*const* target
 		return false;
 
 	for (i32 i = 0; i < count; i++)
-		data[i] = target_list[i]->get_system_handle();
+		data[i] = target_list[i]->get_internal_handle();
 
 	auto result = ::WaitForMultipleObjects(static_cast<DWORD>(count), reinterpret_cast<HANDLE*>(data), TRUE, 0u);
 

@@ -25,7 +25,7 @@ namespace Frost.Net.Test
 		[TestMethod]
 		public void TestSyncSemaphoreApi()
 		{
-			var sf = Sync.CreateSemaphore(2, 2);
+			var sf = new Semaphore(2, 2);
 			sf.Lock();
 			sf.TryLock();
 			sf.Unlock();
@@ -34,7 +34,7 @@ namespace Frost.Net.Test
 		[TestMethod]
 		public void TestSyncMutexApi()
 		{
-			var mx = Sync.CreateMutex(false);
+			var mx = new Mutex(false);
 			mx.Lock();
 			mx.TryLock();
 			mx.Unlock();
@@ -43,12 +43,12 @@ namespace Frost.Net.Test
 		[TestMethod]
 		public void TestSyncApi()
 		{
-			var mx = Sync.CreateMutex(false);
-			var sf = Sync.CreateSemaphore(2, 2);
-			Sync.LockOne(sf, mx);
-			Sync.LockAll(sf, mx);
-			Sync.TryLockOne(sf, mx);
-			Sync.TryLockAll(sf, mx);
+			var mx = new Mutex(false);
+			var sf = new Semaphore(2, 2);
+			ISynchronizable.LockOne(sf, mx);
+			ISynchronizable.LockAll(sf, mx);
+			ISynchronizable.TryLockOne(sf, mx);
+			ISynchronizable.TryLockAll(sf, mx);
 		}
 
 		[TestMethod]

@@ -1,20 +1,22 @@
-#include "Frost.Api/sync_object.api.hpp"
+#include "Frost.Api/mutex.api.hpp"
+#include "Frost.Api/semaphore.api.hpp"
 #include "Frost.Api/object.api.hpp"
 #include "Frost.Api/ref.hpp"
 #include <iostream>
 #include <vector>
-void test_sync_object();
+void test_synchronizable();
 int main()
 {
+	test_synchronizable();
 }
 
-void test_sync_object()
+void test_synchronizable()
 {
-	
-
-	ref<frost::api::sync_object> mx = frost::api::sync_object::create_mutex(false);
-	ref<frost::api::sync_object> sf = frost::api::sync_object::create_semaphore(2, 2);
-	sf = frost::api::sync_object::create_mutex(false);
+	ref<frost::api::synchronizable> mx = frost::api::mutex::create(false);
+	ref<frost::api::synchronizable> sf = frost::api::semaphore::create(2, 2);
+	auto m2 = mx;
+	auto m3 = mx;
+	auto s2 = sf;
 	bool b;
 	i32 i;
 	b = mx->lock();		// TRUE
@@ -27,13 +29,13 @@ void test_sync_object()
 	b = sf->unlock();	// TRUE
 	b = sf->unlock();	// FALSE
 
-	std::vector<ref<frost::api::sync_object>> vec;
+	std::vector<ref<frost::api::synchronizable>> vec;
 	vec.push_back(sf.get());
 	vec.push_back(mx.get());
 
-	b = frost::api::sync_object::lock_all(vec.data()->get_array(), vec.size());		// TRUE
-	b = frost::api::sync_object::lock_all(vec.data()->get_array(), vec.size());		// TRUaE
-	b = frost::api::sync_object::try_lock_all(vec.data()->get_array(), vec.size());	// FALSE
-	i = frost::api::sync_object::lock_one(vec.data()->get_array(), vec.size());		// 1
-	i = frost::api::sync_object::try_lock_one(vec.data()->get_array(), vec.size());	// 1
+	b = frost::api::synchronizable::lock_all(vec.data()->get_array(), vec.size());		// TRUE
+	b = frost::api::synchronizable::lock_all(vec.data()->get_array(), vec.size());		// TRUE
+	b = frost::api::synchronizable::try_lock_all(vec.data()->get_array(), vec.size());	// FALSE
+	i = frost::api::synchronizable::lock_one(vec.data()->get_array(), vec.size());		// 1
+	i = frost::api::synchronizable::try_lock_one(vec.data()->get_array(), vec.size());	// 1
 }
