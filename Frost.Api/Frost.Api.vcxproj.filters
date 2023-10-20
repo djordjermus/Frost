@@ -39,7 +39,7 @@
     <ClInclude Include="logging.api.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sync_object.api.hpp">
+    <ClInclude Include="synchronizable.api.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="object.api.hpp">
@@ -48,10 +48,19 @@
     <ClInclude Include="ref.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="internal\mutex.api.hpp">
+    <ClInclude Include="internal\mutex.impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="internal\semaphore.api.hpp">
+    <ClInclude Include="internal\semaphore.impl.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="internal\object.impl.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mutex.api.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="semaphore.api.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -74,16 +83,25 @@
     <ClCompile Include="_src\event_system.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_src\sync_object.api.cpp">
+    <ClCompile Include="_src\synchronizable.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_src\object.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="internal\_src\mutex.api.cpp">
+    <ClCompile Include="internal\_src\mutex.impl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="internal\_src\semaphore.api.cpp">
+    <ClCompile Include="internal\_src\semaphore.impl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="_src\mutex.api.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="_src\semaphore.api.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="internal\_src\object.impl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

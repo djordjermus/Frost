@@ -1,33 +1,33 @@
-#include "../mutex.api.hpp"
+#include "../mutex.impl.hpp"
 
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
 
-frost::api::mutex::mutex(HANDLE handle) :
+frost::impl::mutex::mutex(HANDLE handle) :
 	_handle(handle) {}
-frost::api::mutex::~mutex()
+frost::impl::mutex::~mutex()
 {
 	::CloseHandle(_handle);
 }
-frost::api::mutex* frost::api::mutex::create(bool initial_owner)
+frost::impl::mutex* frost::impl::mutex::create(bool initial_owner)
 {
 	return new mutex(::CreateMutexW(nullptr, static_cast<BOOL>(initial_owner), nullptr));
 }
 
+AUTO_OBJECT_INTERFACE_IMPL(frost::impl::mutex);
 
-
-void* frost::api::mutex::get_system_handle()
+void* frost::impl::mutex::get_internal_handle()
 {
 	return _handle;
 }
-bool frost::api::mutex::lock()
+bool frost::impl::mutex::lock()
 {
 	return ::WaitForSingleObjectEx(_handle, ~0ul, FALSE) == WAIT_OBJECT_0;
 }
-bool frost::api::mutex::try_lock()
+bool frost::impl::mutex::try_lock()
 {
 	return ::WaitForSingleObjectEx(_handle, 0ul, FALSE) == WAIT_OBJECT_0;
 }
-bool frost::api::mutex::unlock()
+bool frost::impl::mutex::unlock()
 {
 	return ::ReleaseMutex(_handle);
 }

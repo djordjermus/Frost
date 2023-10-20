@@ -132,8 +132,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="clock.api.hpp" />
-    <ClInclude Include="internal\mutex.api.hpp" />
-    <ClInclude Include="internal\semaphore.api.hpp" />
+    <ClInclude Include="internal\mutex.impl.hpp" />
+    <ClInclude Include="internal\object.impl.hpp" />
+    <ClInclude Include="internal\semaphore.impl.hpp" />
+    <ClInclude Include="semaphore.api.hpp" />
+    <ClInclude Include="mutex.api.hpp" />
     <ClInclude Include="macro.hpp" />
     <ClInclude Include="object.api.hpp" />
     <ClInclude Include="primitives.hpp" />
@@ -143,17 +146,20 @@
     <ClInclude Include="semantic_version.api.hpp" />
     <ClInclude Include="event_system.api.hpp" />
     <ClInclude Include="logging.api.hpp" />
-    <ClInclude Include="sync_object.api.hpp" />
+    <ClInclude Include="synchronizable.api.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="internal\_src\mutex.api.cpp" />
-    <ClCompile Include="internal\_src\semaphore.api.cpp" />
+    <ClCompile Include="internal\_src\mutex.impl.cpp" />
+    <ClCompile Include="internal\_src\object.impl.cpp" />
+    <ClCompile Include="internal\_src\semaphore.impl.cpp" />
     <ClCompile Include="_src\clock.api.cpp" />
     <ClCompile Include="_src\color.api.cpp" />
     <ClCompile Include="_src\event_system.api.cpp" />
     <ClCompile Include="_src\logging.api.cpp" />
+    <ClCompile Include="_src\mutex.api.cpp" />
     <ClCompile Include="_src\object.api.cpp" />
-    <ClCompile Include="_src\sync_object.api.cpp" />
+    <ClCompile Include="_src\semaphore.api.cpp" />
+    <ClCompile Include="_src\synchronizable.api.cpp" />
     <ClCompile Include="_src\random.api.cpp" />
     <ClCompile Include="_src\semantic_version.api.cpp" />
   </ItemGroup>

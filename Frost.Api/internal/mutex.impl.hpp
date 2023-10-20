@@ -1,19 +1,22 @@
-#include "../sync_object.api.hpp"
+#include "object.impl.hpp"
+#include "../mutex.api.hpp"
 #pragma once
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
 #include <Windows.h>
-namespace frost::api
+namespace frost::impl
 {
-	class mutex : public sync_object
+	class mutex : public object, public api::mutex
 	{
 		HANDLE _handle;
 
 	protected:
 		mutex(HANDLE handle);
 		~mutex();
-		void* _stdcall get_system_handle() override;
+		void* _stdcall get_internal_handle() override;
 
 	public:
+		AUTO_OBJECT_INTERFACE_DECL();
+
 		static mutex* create(bool initial_owner);
 		bool _stdcall lock() override;
 		bool _stdcall try_lock() override;

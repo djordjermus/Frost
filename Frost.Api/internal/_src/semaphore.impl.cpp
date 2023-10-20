@@ -1,33 +1,33 @@
-#include "../semaphore.api.hpp"
+#include "../semaphore.impl.hpp"
 
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
 
-frost::api::semaphore::semaphore(HANDLE handle) :
+frost::impl::semaphore::semaphore(HANDLE handle) :
 	_handle(handle) {}
-frost::api::semaphore::~semaphore()
+frost::impl::semaphore::~semaphore()
 {
 	::CloseHandle(_handle);
 }
-frost::api::semaphore* frost::api::semaphore::create(i32 count, i32 max)
+frost::impl::semaphore* frost::impl::semaphore::create(i32 count, i32 max)
 {
 	return new semaphore(::CreateSemaphoreW(nullptr, count, max, nullptr));
 }
 
+AUTO_OBJECT_INTERFACE_IMPL(frost::impl::semaphore);
 
-
-void* frost::api::semaphore::get_system_handle()
+void* frost::impl::semaphore::get_internal_handle()
 {
 	return _handle;
 }
-bool frost::api::semaphore::lock()
+bool frost::impl::semaphore::lock()
 {
 	return ::WaitForSingleObjectEx(_handle, ~0ul, FALSE) == WAIT_OBJECT_0;
 }
-bool frost::api::semaphore::try_lock()
+bool frost::impl::semaphore::try_lock()
 {
 	return ::WaitForSingleObjectEx(_handle, 0ul, FALSE) == WAIT_OBJECT_0;
 }
-bool frost::api::semaphore::unlock()
+bool frost::impl::semaphore::unlock()
 {
 	return ::ReleaseSemaphore(_handle, 1, nullptr);
 }

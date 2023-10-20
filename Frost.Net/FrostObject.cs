@@ -3,10 +3,12 @@ using System.Runtime.InteropServices;
 
 namespace Frost.Net
 {
-	public class FrostObject
+	public class FrostObject : IFrostObject
 	{
 		private IntPtr _handle;
-        protected FrostObject() => _handle = IntPtr.Zero;
+
+        protected FrostObject() =>
+			_handle = IntPtr.Zero;
 		protected FrostObject(IntPtr handle)
 		{
 			if (handle != IntPtr.Zero)
@@ -15,8 +17,6 @@ namespace Frost.Net
 				_handle = handle;
 			}
 		}
-
-
 
 		public IntPtr Handle
 		{
@@ -31,11 +31,11 @@ namespace Frost.Net
 				_handle = value;
 			}
 		}
-
 		public ulong ReferenceCount => 
 			Handle != IntPtr.Zero ?
 				Interop.GetRefCount(Handle) : 
 				0;
+		public bool Valid => Handle != IntPtr.Zero;
 
 		~FrostObject()
 		{
@@ -44,27 +44,28 @@ namespace Frost.Net
 		}
 
 
+
 		static internal class Interop
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?get_reference_count@object@api@frost@@SA_KPEAV123@@Z")]
+				EntryPoint = "?get_reference_count@object@api@frost@@CA_KPEBV123@@Z")]
 			public static extern ulong GetRefCount(IntPtr ptr);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?acquire_reference@object@api@frost@@SAXPEAV123@@Z")]
+				EntryPoint = "?acquire_reference@object@api@frost@@CAXPEBV123@@Z")]
 			public static extern void AcquireReference(IntPtr ptr);
 
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?release_reference@object@api@frost@@SAXPEAV123@@Z")]
+				EntryPoint = "?release_reference@object@api@frost@@CAXPEBV123@@Z")]
 			public static extern void ReleaseReference(IntPtr ptr);
 		}
 	}
