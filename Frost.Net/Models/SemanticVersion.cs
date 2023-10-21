@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Frost.Net.Models
+﻿namespace Frost.Net.Models
 {
 	public sealed class SemanticVersion
 	{
@@ -19,7 +11,7 @@ namespace Frost.Net.Models
 
 		public bool CheckCompatibility(SemanticVersion target)
 		{
-			var current_fsv = new Interop.FrostSemanticVersion()
+			var current_fsv = new FrostApi.SemanticVersion.FrostSemanticVersion()
 			{
 				major = Major,
 				minor = Minor,
@@ -27,7 +19,7 @@ namespace Frost.Net.Models
 				decoration = IntPtr.Zero,
 			};
 
-			var target_fsv = new Interop.FrostSemanticVersion()
+			var target_fsv = new FrostApi.SemanticVersion.FrostSemanticVersion()
 			{
 				major = target.Major,
 				minor = target.Minor,
@@ -35,14 +27,14 @@ namespace Frost.Net.Models
 				decoration = IntPtr.Zero,
 			};
 
-			return Interop.CheckCompatibility(current_fsv, target_fsv);
+			return FrostApi.SemanticVersion.CheckCompatibility(current_fsv, target_fsv);
 		}
 
 
 
 		public static SemanticVersion GetApiVersion()
 		{
-			Interop.GetApiVersion(out Interop.FrostSemanticVersion version);
+			FrostApi.SemanticVersion.GetApiVersion(out FrostApi.SemanticVersion.FrostSemanticVersion version);
 
 			return new SemanticVersion()
 			{
@@ -51,33 +43,6 @@ namespace Frost.Net.Models
 				Patch = version.patch,
 				Decoration = Unmanaged.StringFromUnmanagedWstr(version.decoration)
 			};
-		}
-
-		internal static class Interop
-		{
-			[StructLayout(LayoutKind.Sequential)]
-			public struct FrostSemanticVersion
-			{
-				public ushort major;
-				public ushort minor;
-				public uint   patch;
-				public IntPtr decoration;
-			}
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				dllName: Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?get_api_version@semantic_version@api@frost@@SAXPEAV123@@Z")]
-			public static extern void GetApiVersion(out FrostSemanticVersion output);
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				dllName: Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?check_compatibility@semantic_version@api@frost@@SA_NV123@0@Z")]
-			public static extern bool CheckCompatibility(
-				FrostSemanticVersion version, 
-				FrostSemanticVersion target);
 		}
 	}
 }
