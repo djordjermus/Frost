@@ -15,7 +15,7 @@ namespace Frost.Net
 		static EventSystem()
 		{
 			_logEventsTag = Log.Interop.GetLogEventTag();
-			Interop.SubscribeRelay(InteropRelay);
+			FrostApi.EventSystem.SubscribeRelay(InteropRelay);
 		}
 
 		public static void Subscribe<T>(ulong tag, Layers activationLayers, Handler<T> handler) where T : class
@@ -46,7 +46,7 @@ namespace Frost.Net
 			unsafe
 			{
 #pragma warning disable CS8500
-				Interop.Emit((ulong)typeof(T).GetHashCode(), activationLayers.Value, (IntPtr)(&eventData));
+				FrostApi.EventSystem.Emit((ulong)typeof(T).GetHashCode(), activationLayers.Value, (IntPtr)(&eventData));
 #pragma warning restore CS8500
 			}
 		}
@@ -83,7 +83,7 @@ namespace Frost.Net
 		{
 			unsafe
 			{
-				RawLogEvent* pLog = (RawLogEvent*)pLogEvent;
+				FrostApi.EventSystem.RawLogEvent* pLog = (FrostApi.EventSystem.RawLogEvent*)pLogEvent;
 				string template = Unmanaged.StringFromUnmanagedWstr(pLog->message_template, (int)pLog->template_length);
 				string message = Unmanaged.StringFromUnmanagedWstr(pLog->message, (int)pLog->message_length);
 				List<string> parameters = new List<string>();
@@ -122,72 +122,5 @@ namespace Frost.Net
 
 		private static void RegisterTaggedRelay<T>(ulong tag) where T : class =>
 			_relays[tag] = TaggedDirectRelay<T>;
-
-		internal static class Interop
-		{
-			[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-			public delegate void HandlerSig(IntPtr pData);
-
-			[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-			public delegate void RelaySig(ulong tag, ulong layers, IntPtr pData);
-
-
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				dllName: Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?emit@event_system@api@frost@@SAX_K0PEAX@Z")]
-			public static extern void Emit(ulong tag, ulong layer, IntPtr p_data);
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				dllName: Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?subscribe@event_system@api@frost@@SAX_K0P6AXPEAX@Z@Z")]
-			public static extern void Subscribe(ulong tag, ulong activation_layers, HandlerSig handler);
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				dllName: Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?unsubscribe@event_system@api@frost@@SAX_K0P6AXPEAX@Z@Z")]
-			public static extern void Unsubscribe(ulong tag, ulong activation_layers, HandlerSig handler);
-
-
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				dllName: Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?subscribe_relay@event_system@api@frost@@SAXP6AX_K0PEAX@Z@Z")]
-			public static extern void SubscribeRelay(RelaySig relay);
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				dllName: Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?unsubscribe_relay@event_system@api@frost@@SAXP6AX_K0PEAX@Z@Z")]
-			public static extern void UnsubscribeRelay(RelaySig relay);
-		}
-
-		private struct RawLogEvent
-		{
-			public RawLogEvent() { }
-
-			public IntPtr message_template = default;
-			public ulong template_length = default;
-
-			public IntPtr message = default;
-			public ulong message_length = default;
-
-			public IntPtr parameters = default;
-			public IntPtr parameter_lengths = default;
-			public ulong parameter_count = default;
-
-			public ulong timestamp = default;
-			public ulong thread_id = default;
-			public byte level = default;
-		}
 	}
 }

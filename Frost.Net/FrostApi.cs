@@ -146,5 +146,72 @@ namespace Frost.Net
 				FrostSemanticVersion version, 
 				FrostSemanticVersion target);
         }
+
+		public static class EventSystem
+		{
+			public struct RawLogEvent
+			{
+				public RawLogEvent() { }
+
+				public IntPtr message_template = default;
+				public ulong template_length = default;
+
+				public IntPtr message = default;
+				public ulong message_length = default;
+
+				public IntPtr parameters = default;
+				public IntPtr parameter_lengths = default;
+				public ulong parameter_count = default;
+
+				public ulong timestamp = default;
+				public ulong thread_id = default;
+				public byte level = default;
+			}
+
+			[UnmanagedFunctionPointer(CallingConvention.StdCall)]
+			public delegate void HandlerSig(IntPtr pData);
+
+			[UnmanagedFunctionPointer(CallingConvention.StdCall)]
+			public delegate void RelaySig(ulong tag, ulong layers, IntPtr pData);
+
+
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "event_system_emit")]
+			public static extern void Emit(ulong tag, ulong layer, IntPtr p_data);
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "event_system_subscribe")]
+			public static extern void Subscribe(ulong tag, ulong activation_layers, HandlerSig handler);
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "event_system_unsubscribe")]
+			public static extern void Unsubscribe(ulong tag, ulong activation_layers, HandlerSig handler);
+
+
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "event_system_subscribe_relay")]
+			public static extern void SubscribeRelay(RelaySig relay);
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "event_system_unsubscribe_relay")]
+			public static extern void UnsubscribeRelay(RelaySig relay);
+		}
 	}
 }

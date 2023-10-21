@@ -147,7 +147,7 @@ static void log_internal(
 	e.thread_id = get_thread_id();
 	e.level = level;
 
-	frost::api::event_system::emit(typeid(frost::api::logging::log_event).hash_code(), activation_layers, &e);
+	event_system_emit(typeid(frost::api::logging::log_event).hash_code(), activation_layers, &e);
 
 	if (e.message_length > _ALLOCA_S_THRESHOLD)
 		delete message;
