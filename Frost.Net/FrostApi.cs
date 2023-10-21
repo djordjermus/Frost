@@ -95,5 +95,29 @@ namespace Frost.Net
                 EntryPoint = "cmyk_to_rgba32")]
             public extern static void CmykToRgba32(IntPtr input, IntPtr output);
 		}
+
+        public static class Random
+        {
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+	            Settings.frostApiPath,
+	            CallingConvention = CallingConvention.StdCall,
+	            EntryPoint = "random_generate")]
+			public static extern ulong Generate(IntPtr pSeed);
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "random_generate_range")]
+			public static extern ulong GenerateRange(IntPtr pSeed, ulong min, ulong range);
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "random_generate_range_double")]
+			public static extern double GenerateF64(IntPtr pSeed, double min, double range);
+		}
 	}
 }
