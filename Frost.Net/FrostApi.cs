@@ -78,21 +78,21 @@ namespace Frost.Net
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "hsva_to_rgba32")]
+                EntryPoint = "color_hsva_to_rgba32")]
             public extern static void HsvaToRgba32(IntPtr input, IntPtr output);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "hsla_to_rgba32")]
+                EntryPoint = "color_hsla_to_rgba32")]
             public extern static void HslaToRgba32(IntPtr input, IntPtr output);
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             [DllImport(
                 dllName: Settings.frostApiPath,
                 CallingConvention = CallingConvention.StdCall,
-                EntryPoint = "cmyk_to_rgba32")]
+                EntryPoint = "color_cmyk_to_rgba32")]
             public extern static void CmykToRgba32(IntPtr input, IntPtr output);
 		}
 
@@ -119,5 +119,32 @@ namespace Frost.Net
 				EntryPoint = "random_generate_range_double")]
 			public static extern double GenerateF64(IntPtr pSeed, double min, double range);
 		}
+
+        public static class SemanticVersion
+        {
+        	[StructLayout(LayoutKind.Sequential)]
+			public struct FrostSemanticVersion
+			{
+				public ushort major;
+				public ushort minor;
+				public uint   patch;
+				public IntPtr decoration;
+			}
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "semantic_version_get_api_version")]
+			public static extern void GetApiVersion(out FrostSemanticVersion output);
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "semantic_version_check_compatibility")]
+			public static extern bool CheckCompatibility(
+				FrostSemanticVersion version, 
+				FrostSemanticVersion target);
+        }
 	}
 }
