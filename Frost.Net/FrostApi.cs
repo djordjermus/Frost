@@ -32,5 +32,68 @@ namespace Frost.Net
 				EntryPoint = "clock_get_timestamp")]
 			public static extern ulong GetTimestamp();
 		}
+
+		public static class Color
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "rgba8_to_rgba32")]
+            public extern static void Rgba8ToRgba32(int input, IntPtr output);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "rgba32_to_rgba8")]
+            public extern static void Rgba32ToRgba8(IntPtr input, IntPtr output);
+
+
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "rgba32_to_hsva")]
+            public extern static void Rgba32ToHsva(IntPtr input, IntPtr output);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "rgba32_to_hsla")]
+            public extern static void Rgba32ToHsla(IntPtr input, IntPtr output);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "rgba32_to_cmyk")]
+            public extern static void Rgba32ToCmyk(IntPtr input, IntPtr output);
+
+
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "hsva_to_rgba32")]
+            public extern static void HsvaToRgba32(IntPtr input, IntPtr output);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "hsla_to_rgba32")]
+            public extern static void HslaToRgba32(IntPtr input, IntPtr output);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "cmyk_to_rgba32")]
+            public extern static void CmykToRgba32(IntPtr input, IntPtr output);
+		}
 	}
 }
