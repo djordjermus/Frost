@@ -7,17 +7,17 @@ static inline u64 query_frequency();
 static u64 _cached_frequency = query_frequency();
 static f64 _cached_period    = 1.0 / query_frequency();
 
-u64 frost::api::clock::get_frequency()
+u64 clock_get_frequency()
 {
 	return _cached_frequency;
 }
 
-f64 frost::api::clock::get_period()
+f64 clock_get_period()
 {
 	return _cached_period;
 }
 
-u64 frost::api::clock::get_timestamp()
+u64 clock_get_timestamp()
 {
 	LARGE_INTEGER output;
 	::QueryPerformanceCounter(&output);
