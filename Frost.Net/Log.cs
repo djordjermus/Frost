@@ -16,7 +16,7 @@ namespace Frost.Net
 				var lengths = ExtractParamsLengths(parameters);
 				var pointers = ParamsToIntPtrArray(parameters);
 				fixed (void* pTemplate = template, pParams = pointers, pLengths = lengths)
-					Interop.LogVerbose(
+					FrostApi.Logging.LogVerbose(
 						(IntPtr)pTemplate,
 						(ulong)template.Length,
 						(IntPtr)pParams,
@@ -33,7 +33,7 @@ namespace Frost.Net
 				var lengths = ExtractParamsLengths(parameters);
 				var pointers = ParamsToIntPtrArray(parameters);
 				fixed (void* pTemplate = template, pParams = pointers, pLengths = lengths)
-					Interop.LogDebug(
+					FrostApi.Logging.LogDebug(
 						(IntPtr)pTemplate,
 						(ulong)template.Length,
 						(IntPtr)pParams,
@@ -50,7 +50,7 @@ namespace Frost.Net
 				var lengths = ExtractParamsLengths(parameters);
 				var pointers = ParamsToIntPtrArray(parameters);
 				fixed (void* pTemplate = template, pParams = pointers, pLengths = lengths)
-					Interop.LogInfo(
+					FrostApi.Logging.LogInfo(
 						(IntPtr)pTemplate,
 						(ulong)template.Length,
 						(IntPtr)pParams,
@@ -67,7 +67,7 @@ namespace Frost.Net
 				var lengths = ExtractParamsLengths(parameters);
 				var pointers = ParamsToIntPtrArray(parameters);
 				fixed (void* pTemplate = template, pParams = pointers, pLengths = lengths)
-					Interop.LogWarning(
+					FrostApi.Logging.LogWarning(
 						(IntPtr)pTemplate,
 						(ulong)template.Length,
 						(IntPtr)pParams,
@@ -84,7 +84,7 @@ namespace Frost.Net
 				var lengths = ExtractParamsLengths(parameters);
 				var pointers = ParamsToIntPtrArray(parameters);
 				fixed (void* pTemplate = template, pParams = pointers, pLengths = lengths)
-				Interop.LogError(
+				FrostApi.Logging.LogError(
 					(IntPtr)pTemplate,
 					(ulong)template.Length,
 					(IntPtr)pParams,
@@ -101,7 +101,7 @@ namespace Frost.Net
 				var lengths = ExtractParamsLengths(parameters);
 				var pointers = ParamsToIntPtrArray(parameters);
 				fixed (void* pTemplate = template, pParams = pointers, pLengths = lengths)
-					Interop.LogCritical(
+					FrostApi.Logging.LogCritical(
 						(IntPtr)pTemplate,
 						(ulong)template.Length,
 						(IntPtr)pParams,
@@ -183,94 +183,6 @@ namespace Frost.Net
 				}
 			}
 			return result;
-		}
-
-		internal static class Interop
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				dllName: Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?get_log_event_tag@logging@api@frost@@SA_KXZ")]
-			public static extern ulong GetLogEventTag();
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				dllName: Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?verbose@logging@api@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
-			public static extern void LogVerbose(
-				IntPtr message_template,
-				ulong template_length,
-				IntPtr parameters,
-				IntPtr lengths,
-				ulong param_count,
-				ulong activation_layers);
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				dllName: Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?debug@logging@api@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
-			public static extern void LogDebug(
-				IntPtr message_template,
-				ulong template_length,
-				IntPtr parameters,
-				IntPtr lengths,
-				ulong param_count,
-				ulong activation_layers);
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				dllName: Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?info@logging@api@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
-			public static extern void LogInfo(
-				IntPtr message_template,
-				ulong template_length,
-				IntPtr parameters,
-				IntPtr lengths,
-				ulong param_count,
-				ulong activation_layers);
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				dllName: Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?warning@logging@api@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
-			public static extern void LogWarning(
-				IntPtr message_template,
-				ulong template_length,
-				IntPtr parameters,
-				IntPtr lengths,
-				ulong param_count,
-				ulong activation_layers);
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				dllName: Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?error@logging@api@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
-			public static extern void LogError(
-				IntPtr message_template,
-				ulong template_length,
-				IntPtr parameters,
-				IntPtr lengths,
-				ulong param_count,
-				ulong activation_layers);
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				dllName: Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?critical@logging@api@frost@@SAXPEB_W_KPEAPEB_WPEB_K11@Z")]
-			public static extern void LogCritical(
-				IntPtr message_template,
-				ulong template_length,
-				IntPtr parameters,
-				IntPtr lengths,
-				ulong param_count,
-				ulong activation_layers);
 		}
 	}
 }

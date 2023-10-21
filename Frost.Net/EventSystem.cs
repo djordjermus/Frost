@@ -14,7 +14,7 @@ namespace Frost.Net
 
 		static EventSystem()
 		{
-			_logEventsTag = Log.Interop.GetLogEventTag();
+			_logEventsTag = FrostApi.Logging.GetLogEventTag();
 			FrostApi.EventSystem.SubscribeRelay(InteropRelay);
 		}
 

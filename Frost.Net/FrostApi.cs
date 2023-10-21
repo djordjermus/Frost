@@ -213,5 +213,93 @@ namespace Frost.Net
 				EntryPoint = "event_system_unsubscribe_relay")]
 			public static extern void UnsubscribeRelay(RelaySig relay);
 		}
+
+		public static class Logging
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "logging_get_log_event_tag")]
+			public static extern ulong GetLogEventTag();
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "logging_verbose")]
+			public static extern void LogVerbose(
+				IntPtr message_template,
+				ulong template_length,
+				IntPtr parameters,
+				IntPtr lengths,
+				ulong param_count,
+				ulong activation_layers);
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "logging_debug")]
+			public static extern void LogDebug(
+				IntPtr message_template,
+				ulong template_length,
+				IntPtr parameters,
+				IntPtr lengths,
+				ulong param_count,
+				ulong activation_layers);
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "logging_info")]
+			public static extern void LogInfo(
+				IntPtr message_template,
+				ulong template_length,
+				IntPtr parameters,
+				IntPtr lengths,
+				ulong param_count,
+				ulong activation_layers);
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "logging_warning")]
+			public static extern void LogWarning(
+				IntPtr message_template,
+				ulong template_length,
+				IntPtr parameters,
+				IntPtr lengths,
+				ulong param_count,
+				ulong activation_layers);
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "logging_error")]
+			public static extern void LogError(
+				IntPtr message_template,
+				ulong template_length,
+				IntPtr parameters,
+				IntPtr lengths,
+				ulong param_count,
+				ulong activation_layers);
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "logging_critical")]
+			public static extern void LogCritical(
+				IntPtr message_template,
+				ulong template_length,
+				IntPtr parameters,
+				IntPtr lengths,
+				ulong param_count,
+				ulong activation_layers);
+		}
 	}
 }
