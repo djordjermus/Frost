@@ -13,7 +13,7 @@ frost::impl::mutex* frost::impl::mutex::create(bool initial_owner)
 	return new mutex(::CreateMutexW(nullptr, static_cast<BOOL>(initial_owner), nullptr));
 }
 
-AUTO_OBJECT_INTERFACE_IMPL(frost::impl::mutex);
+AUTO_RESOURCE_INTERFACE_IMPL(frost::impl::mutex);
 
 void* frost::impl::mutex::get_internal_handle()
 {

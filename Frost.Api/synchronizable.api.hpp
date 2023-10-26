@@ -1,8 +1,8 @@
-#include "object.api.hpp"
+#include "resource.api.hpp"
 #pragma once
 namespace frost::api
 {
-	class synchronizable : public object
+	class synchronizable : public resource
 	{
 	public:
 		virtual bool lock() = 0;

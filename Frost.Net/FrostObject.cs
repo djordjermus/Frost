@@ -13,7 +13,7 @@ namespace Frost.Net
 		{
 			if (handle != IntPtr.Zero)
 			{
-				Interop.AcquireReference(handle);
+				FrostApi.Resource.AcquireReference(handle);
 				_handle = handle;
 			}
 		}
@@ -24,49 +24,30 @@ namespace Frost.Net
 			protected set
 			{
 				if (_handle != IntPtr.Zero)
-					Interop.ReleaseReference(_handle);
+					FrostApi.Resource.ReleaseReference(_handle);
 				if (value != IntPtr.Zero)
-					Interop.AcquireReference(value);
+					FrostApi.Resource.AcquireReference(value);
 
 				_handle = value;
 			}
 		}
 		public ulong ReferenceCount => 
 			Handle != IntPtr.Zero ?
-				Interop.GetRefCount(Handle) : 
+				FrostApi.Resource.GetRefCount(Handle) :
 				0;
 		public bool Valid => Handle != IntPtr.Zero;
 
 		~FrostObject()
 		{
 			if (_handle != IntPtr.Zero)
-				Interop.ReleaseReference(_handle);
+				FrostApi.Resource.ReleaseReference(_handle);
 		}
 
-
-
-		static internal class Interop
+		public void Dispose()
 		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				dllName: Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?get_reference_count@object@api@frost@@CA_KPEBV123@@Z")]
-			public static extern ulong GetRefCount(IntPtr ptr);
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				dllName: Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?acquire_reference@object@api@frost@@CAXPEBV123@@Z")]
-			public static extern void AcquireReference(IntPtr ptr);
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				dllName: Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?release_reference@object@api@frost@@CAXPEBV123@@Z")]
-			public static extern void ReleaseReference(IntPtr ptr);
+			GC.SuppressFinalize(this);
+			if (_handle != IntPtr.Zero)
+				FrostApi.Resource.ReleaseReference(_handle);
 		}
 	}
 }

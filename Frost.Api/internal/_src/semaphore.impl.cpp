@@ -13,7 +13,7 @@ frost::impl::semaphore* frost::impl::semaphore::create(i32 count, i32 max)
 	return new semaphore(::CreateSemaphoreW(nullptr, count, max, nullptr));
 }
 
-AUTO_OBJECT_INTERFACE_IMPL(frost::impl::semaphore);
+AUTO_RESOURCE_INTERFACE_IMPL(frost::impl::semaphore);
 
 void* frost::impl::semaphore::get_internal_handle()
 {

@@ -1,11 +1,11 @@
-#include "object.impl.hpp"
+#include "resource.impl.hpp"
 #include "../mutex.api.hpp"
 #pragma once
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
 #include <Windows.h>
 namespace frost::impl
 {
-	class mutex : public object, public api::mutex
+	class mutex : public resource, public api::mutex
 	{
 		HANDLE _handle;
 
@@ -15,7 +15,7 @@ namespace frost::impl
 		void* _stdcall get_internal_handle() override;
 
 	public:
-		AUTO_OBJECT_INTERFACE_DECL();
+		AUTO_RESOURCE_INTERFACE_DECL();
 
 		static mutex* create(bool initial_owner);
 		bool _stdcall lock() override;

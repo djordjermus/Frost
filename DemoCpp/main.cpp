@@ -1,6 +1,6 @@
 #include "Frost.Api/mutex.api.hpp"
 #include "Frost.Api/semaphore.api.hpp"
-#include "Frost.Api/object.api.hpp"
+#include "Frost.Api/resource.api.hpp"
 #include "Frost.Api/ref.hpp"
 #include <iostream>
 #include <vector>

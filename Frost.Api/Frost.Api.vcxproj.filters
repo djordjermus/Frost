@@ -42,7 +42,7 @@
     <ClInclude Include="synchronizable.api.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="object.api.hpp">
+    <ClInclude Include="resource.api.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ref.hpp">
@@ -54,7 +54,7 @@
     <ClInclude Include="internal\semaphore.impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="internal\object.impl.hpp">
+    <ClInclude Include="internal\resource.impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mutex.api.hpp">
@@ -86,7 +86,7 @@
     <ClCompile Include="_src\synchronizable.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_src\object.api.cpp">
+    <ClCompile Include="_src\resource.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="internal\_src\mutex.impl.cpp">
@@ -101,7 +101,7 @@
     <ClCompile Include="_src\semaphore.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="internal\_src\object.impl.cpp">
+    <ClCompile Include="internal\_src\resource.impl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

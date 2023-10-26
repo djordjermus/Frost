@@ -301,5 +301,29 @@ namespace Frost.Net
 				ulong param_count,
 				ulong activation_layers);
 		}
+
+		public static class Resource
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "resource_get_reference_count")]
+			public static extern ulong GetRefCount(IntPtr ptr);
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "resource_acquire_reference")]
+			public static extern void AcquireReference(IntPtr ptr);
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "resource_release_reference")]
+			public static extern void ReleaseReference(IntPtr ptr);
+		}
 	}
 }

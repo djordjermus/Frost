@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Frost.Net
+﻿namespace Frost.Net
 {
-	public interface IFrostObject
+	/// <summary>
+	/// 
+	/// </summary>
+	public interface IFrostObject : IDisposable
 	{
 		public IntPtr Handle { get; }
+		public ulong ReferenceCount { get; }
 	}
 }
