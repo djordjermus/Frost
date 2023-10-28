@@ -20,5 +20,14 @@
 #define STATIC_CLASS(CLASS)\
 CLASS() = delete;\
 CLASS(CLASS&) = delete;\
-CLASS(CLASS&&) = delete;\
+CLASS(CLASS&&) noexcept = delete;\
+CLASS(CLASS&&) noexcept = delete;\
 ~CLASS() = delete;
+
+#define NO_COPY_SEMANTICS(CLASS)\
+CLASS(CLASS&) = delete;\
+CLASS& operator=(CLASS&) = delete;
+
+#define NO_MOVE_SEMANTICS(CLASS)\
+CLASS(CLASS&&) noexcept = delete;\
+CLASS& operator=(CLASS&&) noexcept = delete;
