@@ -1,16 +1,16 @@
 #include <vector>
 #include <map>
 #include "../event_system.api.hpp"
-using handler_group		= std::vector<frost::api::event_system::handler>;
-using handler_collection	= std::vector<frost::api::event_system::handler>;
+using handler_group			= std::vector<event_system_handler>;
+using handler_collection	= std::vector<event_system_handler>;
 using layer_collection		= std::vector<std::pair<u64, handler_collection>>;
 
-static std::vector<frost::api::event_system::relay> relays;
+static std::vector<event_system_relay> relays;
 static std::map<u64, std::map<u64, handler_group>> handlers;
 static std::map<u64, layer_collection> _handlers;
 
 static inline void emit_to_handlers(u64 tag, u64 layer, void* p_data);
-void frost::api::event_system::emit(u64 tag, u64 layer, void* p_data)
+void event_system_emit(u64 tag, u64 layer, void* p_data)
 {
 	// Emit to handlers
 	emit_to_handlers(tag, layer, p_data);
@@ -20,11 +20,11 @@ void frost::api::event_system::emit(u64 tag, u64 layer, void* p_data)
 		relay(tag, layer, p_data);
 }
 
-void frost::api::event_system::subscribe(u64 tag, u64 activation_layers, handler handler)
+void event_system_subscribe(u64 tag, u64 activation_layers, event_system_handler handler)
 {
 	handlers[tag][activation_layers].emplace_back(handler);
 }
-void frost::api::event_system::unsubscribe(u64 tag, u64 activation_layers, handler handler)
+void event_system_unsubscribe(u64 tag, u64 activation_layers, event_system_handler handler)
 {
 	auto layer_group = _handlers.find(tag);
 	if (layer_group == _handlers.end())
@@ -44,11 +44,11 @@ void frost::api::event_system::unsubscribe(u64 tag, u64 activation_layers, handl
 	}
 }
 
-void frost::api::event_system::subscribe_relay(relay relay)
+void event_system_subscribe_relay(event_system_relay relay)
 {
 	relays.emplace_back(relay);
 }
-void frost::api::event_system::unsubscribe_relay(relay relay)
+void event_system_unsubscribe_relay(event_system_relay relay)
 {
 	auto it = std::find(relays.begin(), relays.end(), relay);
 	if (it != relays.end())

@@ -14,7 +14,7 @@ namespace Frost.Net
 
 		public Random()
 		{
-			_seed = Clock.Interop.GetTimestamp();
+			_seed = FrostApi.Clock.GetTimestamp();
 		}
 
 		public ulong NextU64()
@@ -22,7 +22,7 @@ namespace Frost.Net
 			unsafe
 			{
 				fixed (ulong* pSeed = &_seed)
-					return Interop.Generate(new IntPtr(pSeed));
+					return FrostApi.Random.Generate(new IntPtr(pSeed));
 			}
 		}
 
@@ -31,7 +31,7 @@ namespace Frost.Net
 			unsafe
 			{
 				fixed (ulong* pSeed = &_seed)
-					return Interop.GenerateRange(new IntPtr(pSeed), minimum, range);
+					return FrostApi.Random.GenerateRange(new IntPtr(pSeed), minimum, range);
 			}
 		}
 
@@ -42,7 +42,7 @@ namespace Frost.Net
 				unchecked
 				{ 
 					fixed (ulong* pSeed = &_seed)
-						return (long)Interop.Generate(new IntPtr(pSeed));
+						return (long)FrostApi.Random.Generate(new IntPtr(pSeed));
 				}
 			}
 		}
@@ -54,7 +54,7 @@ namespace Frost.Net
 				unchecked
 				{
 					fixed (ulong* pSeed = &_seed)
-						return (long)Interop.GenerateRange(new IntPtr(pSeed), (ulong)minimum, range);
+						return (long)FrostApi.Random.GenerateRange(new IntPtr(pSeed), (ulong)minimum, range);
 				}
 			}
 		}
@@ -66,33 +66,9 @@ namespace Frost.Net
 				unchecked
 				{
 					fixed (ulong* pSeed = &_seed)
-						return Interop.GenerateF64(new IntPtr(pSeed), minimum, range);
+						return FrostApi.Random.GenerateF64(new IntPtr(pSeed), minimum, range);
 				}
 			}
-		}
-
-		internal static class Interop
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?generate@random@api@frost@@SA_KPEA_K@Z")]
-			public static extern ulong Generate(IntPtr pSeed);
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?generate_range@random@api@frost@@SA_KPEA_K_K1@Z")]
-			public static extern ulong GenerateRange(IntPtr pSeed, ulong min, ulong range);
-
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			[DllImport(
-				Settings.frostApiPath,
-				CallingConvention = CallingConvention.StdCall,
-				EntryPoint = "?generate_range_double@random@api@frost@@SANPEA_KNN@Z")]
-			public static extern double GenerateF64(IntPtr pSeed, double min, double range);
 		}
 	}
 }

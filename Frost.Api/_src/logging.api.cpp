@@ -45,12 +45,12 @@ static std::vector<std::wstring> params_to_vec(const wchar_t** params, u64 count
 
 
 
-u64 frost::api::logging::get_log_event_tag()
+u64 logging_get_log_event_tag()
 {
-	return typeid(frost::api::logging::log_event).hash_code();
+	return typeid(log_event).hash_code();
 }
 
-void frost::api::logging::verbose(
+void logging_verbose(
 	const wchar_t* message_template,
 	u64 template_length,
 	const wchar_t** params,
@@ -61,7 +61,7 @@ void frost::api::logging::verbose(
 	log_internal(message_template, template_length, params, param_lengths, param_count, activation_layers, 1);
 }
 
-void frost::api::logging::debug(
+void logging_debug(
 	const wchar_t* message_template,
 	u64 template_length,
 	const wchar_t** params,
@@ -72,7 +72,7 @@ void frost::api::logging::debug(
 	log_internal(message_template, template_length, params, param_lengths, param_count, activation_layers, 2);
 }
 
-void frost::api::logging::info(
+void logging_info(
 	const wchar_t* message_template,
 	u64 template_length,
 	const wchar_t** params,
@@ -83,7 +83,7 @@ void frost::api::logging::info(
 	log_internal(message_template, template_length, params, param_lengths, param_count, activation_layers, 4);
 }
 
-void frost::api::logging::warning(
+void logging_warning(
 	const wchar_t* message_template,
 	u64 template_length,
 	const wchar_t** params,
@@ -94,7 +94,7 @@ void frost::api::logging::warning(
 	log_internal(message_template, template_length, params, param_lengths, param_count, activation_layers, 8);
 }
 
-void frost::api::logging::error(
+void logging_error(
 	const wchar_t* message_template,
 	u64 template_length,
 	const wchar_t** params,
@@ -105,7 +105,7 @@ void frost::api::logging::error(
 	log_internal(message_template, template_length, params, param_lengths, param_count, activation_layers, 16);
 }
 
-void frost::api::logging::critical(
+void logging_critical(
 	const wchar_t* message_template,
 	u64 template_length,
 	const wchar_t** params,
@@ -130,7 +130,7 @@ static void log_internal(
 	u64 activation_layers,
 	u8 level)
 {
-	frost::api::logging::log_event e;
+	log_event e;
 	e.message_template = message_template;
 	e.template_length = template_length;
 
@@ -147,7 +147,7 @@ static void log_internal(
 	e.thread_id = get_thread_id();
 	e.level = level;
 
-	frost::api::event_system::emit(typeid(frost::api::logging::log_event).hash_code(), activation_layers, &e);
+	event_system_emit(typeid(log_event).hash_code(), activation_layers, &e);
 
 	if (e.message_length > _ALLOCA_S_THRESHOLD)
 		delete message;

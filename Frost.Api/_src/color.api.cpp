@@ -5,14 +5,14 @@
 #pragma warning(push)
 #pragma warning (disable: 26495)
 
-void frost::api::color::rgba8_to_rgba32(const u32 input, f32* output)
+void color_rgba8_to_rgba32(const u32 input, f32* output)
 {
 	output[0] = ((input >> 0x00) & 0xFF) / 255.0f;
 	output[1] = ((input >> 0x08) & 0xFF) / 255.0f;
 	output[2] = ((input >> 0x10) & 0xFF) / 255.0f;
 	output[3] = ((input >> 0x18) & 0xFF) / 255.0f;
 }
-void frost::api::color::rgba32_to_rgba8(const f32* input, u32* output)
+void color_rgba32_to_rgba8(const f32* input, u32* output)
 {
 	*output =
 		((static_cast<u32>(input[0] * 255.0f) << 0x00) & 0xFF) |
@@ -21,7 +21,7 @@ void frost::api::color::rgba32_to_rgba8(const f32* input, u32* output)
 		((static_cast<u32>(input[3] * 255.0f) << 0x18) & 0xFF);
 	}
 
-void frost::api::color::rgba32_to_hsva(const f32* input, f32* output)
+void color_rgba32_to_hsva(const f32* input, f32* output)
 {
 	float cmax =
 		(input[0] > input[1] ?
@@ -52,7 +52,7 @@ void frost::api::color::rgba32_to_hsva(const f32* input, f32* output)
 
 	output[3] = input[3];
 }
-void frost::api::color::rgba32_to_hsla(const f32* input, f32* output)
+void color_rgba32_to_hsla(const f32* input, f32* output)
 {
 	float cmax =
 		(input[0] > input[1] ?
@@ -83,7 +83,7 @@ void frost::api::color::rgba32_to_hsla(const f32* input, f32* output)
 
 	output[3] = input[3];
 }
-void frost::api::color::rgba32_to_cmyk(const f32* input, f32* output)
+void color_rgba32_to_cmyk(const f32* input, f32* output)
 {
 	float max =
 		(input[0] > input[1] ?
@@ -106,7 +106,7 @@ void frost::api::color::rgba32_to_cmyk(const f32* input, f32* output)
 	}
 }
 
-void frost::api::color::hsva_to_rgba32(const f32* input, f32* output)
+void color_hsva_to_rgba32(const f32* input, f32* output)
 {
 	float c = input[2] * input[1];
 	float x = c * (1.0f - fabsf(fmodf(input[0] / DEG60, 2.0f) - 1.0f));
@@ -137,7 +137,7 @@ void frost::api::color::hsva_to_rgba32(const f32* input, f32* output)
 		output[0] = c + m; output[1] = 0.0f + m; output[2] = x + m;
 	}
 }
-void frost::api::color::hsla_to_rgba32(const f32* input, f32* output)
+void color_hsla_to_rgba32(const f32* input, f32* output)
 {
 	float c = input[1] * (1.0f - fabsf(2 * input[2] - 1.0f));
 	float x = c * (1.0f - fabsf(fmodf(input[0] / DEG60, 2.0f) - 1.0f));
@@ -168,7 +168,7 @@ void frost::api::color::hsla_to_rgba32(const f32* input, f32* output)
 		output[0] = c + m; output[1] = 0.0f + m; output[2] = x + m;
 	}
 }
-void frost::api::color::cmyk_to_rgba32(const f32* input, f32* output)
+void color_cmyk_to_rgba32(const f32* input, f32* output)
 {
 	float one_k = 1.0f - output[3];
 	output[0] = (1.0f - input[0]) * one_k;

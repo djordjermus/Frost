@@ -1,4 +1,4 @@
-#include "object.api.hpp"
+#include "resource.api.hpp"
 #pragma once
 template<class T>
 class ref final
