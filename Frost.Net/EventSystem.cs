@@ -4,8 +4,8 @@ namespace Frost.Net
 {
 	public static class EventSystem
 	{
-		public delegate void Handler<T>(T data);
-		public delegate void HandlerRef<T>(T data);
+		public delegate void Handler<T>(ref T data) where T : struct;
+		public delegate void HandlerRef<T>(ref T data) where T : struct;
 		private delegate void Relay(ulong tag, ulong activationLayers, IntPtr pData);
 
 		private static Dictionary<ulong, Dictionary<ulong, object>> _handlers = new();
@@ -18,7 +18,7 @@ namespace Frost.Net
 			FrostApi.EventSystem.SubscribeRelay(InteropRelay);
 		}
 
-		public static void Subscribe<T>(ulong tag, Layers activationLayers, Handler<T> handler) where T : class
+		public static void Subscribe<T>(ulong tag, Layers activationLayers, Handler<T> handler) where T : struct
 		{
 			// Register tagged relay
 			RegisterTaggedRelay<T>(tag);
@@ -36,22 +36,23 @@ namespace Frost.Net
 			else
 				collection[activationLayers] = handler;
 		}
-
-		public static void Subscribe<T>(Layers activationLayers, Handler<T> handler) where T : class =>
+		public static void Subscribe<T>(Layers activationLayers, Handler<T> handler) where T : struct =>
 			Subscribe((ulong)typeof(T).GetHashCode(), activationLayers, handler);
-		
 
-		public static void Emit<T>(Layers activationLayers, T eventData) where T : class
+
+		public static void Emit<T>(Layers activationLayers, ref T eventData) where T : struct
 		{
 			unsafe
 			{
 #pragma warning disable CS8500
-				FrostApi.EventSystem.Emit((ulong)typeof(T).GetHashCode(), activationLayers.Value, (IntPtr)(&eventData));
+				fixed (void* pEventData = &eventData)
+				FrostApi.EventSystem.Emit((ulong)typeof(T).GetHashCode(), activationLayers.Value, (IntPtr)pEventData);
 #pragma warning restore CS8500
 			}
 		}
-
-		private static void EmitInternal<T>(Layers activationLayers, T e) where T : class
+		public static void Emit<T>(Layers activationLayers, T eventData) where T : struct =>
+			Emit(activationLayers, ref eventData);
+		private static void EmitInternal<T>(Layers activationLayers, ref T e) where T : struct
 		{
 			if (!_handlers.TryGetValue((ulong)typeof(T).GetHashCode(), out var collection))
 			{
@@ -63,7 +64,7 @@ namespace Frost.Net
 				if ((pair.Key & activationLayers.Value) == 0)
 					continue;
 
-				(pair.Value as Handler<T>)?.Invoke(e);
+				(pair.Value as Handler<T>)?.Invoke(ref e);
 			}
 		}
 
@@ -78,7 +79,6 @@ namespace Frost.Net
 			 	relay(tag, activationLayers, pData);
 			}
 		}
-
 		private static void LogEventsRelay(ulong tag, ulong activationLayers, IntPtr pLogEvent)
 		{
 			unsafe
@@ -95,32 +95,31 @@ namespace Frost.Net
 					parameters.Add(parameter);
 				}
 
-				Log.Event e = new Log.Event()
+				Log e = new Log()
 				{
-					Template	= template,
-					Message		= message,
-					Parameters	= parameters,
-					TimeStamp	= pLog->timestamp,
-					ThreadId	= pLog->thread_id,
-					Level		= (Log.Level)pLog->level
+					template	= template,
+					message		= message,
+					parameters	= parameters,
+					timeStamp	= pLog->timestamp,
+					threadId	= pLog->thread_id,
+					logLevel	= (Log.Level)pLog->level
 				};
 
-				EmitInternal(activationLayers, e);
+				EmitInternal(activationLayers, ref e);
 			}
 		}
 
-		private static void TaggedDirectRelay<T>(ulong tag, ulong activationLayers, IntPtr pData) where T : class
+		private static void TaggedDirectRelay<T>(ulong tag, ulong activationLayers, IntPtr pData) where T : struct
 		{
 			unsafe
 			{
 #pragma warning disable CS8500
-				T eventData = *(T*)pData.ToPointer();
+				T* eventData = (T*)pData.ToPointer();
+				EmitInternal(activationLayers, ref *eventData);
 #pragma warning restore CS8500
-				EmitInternal(activationLayers, eventData);
 			}
 		}
-
-		private static void RegisterTaggedRelay<T>(ulong tag) where T : class =>
+		private static void RegisterTaggedRelay<T>(ulong tag) where T : struct =>
 			_relays[tag] = TaggedDirectRelay<T>;
 	}
 }

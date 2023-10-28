@@ -3,7 +3,7 @@ namespace Frost.Net.Test
     [TestClass]
 	public class FrostApiEndpointLinkageTest
 	{
-		class EventData { public int value; }
+		struct EventData { public int value; }
 
 		[TestMethod]
 		public void TestClockApi()
@@ -83,9 +83,9 @@ namespace Frost.Net.Test
 		public void TestEventSystem()
 		{
 			var apiLayer = Layers.InternalLayer;
-			EventSystem.Subscribe(0b01, (EventData e) => Assert.AreNotEqual(e.value & 0b01, 0b00));
-			EventSystem.Subscribe(0b10, (EventData e) => Assert.AreNotEqual(e.value & 0b10, 0b00));
-			EventSystem.Subscribe(0b11, (EventData e) => Assert.AreNotEqual(e.value & 0b11, 0b00));
+			EventSystem.Subscribe(0b01, (ref EventData e) => Assert.AreNotEqual(e.value & 0b01, 0b00));
+			EventSystem.Subscribe(0b10, (ref EventData e) => Assert.AreNotEqual(e.value & 0b10, 0b00));
+			EventSystem.Subscribe(0b11, (ref EventData e) => Assert.AreNotEqual(e.value & 0b11, 0b00));
 			EventSystem.Emit(0b01, new EventData() { value = 0b01 });
 			EventSystem.Emit(0b10, new EventData() { value = 0b10 });
 			EventSystem.Emit(0b11, new EventData() { value = 0b11 });
@@ -94,7 +94,7 @@ namespace Frost.Net.Test
 		[TestMethod]
 		public void TestLog()
 		{
-			EventSystem.Subscribe(1, (Log.Event l) => Console.WriteLine($"[{l.Level}]{l.Message}"));
+			EventSystem.Subscribe(1, (ref Log l) => Console.WriteLine($"[{l.logLevel}]{l.message}"));
 			Log.Verbose("{1}, {0}!", "World", "Hello");
 			Log.Debug("{1}, {0}!", "World", "Hello");
 			Log.Info("{1}, {0}!", "World", "Hello");
