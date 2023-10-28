@@ -180,6 +180,13 @@ namespace Frost.Net
 			[DllImport(
 				dllName: Settings.frostApiPath,
 				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "event_system_get_api_broadcast_layer")]
+			public static extern ulong GetApiBroadcastLayer();
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
 				EntryPoint = "event_system_emit")]
 			public static extern void Emit(ulong tag, ulong layer, IntPtr p_data);
 

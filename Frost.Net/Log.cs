@@ -3,9 +3,24 @@ using System.Runtime.InteropServices;
 
 namespace Frost.Net
 {
-	public static class Log
+	public struct Log
 	{
-		public static readonly Layers defaultLayers = new(0b01);
+		public Log()
+		{
+			template = "";
+			message = "";
+			parameters = new List<string>();
+			timeStamp = 0;
+			threadId = 0;
+			logLevel = 0;
+		}
+
+		public readonly string template { get; init; }
+		public readonly string message { get; init; }
+		public readonly List<string> parameters { get; init; }
+		public readonly ulong timeStamp { get; init; }
+		public readonly ulong threadId { get; init; }
+		public readonly Level logLevel { get; init; }
 
 
 
@@ -25,7 +40,6 @@ namespace Frost.Net
 						activationLayers.Value);
 			}
 		}
-
 		public static void Debug(Layers activationLayers, string template, params string[] parameters)
 		{
 			unsafe
@@ -42,7 +56,6 @@ namespace Frost.Net
 						activationLayers.Value);
 			}
 		}
-
 		public static void Info(Layers activationLayers, string template, params string[] parameters)
 		{
 			unsafe
@@ -59,7 +72,6 @@ namespace Frost.Net
 						activationLayers.Value);
 			}
 		}
-
 		public static void Warning(Layers activationLayers, string template, params string[] parameters)
 		{
 			unsafe
@@ -76,7 +88,6 @@ namespace Frost.Net
 						activationLayers.Value);
 			}
 		}
-
 		public static void Error(Layers activationLayers, string template, params string[] parameters)
 		{
 			unsafe
@@ -93,7 +104,6 @@ namespace Frost.Net
 					activationLayers.Value);
 			}
 		}
-
 		public static void Critical(Layers activationLayers, string template, params string[] parameters)
 		{
 			unsafe
@@ -115,42 +125,32 @@ namespace Frost.Net
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void Verbose(string template, params string[] parameters) =>
-		Verbose(defaultLayers, template, parameters);
+		Verbose(Layers.Default, template, parameters);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void Debug(string template, params string[] parameters) =>
-			Debug(defaultLayers, template, parameters);
+			Debug(Layers.Default, template, parameters);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void Info(string template, params string[] parameters) =>
-			Info(defaultLayers, template, parameters);
+			Info(Layers.Default, template, parameters);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void Warning(string template, params string[] parameters) =>
-			Warning(defaultLayers, template, parameters);
+			Warning(Layers.Default, template, parameters);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void Error(string template, params string[] parameters) =>
-			Error(defaultLayers, template, parameters);
+			Error(Layers.Default, template, parameters);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void Critical(string template, params string[] parameters) =>
-			Critical(defaultLayers, template, parameters);
+			Critical(Layers.Default, template, parameters);
 
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void Subscribe(EventSystem.Handler<Event> handler) =>
-			EventSystem.Subscribe(defaultLayers, handler);
-
-		public sealed class Event
-		{
-			public string Template { get; init; } = "";
-			public string Message { get; init; } = "";
-			public List<string> Parameters { get; init; } = new List<string>();
-			public ulong TimeStamp { get; init; }
-			public ulong ThreadId { get; init; }
-			public Level Level { get; init; }
-		}
+		public static void Subscribe(EventSystem.Handler<Log> handler) =>
+			EventSystem.Subscribe(Layers.Default, handler);
 
 		public enum Level
 		{
@@ -169,7 +169,6 @@ namespace Frost.Net
 				result[i] = (ulong)(parameters[i]?.Length ?? 0);
 			return result;
 		}
-
 		private static IntPtr[] ParamsToIntPtrArray(string[] parameters)
 		{
 			var result = new IntPtr[parameters.Length];
