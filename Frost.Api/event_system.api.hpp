@@ -7,6 +7,7 @@ extern "C"
 	typedef void(_stdcall* event_system_handler)(void* p_data);
 	typedef void(_stdcall* event_system_relay)(u64 tag, u64 layer, void* p_data);
 
+	FROST_API u64 _stdcall event_system_get_api_broadcast_layer();
 	FROST_API void _stdcall event_system_emit(u64 tag, u64 layer, void* p_data);
 
 	FROST_API void _stdcall event_system_subscribe(u64 tag, u64 activation_layers, event_system_handler handler);

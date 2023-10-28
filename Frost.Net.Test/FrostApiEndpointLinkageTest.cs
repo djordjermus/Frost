@@ -82,6 +82,7 @@ namespace Frost.Net.Test
 		[TestMethod]
 		public void TestEventSystem()
 		{
+			var apiLayer = Layers.InternalLayer;
 			EventSystem.Subscribe(0b01, (EventData e) => Assert.AreNotEqual(e.value & 0b01, 0b00));
 			EventSystem.Subscribe(0b10, (EventData e) => Assert.AreNotEqual(e.value & 0b10, 0b00));
 			EventSystem.Subscribe(0b11, (EventData e) => Assert.AreNotEqual(e.value & 0b11, 0b00));

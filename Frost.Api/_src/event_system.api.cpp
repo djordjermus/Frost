@@ -10,6 +10,10 @@ static std::map<u64, std::map<u64, handler_group>> handlers;
 static std::map<u64, layer_collection> _handlers;
 
 static inline void emit_to_handlers(u64 tag, u64 layer, void* p_data);
+u64 event_system_get_api_broadcast_layer()
+{
+	return 0x8000'0000'0000'0000;
+}
 void event_system_emit(u64 tag, u64 layer, void* p_data)
 {
 	// Emit to handlers

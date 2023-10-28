@@ -22,5 +22,10 @@
 			new Layers(lhs._value & rhs._value);
 		public static Layers operator ^(Layers lhs, Layers rhs) =>
 			new Layers(lhs._value ^ rhs._value);
+
+		public static Layers Default =>
+			new Layers(1);
+		public static Layers InternalLayer =>
+			new Layers(FrostApi.EventSystem.GetApiBroadcastLayer());
 	}
 }
