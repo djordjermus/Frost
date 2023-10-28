@@ -3,7 +3,7 @@
 	/// <summary>
 	/// 
 	/// </summary>
-	public interface IFrostObject : IDisposable
+	public interface IFrostResource : IDisposable
 	{
 		public IntPtr Handle { get; }
 		public ulong ReferenceCount { get; }

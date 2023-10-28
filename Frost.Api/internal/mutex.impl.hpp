@@ -1,11 +1,11 @@
 #include "resource.impl.hpp"
-#include "../mutex.api.hpp"
+#include "../synchronizable.api.hpp"
 #pragma once
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
 #include <Windows.h>
 namespace frost::impl
 {
-	class mutex : public resource, public api::mutex
+	class mutex : public resource, public api::synchronizable
 	{
 		HANDLE _handle;
 

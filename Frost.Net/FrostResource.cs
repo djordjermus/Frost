@@ -3,13 +3,13 @@ using System.Runtime.InteropServices;
 
 namespace Frost.Net
 {
-	public class FrostObject : IFrostObject
+	public class FrostResource : IFrostResource
 	{
 		private IntPtr _handle;
 
-        protected FrostObject() =>
+        protected FrostResource() =>
 			_handle = IntPtr.Zero;
-		protected FrostObject(IntPtr handle)
+		protected FrostResource(IntPtr handle)
 		{
 			if (handle != IntPtr.Zero)
 			{
@@ -37,7 +37,7 @@ namespace Frost.Net
 				0;
 		public bool Valid => Handle != IntPtr.Zero;
 
-		~FrostObject()
+		~FrostResource()
 		{
 			if (_handle != IntPtr.Zero)
 				FrostApi.Resource.ReleaseReference(_handle);

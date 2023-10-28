@@ -325,5 +325,84 @@ namespace Frost.Net
 				EntryPoint = "resource_release_reference")]
 			public static extern void ReleaseReference(IntPtr ptr);
 		}
+
+		public static class Synchronizable
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "synchronizable_create_mutex")]
+            public static extern IntPtr CreateMutex(bool initialOwner);
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "synchronizable_create_semaphore")]
+            public static extern IntPtr CreateSemaphore(int count, int max);
+
+
+
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "synchronizable_lock")]
+            public static extern bool Lock(IntPtr target);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "synchronizable_try_lock")]
+            public static extern bool TryLock(IntPtr target);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "synchronizable_unlock")]
+            public static extern bool Unlock(IntPtr target);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "synchronizable_get_internal_handle")]
+            public static extern IntPtr GetSystemHandle(IntPtr target);
+
+
+
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "synchronizable_lock_one")]
+            public static extern int LockOne(IntPtr pArray, int count);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "synchronizable_lock_all")]
+            public static extern bool LockAll(IntPtr pArray, int count);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "synchronizable_try_lock_one")]
+            public static extern int TryLockOne(IntPtr pArray, int count);
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "synchronizable_try_lock_all")]
+            public static extern bool TryLockAll(IntPtr pArray, int count);
+		}
 	}
 }
