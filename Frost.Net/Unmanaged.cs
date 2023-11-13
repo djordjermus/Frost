@@ -26,7 +26,7 @@ namespace Frost.Net
 				char* read = (char*)pString;
 				char* end = read + length;
 				StringBuilder sb = new StringBuilder(length);
-				while (read != end)				{
+				while (read != end) {
 					sb.Append(*read);
 					read++;
 				}

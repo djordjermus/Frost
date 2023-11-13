@@ -94,7 +94,7 @@ namespace Frost.Net.Test
 		[TestMethod]
 		public void TestLog()
 		{
-			EventSystem.Subscribe(1, (ref Log l) => Console.WriteLine($"[{l.logLevel}]{l.message}"));
+			EventSystem.Subscribe(1, (ref Log l) => Console.WriteLine($"[{l.level}]{l.message}"));
 			Log.Verbose("{1}, {0}!", "World", "Hello");
 			Log.Debug("{1}, {0}!", "World", "Hello");
 			Log.Info("{1}, {0}!", "World", "Hello");

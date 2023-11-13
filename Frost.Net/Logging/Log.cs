@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace Frost.Net
 {
@@ -12,7 +11,7 @@ namespace Frost.Net
 			parameters = new List<string>();
 			timeStamp = 0;
 			threadId = 0;
-			logLevel = 0;
+			level = 0;
 		}
 
 		public readonly string template { get; init; }
@@ -20,7 +19,7 @@ namespace Frost.Net
 		public readonly List<string> parameters { get; init; }
 		public readonly ulong timeStamp { get; init; }
 		public readonly ulong threadId { get; init; }
-		public readonly Level logLevel { get; init; }
+		public readonly Level level { get; init; }
 
 
 
@@ -95,13 +94,13 @@ namespace Frost.Net
 				var lengths = ExtractParamsLengths(parameters);
 				var pointers = ParamsToIntPtrArray(parameters);
 				fixed (void* pTemplate = template, pParams = pointers, pLengths = lengths)
-				FrostApi.Logging.LogError(
-					(IntPtr)pTemplate,
-					(ulong)template.Length,
-					(IntPtr)pParams,
-					(IntPtr)pLengths,
-					(ulong)parameters.Length,
-					activationLayers.Value);
+					FrostApi.Logging.LogError(
+						(IntPtr)pTemplate,
+						(ulong)template.Length,
+						(IntPtr)pParams,
+						(IntPtr)pLengths,
+						(ulong)parameters.Length,
+						activationLayers.Value);
 			}
 		}
 		public static void Critical(Layers activationLayers, string template, params string[] parameters)
@@ -152,15 +151,38 @@ namespace Frost.Net
 		public static void Subscribe(EventSystem.Handler<Log> handler) =>
 			EventSystem.Subscribe(Layers.Default, handler);
 
+
+
+		public static bool LevelFilter(Level level, Levels filter) =>
+			((int)level & (int)filter) != 0;
+
 		public enum Level
 		{
 			Verbose		= 1,
 			Debug		= 2,
 			Info		= 4,
 			Warning		= 8,
-			Error		= 16,
+			Errror		= 16,
 			Critical	= 32,
 		}
+
+		[Flags]
+		public enum Levels
+		{
+			Verbose			= 1,
+			Debug			= 2,
+			Info			= 4,
+			Warning			= 8,
+			Error			= 16,
+			Critical		= 32,
+			All				= 0b111111,
+			DebugAndUp		= 0b111110,
+			InfoAndUp		= 0b111100,
+			WarningAndUp	= 0b111000,
+			ErrorAndUp		= 0b110000,
+		}
+
+
 
 		private static ulong[] ExtractParamsLengths(string[] parameters)
 		{

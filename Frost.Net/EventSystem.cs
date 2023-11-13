@@ -1,8 +1,6 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-namespace Frost.Net
+﻿namespace Frost.Net
 {
-	public static class EventSystem
+    public static class EventSystem
 	{
 		public delegate void Handler<T>(ref T data) where T : struct;
 		public delegate void HandlerRef<T>(ref T data) where T : struct;
@@ -102,7 +100,7 @@ namespace Frost.Net
 					parameters	= parameters,
 					timeStamp	= pLog->timestamp,
 					threadId	= pLog->thread_id,
-					logLevel	= (Log.Level)pLog->level
+					level	= (Log.Level)pLog->level
 				};
 
 				EmitInternal(activationLayers, ref e);

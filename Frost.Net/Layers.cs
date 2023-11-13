@@ -5,7 +5,7 @@
 		private ulong _value;
 
 		public Layers() { _value = 0; }
-        public Layers(ulong value) { _value = value; }
+		public Layers(ulong value) { _value = value; }
 		
 		public ulong Value { get => _value; set => _value = value; }
 
@@ -25,6 +25,8 @@
 
 		public static Layers Default =>
 			new Layers(1);
+		public static Layers All =>
+			new Layers(~0ul);
 		public static Layers InternalLayer =>
 			new Layers(FrostApi.EventSystem.GetApiBroadcastLayer());
 	}
