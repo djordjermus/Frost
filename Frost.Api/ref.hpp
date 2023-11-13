@@ -1,18 +1,17 @@
 #include "resource.api.hpp"
 #pragma once
-template<class T>
 class ref final
 {
 private:
-	T* _ptr;
-	static T* inc(T* ptr) { if (ptr != nullptr) ptr->acquire_reference(); return ptr; }
-	static T* dec(T* ptr) { if (ptr != nullptr) ptr->release_reference(); return ptr; }
+	frost::api::resource* _ptr;
+	static inline frost::api::resource* inc(frost::api::resource* ptr) { if (ptr != nullptr) resource_acquire_reference(ptr); return ptr; }
+	static inline frost::api::resource* dec(frost::api::resource* ptr) { if (ptr != nullptr) resource_release_reference(ptr); return ptr; }
 
 public:
 	/* CONSTRUCTORS */
 	ref() :
 		_ptr(nullptr) {}
-	ref(T* ptr) :
+	ref(frost::api::resource* ptr) :
 		_ptr(inc(ptr)) {}
 	ref(const ref& reference) :
 		_ptr(inc(reference._ptr)) {}
@@ -21,7 +20,7 @@ public:
 	~ref() { dec(_ptr); }
 
 	/* OPERATORS */
-	ref& operator=(T* ptr)
+	ref& operator=(frost::api::resource* ptr)
 	{
 		dec(_ptr);
 		_ptr = inc(ptr);
@@ -41,23 +40,23 @@ public:
 	}
 
 	operator bool() const { return _ptr != nullptr; }
-	bool operator == (T* ptr) const { return _ptr == ptr; }
-	bool operator != (T* ptr) const { return _ptr != ptr; }
+	bool operator == (frost::api::resource* ptr) const { return _ptr == ptr; }
+	bool operator != (frost::api::resource* ptr) const { return _ptr != ptr; }
 	bool operator == (ref rhs) const { return _ptr == rhs._ptr; }
 	bool operator != (ref rhs) const { return _ptr != rhs._ptr; }
 
-	T* operator->() const
+	frost::api::resource* operator->() const
 	{
 		return _ptr;
 	}
 
 	/* METHODS */
-	T* get() const
+	frost::api::resource* get() const
 	{
 		return _ptr;
 	}
 
-	T* const* get_array() const
+	frost::api::resource* const* get_array() const
 	{
 		return &_ptr;
 	}

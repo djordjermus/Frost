@@ -132,9 +132,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="clock.api.hpp" />
-    <ClInclude Include="internal\mutex.impl.hpp" />
     <ClInclude Include="internal\resource.impl.hpp" />
-    <ClInclude Include="internal\semaphore.impl.hpp" />
+    <ClInclude Include="internal\synchronizable.impl.hpp" />
     <ClInclude Include="macro.hpp" />
     <ClInclude Include="resource.api.hpp" />
     <ClInclude Include="primitives.hpp" />
@@ -147,9 +146,8 @@
     <ClInclude Include="synchronizable.api.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="internal\_src\mutex.impl.cpp" />
     <ClCompile Include="internal\_src\resource.impl.cpp" />
-    <ClCompile Include="internal\_src\semaphore.impl.cpp" />
+    <ClCompile Include="internal\_src\synchronizable.impl.cpp" />
     <ClCompile Include="_src\clock.api.cpp" />
     <ClCompile Include="_src\color.api.cpp" />
     <ClCompile Include="_src\event_system.api.cpp" />

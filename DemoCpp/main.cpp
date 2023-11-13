@@ -11,24 +11,24 @@ int main()
 
 void test_synchronizable()
 {
-	ref<frost::api::synchronizable> mx = synchronizable_create_mutex(false);
-	ref<frost::api::synchronizable> sf = synchronizable_create_semaphore(2, 2);
+	ref mx = synchronizable_create_mutex(false);
+	ref sf = synchronizable_create_semaphore(2, 2);
 	auto m2 = mx;
 	auto m3 = mx;
 	auto s2 = sf;
 	bool b;
 	i32 i;
-	b = mx->lock();		// TRUE
-	b = sf->lock();		// TRUE
-	b = sf->lock();		// TRUE
-	b = sf->try_lock();	// FALSE
-	b = mx->unlock();	// TRUE
-	b = mx->unlock();	// FALSE
-	b = sf->unlock();	// TRUE
-	b = sf->unlock();	// TRUE
-	b = sf->unlock();	// FALSE
+	b = synchronizable_lock(mx.get());		// TRUE
+	b = synchronizable_lock(sf.get());		// TRUE
+	b = synchronizable_lock(sf.get());		// TRUE
+	b = synchronizable_try_lock(sf.get());	// FALSE
+	b = synchronizable_unlock(mx.get());	// TRUE
+	b = synchronizable_unlock(mx.get());	// FALSE
+	b = synchronizable_unlock(sf.get());	// TRUE
+	b = synchronizable_unlock(sf.get());	// TRUE
+	b = synchronizable_unlock(sf.get());	// FALSE
 
-	std::vector<ref<frost::api::synchronizable>> vec;
+	std::vector<ref> vec;
 	vec.push_back(sf.get());
 	vec.push_back(mx.get());
 
