@@ -1,7 +1,13 @@
-﻿Frost.Net.Random r = new Frost.Net.Random();
-while (true)
+﻿using Frost.Net;
+
+var logger = new ConsoleLogger(Log.Levels.All);
+Log.Subscribe(Layers.InternalLayer, logger.Handler);
+DoThing();
+
+void DoThing()
 {
-	Console.WriteLine(r.NextF64(5, 5));
-	Thread.Sleep(10);
+	using var sync = new Frost.Net.Mutex(false);
 }
+
+
 

@@ -148,8 +148,8 @@ namespace Frost.Net
 
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void Subscribe(EventSystem.Handler<Log> handler) =>
-			EventSystem.Subscribe(Layers.Default, handler);
+		public static void Subscribe(Layers activationLayers, EventSystem.Handler<Log> handler) =>
+			EventSystem.Subscribe(activationLayers, handler);
 
 
 
@@ -162,7 +162,7 @@ namespace Frost.Net
 			Debug		= 2,
 			Info		= 4,
 			Warning		= 8,
-			Errror		= 16,
+			Error		= 16,
 			Critical	= 32,
 		}
 

@@ -9,7 +9,8 @@ namespace frost::api
 		mutable std::atomic<u64> _reference_count;
 
 	protected:
-		virtual ~resource() = default;
+		resource();
+		virtual ~resource();
 
 	public:
 		u64 get_reference_count() const;
