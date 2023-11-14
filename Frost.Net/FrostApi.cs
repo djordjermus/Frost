@@ -410,6 +410,15 @@ namespace Frost.Net
                 CallingConvention = CallingConvention.StdCall,
                 EntryPoint = "synchronizable_try_lock_all")]
             public static extern bool TryLockAll(IntPtr pArray, int count);
+
+
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            [DllImport(
+                dllName: Settings.frostApiPath,
+                CallingConvention = CallingConvention.StdCall,
+                EntryPoint = "resource_is_synchronizable")]
+            public static extern bool IsSynchronizable(IntPtr handle);
 		}
 	}
 }
