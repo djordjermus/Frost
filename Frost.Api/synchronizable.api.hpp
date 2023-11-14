@@ -14,4 +14,6 @@ extern "C"
 
 	FROST_API frost::api::resource* _stdcall synchronizable_create_mutex(bool initial_owner);
 	FROST_API frost::api::resource* _stdcall synchronizable_create_semaphore(i32 count, i32 max);
+
+	FROST_API bool _stdcall resource_is_synchronizable(frost::api::resource* target);
 }

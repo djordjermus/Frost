@@ -1,9 +1,6 @@
 #include "../synchronizable.api.hpp"
 #include "../internal/synchronizable.impl.hpp"
 
-#if defined(TARGET_BUILD_PLATFORM_WINDOWS)
-#include <memory>
-#include <Windows.h>
 #define TO_IMPL(x) (static_cast<frost::impl::synchronizable*>(x))
 #define TO_IMPL_LIST(x) (reinterpret_cast<frost::impl::synchronizable* const*>(x))
 
@@ -41,7 +38,7 @@ frost::api::resource* synchronizable_create_semaphore(i32 count, i32 max)
 {
 	return frost::impl::synchronizable::create_semaphore(count, max);
 }
-
-#else
-static_assert("PLATFORM NOT SUPPORTED!")
-#endif
+bool resource_is_synchronizable(frost::api::resource* target)
+{
+	return dynamic_cast<frost::impl::synchronizable*>(target) != nullptr;
+}
