@@ -72,4 +72,11 @@ extern "C"
 		u64				thread_id;
 		u8				level;
 	};
+
+	constexpr u8 logging_level_verbose	= 1;
+	constexpr u8 logging_level_debug	= 2;
+	constexpr u8 logging_level_info		= 4;
+	constexpr u8 logging_level_warning	= 8;
+	constexpr u8 logging_level_error	= 16;
+	constexpr u8 logging_level_critical	= 32;
 }
