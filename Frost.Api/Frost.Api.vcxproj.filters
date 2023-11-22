@@ -57,6 +57,9 @@
     <ClInclude Include="internal\debug.impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="keycode.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_src\clock.api.cpp">

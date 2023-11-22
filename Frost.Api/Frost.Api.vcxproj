@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClInclude Include="clock.api.hpp" />
     <ClInclude Include="internal\debug.impl.hpp" />
+    <ClInclude Include="keycode.hpp" />
     <ClInclude Include="internal\resource.impl.hpp" />
     <ClInclude Include="internal\synchronizable.impl.hpp" />
     <ClInclude Include="macro.hpp" />
