@@ -1,4 +1,3 @@
-#include "../synchronizable.api.hpp"
 #include "../internal/synchronizable.impl.hpp"
 
 #define TO_IMPL(x) (static_cast<frost::impl::synchronizable*>(x))
