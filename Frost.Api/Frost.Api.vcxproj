@@ -132,6 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="clock.api.hpp" />
+    <ClInclude Include="internal\debug.impl.hpp" />
     <ClInclude Include="internal\resource.impl.hpp" />
     <ClInclude Include="internal\synchronizable.impl.hpp" />
     <ClInclude Include="macro.hpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="synchronizable.api.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="internal\_src\debug.impl.cpp" />
     <ClCompile Include="internal\_src\resource.impl.cpp" />
     <ClCompile Include="internal\_src\synchronizable.impl.cpp" />
     <ClCompile Include="_src\clock.api.cpp" />
