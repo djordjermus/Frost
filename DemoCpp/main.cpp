@@ -1,12 +1,33 @@
+﻿#include "Frost.Api/keycode.api.hpp"
+#include "Frost.Api/window.api.hpp"
 #include "Frost.Api/synchronizable.api.hpp"
 #include "Frost.Api/resource.api.hpp"
 #include "Frost.Api/ref.hpp"
 #include <iostream>
+#include <fstream>
 #include <vector>
 void test_synchronizable();
+const wchar_t* kc_to_wstr(frost::api::keycode keycode);
+void window_proc(frost::api::window_event* e)
+{
+	if (e->type == frost::api::window_event::event_type::key_down)
+		std::wcout << L"DOWN: " << e->key_down.text << L" : " << e->key_down.repeat << L'\n';
+	if (e->type == frost::api::window_event::event_type::key_up)
+		std::wcout << L"UP:   " << e->key_down.text << L'\n';
+}
 int main()
 {
-	test_synchronizable();
+	wchar_t text[16] = {};
+	keycode_to_wchar(frost::api::keycode::bracket_open, text, 16);
+	keycode_to_wchar(frost::api::keycode::bracket_close, text, 16);
+
+	frost::api::window_description desc;
+	auto ref = window_proc;
+	desc.procedure = window_proc;
+	auto wnd = window_create(&desc);
+	resource_acquire_reference(wnd);
+	window_pump_messages(wnd);
+	resource_release_reference(wnd);
 }
 
 void test_synchronizable()

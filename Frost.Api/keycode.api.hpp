@@ -8,6 +8,7 @@ namespace frost::api
 
 extern "C"
 {
+	FROST_API bool _stdcall keycode_to_wchar(frost::api::keycode keycode, wchar_t* output, u64 output_length);
 }
 
 namespace frost::api
@@ -91,19 +92,19 @@ namespace frost::api
 		left_shift			= 0x2a,
 		right_shift			= 0x36,
 		left_ctrl			= 0x1d,
-		right_ctrl			= 0x9d,
-		left_win			= 0xdb,
-		right_win			= 0xdd,
+		right_ctrl			= 0x76,
+		left_win			= 0xB4,
+		right_win			= 0xB6,
 		left_alt			= 0x38,
-		right_alt			= 0xb8,
+		right_alt			= 0x91,
 
 		space				= 0x39,
 		enter				= 0x1c,
 
-		left_arrow			= 0xcb,
-		up_arrow			= 0xc8,
-		right_arrow			= 0xcd,
-		down_arrow			= 0xd0,
+		left_arrow			= 0xA4,
+		up_arrow			= 0xA1,
+		right_arrow			= 0xA6,
+		down_arrow			= 0xA9,
 
 		numpad_0			= 0x52,
 		numpad_1			= 0x4f,
@@ -116,22 +117,22 @@ namespace frost::api
 		numpad_8			= 0x48,
 		numpad_9			= 0x49,
 		numpad_numlock		= 0x45,
-		numpad_divide		= 0xb5,
+		numpad_divide		= 0x8E,
 		numpad_multiply		= 0x37,
 		numpad_minus		= 0x4a,
 		numpad_plus			= 0x4e,
-		numpad_enter		= 0x9c,
+		numpad_enter		= 0x75,
 		numpad_separator	= 0x53,
 
-		print_screen		= 0xaa,
+		print_screen		= 0x83,
 		scroll_lock			= 0x46,
-		pause				= 0x9d,
+		pause				= 0xD3,
 
-		insert				= 0xd2,
-		home				= 0xc7,
-		page_up				= 0xc9,
-		del					= 0xd3,
-		end					= 0xcf,
-		page_down			= 0xd1,
+		insert				= 0xAB,
+		home				= 0xA0,
+		page_up				= 0xA2,
+		del					= 0xAC,
+		end					= 0xA8,
+		page_down			= 0xAA,
 	};
 }
