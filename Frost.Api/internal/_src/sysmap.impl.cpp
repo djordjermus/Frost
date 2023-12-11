@@ -208,25 +208,7 @@ namespace frost::impl
 		_keycode_map[0xD3]	= { api::keycode::pause,			0xD3 };
 	}
 }
-/*
-_keycodes[] = { api::keycode::, 75 };
-_keycodes[] = { api::keycode::, 76 };
-_keycodes[] = { api::keycode::, 83 };
-_keycodes[] = { api::keycode::, 8e };
-_keycodes[] = { api::keycode::, 91 };
-_keycodes[] = { api::keycode::, a0 };
-_keycodes[] = { api::keycode::, a1 };
-_keycodes[] = { api::keycode::, a2 };
-_keycodes[] = { api::keycode::, a4 };
-_keycodes[] = { api::keycode::, a6 };
-_keycodes[] = { api::keycode::, a8 };
-_keycodes[] = { api::keycode::, a9 };
-_keycodes[] = { api::keycode::print_screen, aa };
-_keycodes[] = { api::keycode::, ac };
-_keycodes[] = { api::keycode::, ab };
-_keycodes[] = { api::keycode::, b4 };
-_keycodes[] = { api::keycode::, b6 };
-*/
+
 #else
 static_assert("PLATFORM NOT SUPPORTED")
 #endif

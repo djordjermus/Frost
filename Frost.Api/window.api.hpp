@@ -110,8 +110,8 @@ namespace frost::api
 			move			= 0x08,
 			resize			= 0x09,
 			
-			key_down		= 0x0A, // TODO
-			key_up			= 0x0B, // TODO
+			key_down		= 0x0A,
+			key_up			= 0x0B,
 			double_click	= 0x0C,
 							   
 			cursor_enter	= 0x0D,
