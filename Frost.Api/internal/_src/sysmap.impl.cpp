@@ -38,12 +38,12 @@ namespace frost::impl
 		return api::keycode::null;
 	}
 
-	bool sysmap::keycode_to_wcs(api::keycode internal_keycode, wchar_t* output, u64 output_length)
+	bool sysmap::keycode_to_wcs(api::keycode internal_keycode, wchar_t* output, u64 output_length, bool normalize_case)
 	{
 		u8 system_keycode = _instance._keycode_map[(u64)internal_keycode].second;
-		return syskey_to_wcs(system_keycode, output, output_length);
+		return syskey_to_wcs(system_keycode, output, output_length, normalize_case);
 	}
-	bool sysmap::syskey_to_wcs(u8 system_keycode, wchar_t* output, u64 output_length)
+	bool sysmap::syskey_to_wcs(u8 system_keycode, wchar_t* output, u64 output_length, bool normalize_case)
 	{
 		HKL hkl = ::GetKeyboardLayout(::GetCurrentThreadId());
 		u8 virtual_key = ::MapVirtualKeyExW(system_keycode, MAPVK_VSC_TO_VK, hkl);
@@ -59,8 +59,10 @@ namespace frost::impl
 		output_length = ::ToUnicodeEx(virtual_key, compose_scancode(make_code, flags), keyboard_state, output, output_length, 0, hkl);
 		if (output_length >= 0)
 		{
-			output[output_length] = L'\0'; // "..., any extra characters are invalid and should be ignored."
-			_wcslwr_s_l(output, output_length + 1, locale);
+			output[output_length] = L'\0'; // MSDN Docs: "..., any extra characters are invalid and should be ignored."
+			if (normalize_case)
+				_wcslwr_s_l(output, output_length + 1, locale);
+
 			return true;
 		}
 		else

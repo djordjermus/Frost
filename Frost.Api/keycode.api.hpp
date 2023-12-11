@@ -8,7 +8,11 @@ namespace frost::api
 
 extern "C"
 {
-	FROST_API bool _stdcall keycode_to_wcs(frost::api::keycode keycode, wchar_t* output, u64 output_length);
+	FROST_API bool _stdcall keycode_to_wcs(
+		frost::api::keycode keycode,
+		wchar_t* output,
+		u64 output_length,
+		bool normalize_case);
 }
 
 namespace frost::api
