@@ -207,7 +207,7 @@ namespace frost::impl
 			api::keycode keycode = sysmap::syskey_to_keycode(syskey);
 
 			wchar_t chars[8];
-			sysmap::syskey_to_wchar(syskey, chars, 8);
+			sysmap::syskey_to_wcs(syskey, chars, 8);
 		
 			if (e.type == frost::api::window_event::event_type::key_down)
 			{

@@ -1,8 +1,12 @@
 #include "../sysmap.impl.hpp"
+#include <cwctype>
+#include <clocale>
 #if defined (TARGET_BUILD_PLATFORM_WINDOWS)
 namespace frost::impl
 {
+	static _locale_t locale = _create_locale(LC_ALL, "");
 	sysmap sysmap::_instance = sysmap();
+
 	u8 sysmap::compose_syskey(u16 make_code, u16 flags)
 	{
 		u8 syskey = static_cast<u8>(make_code);
@@ -34,12 +38,12 @@ namespace frost::impl
 		return api::keycode::null;
 	}
 
-	bool sysmap::keycode_to_wchar(api::keycode internal_keycode, wchar_t* output, u64 output_length)
+	bool sysmap::keycode_to_wcs(api::keycode internal_keycode, wchar_t* output, u64 output_length)
 	{
 		u8 system_keycode = _instance._keycode_map[(u64)internal_keycode].second;
-		return syskey_to_wchar(system_keycode, output, output_length);
+		return syskey_to_wcs(system_keycode, output, output_length);
 	}
-	bool sysmap::syskey_to_wchar(u8 system_keycode, wchar_t* output, u64 output_length)
+	bool sysmap::syskey_to_wcs(u8 system_keycode, wchar_t* output, u64 output_length)
 	{
 		HKL hkl = ::GetKeyboardLayout(::GetCurrentThreadId());
 		u8 virtual_key = ::MapVirtualKeyExW(system_keycode, MAPVK_VSC_TO_VK, hkl);
@@ -52,8 +56,13 @@ namespace frost::impl
 		u16 flags = 0;
 		decompose_syskey(system_keycode, &make_code, &flags);
 
-		if (::ToUnicodeEx(virtual_key, compose_scancode(make_code, flags), keyboard_state, output, output_length, 0, hkl) <= 0)
+		output_length = ::ToUnicodeEx(virtual_key, compose_scancode(make_code, flags), keyboard_state, output, output_length, 0, hkl);
+		if (output_length >= 0)
+		{
+			output[output_length] = L'\0'; // "..., any extra characters are invalid and should be ignored."
+			_wcslwr_s_l(output, output_length + 1, locale);
 			return true;
+		}
 		else
 			return false;
 	}
@@ -61,17 +70,17 @@ namespace frost::impl
 	void sysmap::decompose_syskey(u8 syskey, u16* out_make_code, u16* out_flags)
 	{
 		if (syskey >= 0x75 && syskey <= 0xB6)
-		{
+		{	// RI_KEY_E0 - syskey += 0x59;
 			*out_make_code = syskey - 0x59;
 			*out_flags = RI_KEY_E0;
 		}
 		else if (syskey == 0xD3)
-		{
+		{	// RI_KEY_E1 - syskey += 0xB6;
 			*out_make_code = syskey - 0xB6;
 			*out_flags = RI_KEY_E0;
 		}
 		else
-		{
+		{	// NORMAL RANGE
 			*out_make_code = syskey;
 			*out_flags = RI_KEY_MAKE;
 		}

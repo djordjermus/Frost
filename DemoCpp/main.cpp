@@ -18,8 +18,8 @@ void window_proc(frost::api::window_event* e)
 int main()
 {
 	wchar_t text[16] = {};
-	keycode_to_wchar(frost::api::keycode::bracket_open, text, 16);
-	keycode_to_wchar(frost::api::keycode::bracket_close, text, 16);
+	keycode_to_wcs(frost::api::keycode::bracket_open, text, 16);
+	keycode_to_wcs(frost::api::keycode::bracket_close, text, 16);
 
 	frost::api::window_description desc;
 	auto ref = window_proc;
