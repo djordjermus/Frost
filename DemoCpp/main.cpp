@@ -11,9 +11,9 @@ const wchar_t* kc_to_wstr(frost::api::keycode keycode);
 void window_proc(frost::api::window_event* e)
 {
 	if (e->type == frost::api::window_event::event_type::key_down)
-		std::wcout << L"DOWN: " << e->key_down.text << L" : " << e->key_down.repeat << L'\n';
+		std::wcout << L"DOWN: " << keycode_get_name(e->key_down.key) << " | " << e->key_down.text << L" : " << e->key_down.repeat << L'\n';
 	if (e->type == frost::api::window_event::event_type::key_up)
-		std::wcout << L"UP:   " << e->key_down.text << L'\n';
+		std::wcout << L"UP:   " << keycode_get_name(e->key_up.key) << " | " << e->key_up.text << L'\n';
 }
 int main()
 {

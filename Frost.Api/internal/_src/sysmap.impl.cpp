@@ -166,6 +166,7 @@ namespace frost::impl
 		_keycode_map[0x34]	= { api::keycode::period,			0x34 };
 		_keycode_map[0x35]	= { api::keycode::slash,			0x35 };
 		_keycode_map[0x36]	= { api::keycode::right_shift,		0x36 };
+		_keycode_map[0x37]	= { api::keycode::numpad_multiply,	0x37 };
 		_keycode_map[0x38]	= { api::keycode::left_alt,			0x38 };
 		_keycode_map[0x39]	= { api::keycode::space,			0x39 };
 		_keycode_map[0x3A]	= { api::keycode::capslock,			0x3A };
@@ -179,6 +180,7 @@ namespace frost::impl
 		_keycode_map[0x42]	= { api::keycode::f8,				0x42 };
 		_keycode_map[0x43]	= { api::keycode::f9,				0x43 };
 		_keycode_map[0x44]	= { api::keycode::f10,				0x44 };
+		_keycode_map[0xD3]	= { api::keycode::pause,			0xD3 };
 		_keycode_map[0x46]	= { api::keycode::scroll_lock,		0x46 };
 		_keycode_map[0x47]	= { api::keycode::numpad_7,			0x47 };
 		_keycode_map[0x48]	= { api::keycode::numpad_8,			0x48 };
@@ -198,10 +200,11 @@ namespace frost::impl
 
 
 		
+		_keycode_map[0x45]	= { api::keycode::numpad_numlock,	0x45 };
 		_keycode_map[0x75]	= { api::keycode::numpad_enter,		0x75 };
 		_keycode_map[0x76]	= { api::keycode::right_ctrl,		0x76 };
-		_keycode_map[0x83]	= { api::keycode::print_screen,		0x83 };
 		_keycode_map[0x8E]	= { api::keycode::numpad_divide,	0x8E };
+		_keycode_map[0x90]	= { api::keycode::print_screen,		0x90 };
 		_keycode_map[0x91]	= { api::keycode::right_alt,		0x91 };
 		_keycode_map[0xA0]	= { api::keycode::home,				0xA0 };
 		_keycode_map[0xA1]	= { api::keycode::up_arrow,			0xA1 };
@@ -215,8 +218,6 @@ namespace frost::impl
 		_keycode_map[0xAB]	= { api::keycode::insert,			0xAB };
 		_keycode_map[0xB4]	= { api::keycode::left_win,			0xB4 };
 		_keycode_map[0xB6]	= { api::keycode::right_win,		0xB6 };
-
-		_keycode_map[0xD3]	= { api::keycode::pause,			0xD3 };
 	}
 }
 

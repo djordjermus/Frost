@@ -189,14 +189,23 @@ namespace frost::impl
 		else if (rid.header.dwType == RIM_TYPEKEYBOARD)
 		{
 			auto& keyboard = rid.data.keyboard;
-
+			
+			// ignore overrun makecode
 			if (keyboard.MakeCode == KEYBOARD_OVERRUN_MAKE_CODE)
 				return ::DefWindowProcW(hwnd, msg, w, l);
 
-			// ignore double WM_INPUT from PrtSc & Pause
-			if (keyboard.MakeCode == 55 || keyboard.MakeCode == 69)
+			// ignore double WM_INPUTs, let left shift pass
+			if (keyboard.MakeCode == 42 && keyboard.VKey != VK_SHIFT)
 				return ::DefWindowProcW(hwnd, msg, w, l);
-		
+
+			// ignore double WM_INPUTs, let control keys pass
+			if (keyboard.MakeCode == 29 && keyboard.VKey != VK_CONTROL && keyboard.VKey != VK_PAUSE)
+				return ::DefWindowProcW(hwnd, msg, w, l);
+
+			// ignore second VK_PAUSE input message
+			if (keyboard.VKey == 255)
+				return ::DefWindowProcW(hwnd, msg, w, l);
+
 			frost::api::window_event e;
 			e.target = data;
 			e.type = (keyboard.Flags & RI_KEY_BREAK) == RI_KEY_BREAK ?
@@ -213,14 +222,14 @@ namespace frost::impl
 			{
 				bool repeat = data->get_key_state(syskey);
 				data->set_key_state(syskey);
-				e.key_down.key = (frost::api::keycode)syskey;
+				e.key_down.key = keycode;
 				e.key_down.text = chars;
 				e.key_down.repeat = repeat;
 			}
 			else if (e.type == frost::api::window_event::event_type::key_up)
 			{
 				data->reset_key_state(syskey);
-				e.key_up.key = (frost::api::keycode)syskey;
+				e.key_up.key = keycode;
 				e.key_up.text = chars;
 			}
 
