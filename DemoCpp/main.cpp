@@ -24,21 +24,21 @@ void thread_procedure()
 	window_set_position(wnd, { 500, 500 });
 	window_set_size(wnd, { 200, 200 });
 }
+auto e = ::synchronizable_create_event();
 
 int main()
 {
-	wchar_t text[16] = {};
-	keycode_to_wcs(frost::api::keycode::bracket_open, text, 16, true);
-	keycode_to_wcs(frost::api::keycode::bracket_close, text, 16, true);
-
-	frost::api::window_description desc;
-	auto ref = window_proc;
-	desc.procedure = window_proc;
-	wnd = window_create(&desc);
-	resource_acquire_reference(wnd);
-	std::thread th(thread_procedure);
-	window_pump_messages(wnd);
-	resource_release_reference(wnd);
+	std::thread th([]() {
+		std::this_thread::sleep_for(std::chrono::seconds(10));
+		synchronizable_unlock(e);
+		std::this_thread::sleep_for(std::chrono::seconds(10));
+		synchronizable_unlock(e);
+		});
+	synchronizable_lock(e);
+	std::cout << "1st\n";
+	synchronizable_event_reset(e);
+	synchronizable_lock(e);
+	std::cout << "2nd\n";
 	th.join();
 }
 

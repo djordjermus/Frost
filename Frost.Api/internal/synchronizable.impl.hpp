@@ -22,9 +22,31 @@ namespace frost::impl
 		static bool lock_all(synchronizable* const* target_list, i32 count);
 		static i32 try_lock_one(synchronizable* const* target_list, i32 count);
 		static bool try_lock_all(synchronizable* const* target_list, i32 count);
-		
-		static api::resource* create_mutex(bool initial_owner);
-		static api::resource* create_semaphore(i32 count, i32 maximum);
+	};
+
+	class synchronizable_mutex : public frost::impl::synchronizable
+	{
+	public:
+		synchronizable_mutex(bool initial_owner);
+
+		bool unlock() const override;
+	};
+
+	class synchronizable_semaphore : public frost::impl::synchronizable
+	{
+	public:
+		synchronizable_semaphore(i32 count, i32 maximum);
+
+		bool unlock() const override;
+	};
+
+	class synchronizable_event : public synchronizable
+	{
+	public:
+		synchronizable_event();
+
+		bool unlock() const override;
+		bool reset() const;
 	};
 }
 #else
