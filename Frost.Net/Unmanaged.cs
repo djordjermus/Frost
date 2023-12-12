@@ -24,13 +24,11 @@ namespace Frost.Net
 			unsafe
 			{
 				char* read = (char*)pString;
-				char* end = read + length;
-				StringBuilder sb = new StringBuilder(length);
-				while (read != end) {
-					sb.Append(*read);
-					read++;
-				}
-				return sb.ToString();
+				Span<char> sb = stackalloc char[length];
+				for(int i = 0; i < length; i++)
+					sb[i] = read[i];
+				
+				return new string(sb);
 			}
 		}
 	}
