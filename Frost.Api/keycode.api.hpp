@@ -14,7 +14,7 @@ extern "C"
 		u64 output_length,
 		bool normalize_case);
 
-	FROST_API const char* _stdcall keycode_get_name(frost::api::keycode keycode);
+	FROST_API const wchar_t* _stdcall keycode_get_name(frost::api::keycode keycode);
 }
 
 namespace frost::api
