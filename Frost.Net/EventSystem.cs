@@ -82,21 +82,39 @@
 			unsafe
 			{
 				FrostApi.EventSystem.RawLogEvent* pLog = (FrostApi.EventSystem.RawLogEvent*)pLogEvent;
-				string template = Unmanaged.StringFromUnmanagedWstr(pLog->message_template, (int)pLog->template_length);
-				string message = Unmanaged.StringFromUnmanagedWstr(pLog->message, (int)pLog->message_length);
+
+				/* Read message template */
+				Span<char> templateSpan = stackalloc char[(int)pLog->template_length];
+				Unmanaged.ReadCWSTR(pLog->message_template, templateSpan);
+
+				/* Read message */
+				Span<char> messageSpan = stackalloc char[(int)pLog->message_length];
+				Unmanaged.ReadCWSTR(pLog->message, messageSpan);
+
+				/* Find largers parameter, use it for stack alloc parameter span*/
+				int maximumParameterSize = 0;
+				for (int i = 0; i < (int)pLog->parameter_count; i++) 
+				{
+					if (maximumParameterSize < ((int*)pLog->parameter_lengths)[i])
+					{
+						maximumParameterSize = ((int*)pLog->parameter_lengths)[i];
+					}
+				}
+
+				/* Read parameters */
+				Span<char> paramBuffer = stackalloc char[maximumParameterSize];
 				List<string> parameters = new List<string>();
 				for (int i = 0; i < (int)pLog->parameter_count; i++)
 				{
-					var parameter = Unmanaged.StringFromUnmanagedWstr(
-						(IntPtr)((char**)pLog->parameters)[i], 
-						((int*)pLog->parameter_lengths)[i]);
-					parameters.Add(parameter);
+					Unmanaged.ReadCWSTR((IntPtr)((char**)pLog->parameters)[i], paramBuffer);
+					var parameter = paramBuffer.Slice(0, ((int*)pLog->parameter_lengths)[i]);
+					parameters.Add(parameter.ToString());
 				}
 
 				Log e = new Log()
 				{
-					template	= template,
-					message		= message,
+					template	= templateSpan.ToString(),
+					message		= messageSpan.ToString(),
 					parameters	= parameters,
 					timeStamp	= pLog->timestamp,
 					threadId	= pLog->thread_id,

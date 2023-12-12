@@ -19,16 +19,13 @@ namespace Frost.Net
 			}
 		}
 
-		public static string StringFromUnmanagedWstr(IntPtr pString, int length)
+		public static void ReadCWSTR(IntPtr pString, Span<char> output)
 		{
 			unsafe
 			{
 				char* read = (char*)pString;
-				Span<char> sb = stackalloc char[length];
-				for(int i = 0; i < length; i++)
-					sb[i] = read[i];
-				
-				return new string(sb);
+				for (int i = 0; i < output.Length; i++)
+					output[i] = read[i];
 			}
 		}
 	}
