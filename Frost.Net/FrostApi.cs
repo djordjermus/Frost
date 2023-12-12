@@ -420,5 +420,26 @@ namespace Frost.Net
                 EntryPoint = "resource_is_synchronizable")]
             public static extern bool IsSynchronizable(IntPtr handle);
 		}
+
+		public static class Keycode
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "keycode_to_wcs")]
+			public static extern ulong ToString(
+				byte keycode,
+				IntPtr output,
+				ulong capacity,
+				bool normalize_case);
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			[DllImport(
+				dllName: Settings.frostApiPath,
+				CallingConvention = CallingConvention.StdCall,
+				EntryPoint = "keycode_get_name")]
+			public static extern IntPtr GetName(byte keycode);
+		}
 	}
 }

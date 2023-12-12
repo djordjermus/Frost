@@ -1,13 +1,6 @@
 ﻿using Frost.Net;
 
-var logger = new ConsoleLogger(Log.Levels.All);
-Log.Subscribe(Layers.InternalLayer, logger.Handler);
-DoThing();
-
-void DoThing()
-{
-	using var sync = new Frost.Net.Mutex(false);
-}
-
-
-
+var str = Input.KeycodeToString(Input.Keycode.BracketClose);
+str = Input.KeycodeToString(Input.Keycode.BracketOpen);
+str = Input.GetKeycodeName(Input.Keycode.BracketOpen);
+Console.ReadLine();

@@ -38,19 +38,19 @@ namespace frost::impl
 		return api::keycode::null;
 	}
 
-	bool sysmap::keycode_to_wcs(api::keycode internal_keycode, wchar_t* output, u64 output_length, bool normalize_case)
+	u64 sysmap::keycode_to_wcs(api::keycode internal_keycode, wchar_t* output, u64 output_length, bool normalize_case)
 	{
 		u8 system_keycode = _instance._keycode_map[(u64)internal_keycode].second;
 		return syskey_to_wcs(system_keycode, output, output_length, normalize_case);
 	}
-	bool sysmap::syskey_to_wcs(u8 system_keycode, wchar_t* output, u64 output_length, bool normalize_case)
+	u64 sysmap::syskey_to_wcs(u8 system_keycode, wchar_t* output, u64 output_length, bool normalize_case)
 	{
 		HKL hkl = ::GetKeyboardLayout(::GetCurrentThreadId());
 		u8 virtual_key = ::MapVirtualKeyExW(system_keycode, MAPVK_VSC_TO_VK, hkl);
 
 		u8 keyboard_state[256] = {};
 		if (::GetKeyboardState(keyboard_state) != TRUE) 
-			return false;
+			return 0;
 
 		u16 make_code = 0;
 		u16 flags = 0;
@@ -63,10 +63,10 @@ namespace frost::impl
 			if (normalize_case)
 				_wcslwr_s_l(output, output_length + 1, locale);
 
-			return true;
+			return output_length;
 		}
 		else
-			return false;
+			return 0;
 	}
 
 	void sysmap::decompose_syskey(u8 syskey, u16* out_make_code, u16* out_flags)

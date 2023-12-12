@@ -25,8 +25,8 @@ namespace frost::impl
 
 		static api::keycode system_button_event_to_internal_keycode(u16 event_value, bool* out_down);
 
-		static bool keycode_to_wcs(api::keycode internal_keycode, wchar_t* output, u64 output_length, bool normalize_case);
-		static bool syskey_to_wcs(u8 system_keycode, wchar_t* output, u64 output_length, bool normalize_case);
+		static u64 keycode_to_wcs(api::keycode internal_keycode, wchar_t* output, u64 output_length, bool normalize_case);
+		static u64 syskey_to_wcs(u8 system_keycode, wchar_t* output, u64 output_length, bool normalize_case);
 
 	private:
 		static void decompose_syskey(u8 syskey, u16* out_make_code, u16* out_flags);
