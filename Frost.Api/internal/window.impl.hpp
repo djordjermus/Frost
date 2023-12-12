@@ -8,6 +8,7 @@ namespace frost::impl
 	class window final : public api::resource
 	{
 	private:
+		class execute_deferred_data;
 		window() = default;
 		~window();
 
@@ -31,6 +32,9 @@ namespace frost::impl
 		constexpr static u64 _flag_active			= (1ull << 1);
 		constexpr static u64 _flag_focused			= (1ull << 2);
 		constexpr static u64 _flag_cursor_inside	= (1ull << 3);
+
+		bool is_deferred_invoke_required() const;
+		bool execute_deferred(execute_deferred_data* data, bool wait = true);
 
 		void update_state();
 		void update_rect();
@@ -84,8 +88,21 @@ namespace frost::impl
 		api::window_procedure_sig get_procedure() const;
 		void* get_data() const;
 
+		void set_enabled(bool enabled);
+		void set_active(bool active);
+		void set_focus(bool focus);
+
+		void set_state(api::window_state state);
+
+		void set_position(point2d<i32> position);
+		void set_size(size2d<i32> size);
+		void set_procedure(api::window_procedure_sig procedure);
+		void set_data(void* data);
+
 		static window* create(const frost::api::window_description* description);
 		void pump_messages();
+
+		static constexpr u64 modify_deferred_msg = 0xBFFF;
 	};
 }
 #else

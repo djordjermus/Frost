@@ -12,6 +12,13 @@
 
 namespace frost::impl
 {
+	class window::execute_deferred_data
+	{
+	public:
+		void (*procedure)(window* target, void* p_argument);
+		window* target;
+		void* p_argument;
+	};
 	static const wchar_t* err_window_creation_failed = L"Window creation failed! ";
 	static const u64 err_window_creation_failed_length = ::wcslen(err_window_creation_failed);
 
@@ -25,16 +32,213 @@ namespace frost::impl
 		::DestroyWindow(_hwnd);
 	}
 
-	bool window::is_enabled() const { return (_flags & _flag_enabled) != 0; }
-	bool window::is_active() const { return (_flags & _flag_active) != 0; }
-	bool window::is_focused() const { return (_flags & _flag_focused) != 0; }
+	bool window::is_enabled() const
+	{
+		return (_flags & _flag_enabled) != 0;
+	}
+	bool window::is_active() const
+	{
+		return (_flags & _flag_active) != 0;
+	}
+	bool window::is_focused() const
+	{
+		return (_flags & _flag_focused) != 0;
+	}
 
-	frost::api::window_state window::get_state() const { return _state; }
+	frost::api::window_state window::get_state() const
+	{
+		return _state;
+	}
 
-	point2d<i32> window::get_position() const { return { _rect.left, _rect.top }; }
-	size2d<i32> window::get_size() const { return { _rect.right - _rect.left, _rect.bottom - _rect.top }; }
-	frost::api::window_procedure_sig window::get_procedure() const { return _procedure; }
-	void* window::get_data() const { return _data; }
+	point2d<i32> window::get_position() const
+	{
+		return { _rect.left, _rect.top };
+	}
+	size2d<i32> window::get_size() const
+	{
+		return { _rect.right - _rect.left, _rect.bottom - _rect.top };
+	}
+	frost::api::window_procedure_sig window::get_procedure() const
+	{
+		return _procedure;
+	}
+	void* window::get_data() const
+	{
+		return _data;
+	}
+
+	void window::set_enabled(bool enabled)
+	{
+		bool flag = is_enabled();
+		if ((flag && enabled) || !(flag || enabled))
+			return;
+
+		if (!is_deferred_invoke_required())
+		{
+			::EnableWindow(_hwnd, static_cast<BOOL>(enabled));
+			return;
+		}
+		else
+		{
+			execute_deferred_data data;
+			data.procedure	= [](window* target, void* arg) { target->set_enabled(*reinterpret_cast<bool*>(arg)); };
+			data.target		= this;
+			data.p_argument	= &enabled;
+			execute_deferred(&data);
+		}
+	}
+	void window::set_active(bool active)
+	{
+#pragma warning(push)
+#pragma warning(disable: 6387)
+		bool flag = is_active();
+		if ((flag && active) || !(flag || active))
+			return;
+
+		if (!is_deferred_invoke_required())
+		{
+			if (flag && !active)
+				::SetActiveWindow(nullptr);
+			else if (!flag && active)
+				::SetActiveWindow(_hwnd);
+			return;
+		}
+		else
+		{
+			execute_deferred_data data;
+			data.procedure	= [](window* target, void* arg) { target->set_active(*reinterpret_cast<bool*>(arg)); };
+			data.target		= this;
+			data.p_argument	= &active;
+			execute_deferred(&data);
+		}
+#pragma warning(pop)
+	}
+	void window::set_focus(bool focus)
+	{
+		bool flag = is_focused();
+		if ((flag && focus) || !(flag || focus))
+			return;
+
+		if (!is_deferred_invoke_required())
+		{
+			if (flag && !focus)
+				::SetFocus(nullptr);
+			else if (!flag && focus)
+				::SetFocus(_hwnd);
+			return;
+		}
+		else
+		{
+			execute_deferred_data data;
+			data.procedure	= [](window* target, void* arg) { target->set_focus(*reinterpret_cast<bool*>(arg)); };
+			data.target		= this;
+			data.p_argument	= &focus;
+			execute_deferred(&data);
+		}
+		return; // TODO DEFERRED
+	}
+
+	void window::set_state(api::window_state state)
+	{
+		if (!is_deferred_invoke_required())
+		{
+			::ShowWindow(_hwnd, state_to_int(state));
+		}
+		else
+		{
+			execute_deferred_data data;
+			data.procedure	= [](window* target, void* arg) { target->set_state(*reinterpret_cast<api::window_state*>(arg)); };
+			data.target		= this;
+			data.p_argument	= &state;
+			execute_deferred(&data);
+		}
+	}
+
+	void window::set_position(point2d<i32> position)
+	{
+		if (!is_deferred_invoke_required())
+		{
+			::SetWindowPos(_hwnd, nullptr, position.x, position.y, 0, 0, SWP_NOSIZE);
+		}
+		else
+		{
+			execute_deferred_data data;
+			data.procedure		= [](window* target, void* arg) { target->set_position(*reinterpret_cast<point2d<i32>*>(arg)); };
+			data.target			= this;
+			data.p_argument		= &position;
+			execute_deferred(&data);
+		}
+	}
+	void window::set_size(size2d<i32> size)
+	{
+		if (!is_deferred_invoke_required())
+		{
+			::SetWindowPos(_hwnd, nullptr, 0, 0, size.width , size.height, SWP_NOMOVE);
+		}
+		else
+		{
+			execute_deferred_data data;
+			data.procedure	= [](window* target, void* arg) { target->set_size(*reinterpret_cast<size2d<i32>*>(arg)); };
+			data.target		= this;
+			data.p_argument	= &size;
+			execute_deferred(&data);
+		}
+	}
+	void window::set_procedure(api::window_procedure_sig procedure)
+	{
+		_procedure = procedure;
+	}
+	void window::set_data(void* data)
+	{
+		_data = data;
+	}
+
+	bool window::is_deferred_invoke_required() const
+	{
+		return _thread_id == ::GetCurrentThreadId();
+	}
+	bool window::execute_deferred(execute_deferred_data* data, bool wait)
+	{
+		if (!is_deferred_invoke_required())
+			return false;
+
+		if (wait)
+		{
+			HANDLE e = ::CreateEventW(nullptr, false, false,	nullptr);
+			if (e == nullptr)
+				return false;
+
+			BOOL result = ::PostThreadMessageW(_thread_id, modify_deferred_msg, reinterpret_cast<WPARAM>(data), reinterpret_cast<LPARAM>(e));
+			if (result != TRUE)
+			{
+				::CloseHandle(e);
+				return false;
+			}
+
+			if (::WaitForSingleObject(e, ~0ul) != WAIT_OBJECT_0)
+			{
+				::CloseHandle(e);
+				return false;
+			}
+			else
+			{
+				::CloseHandle(e);
+				return true;
+			}
+		}
+		else
+		{
+			execute_deferred_data* delete_me = new execute_deferred_data();
+			*delete_me = *data;
+			BOOL result = ::PostThreadMessageW(_thread_id, modify_deferred_msg, reinterpret_cast<WPARAM>(data), 0);
+			if (result != TRUE)
+			{
+				delete delete_me;
+				return false;
+			}
+			return true;
+		}
+	}
 	void window::update_state()
 	{
 		WINDOWPLACEMENT wp{};
@@ -698,6 +902,18 @@ namespace frost::impl
 		MSG msg{};
 		while (::GetMessageW(&msg, _hwnd, 0, 0))
 		{
+			if (msg.message == modify_deferred_msg)
+			{
+				execute_deferred_data* data = reinterpret_cast<execute_deferred_data*>(msg.wParam);
+				HANDLE e = reinterpret_cast<HANDLE>(msg.lParam);
+
+				data->procedure(data->target, data->p_argument);
+				if (e != nullptr)
+					SetEvent(e);	// Synchronous event
+				else
+					delete data;	// Fire and forget
+				continue;
+			}
 			::TranslateMessage(&msg);
 			::DispatchMessageW(&msg);
 		}
