@@ -9,8 +9,6 @@
 
   <ItemGroup>
     <Compile Remove="Sync\**" />
-    <EmbeddedResource Remove="Sync\**" />
-    <None Remove="Sync\**" />
   </ItemGroup>
 
   <ItemGroup>

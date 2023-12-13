@@ -1,3 +1,8 @@
+using Frost.Net.Models;
+using Frost.Net.Logging;
+using Frost.Net.Synchronization;
+using Frost.Net.Synchronization.Interface;
+
 namespace Frost.Net.Test
 {
     [TestClass]
@@ -8,7 +13,7 @@ namespace Frost.Net.Test
 		[TestMethod]
 		public void TestClockApi()
 		{
-			var frequency = Clock.Timestamp;
+			var frequency = Clock.Frequency;
 			var period = Clock.Period;
 			var timestamp = Clock.Timestamp;
 		}
@@ -25,7 +30,7 @@ namespace Frost.Net.Test
 		[TestMethod]
 		public void TestSyncSemaphoreApi()
 		{
-			var sf = new Semaphore(2, 2);
+			var sf = new Synchronization.Semaphore(2, 2);
 			sf.Lock();
 			sf.TryLock();
 			sf.Unlock();
@@ -34,45 +39,56 @@ namespace Frost.Net.Test
 		[TestMethod]
 		public void TestSyncMutexApi()
 		{
-			var mx = new Mutex(false);
+			var mx = new Synchronization.Mutex(false);
 			mx.Lock();
 			mx.TryLock();
 			mx.Unlock();
 		}
 
 		[TestMethod]
+		public void TestSyncEventApi()
+		{
+			var ev = new SyncEvent();
+			ev.Unlock();
+			ev.Lock();
+			ev.TryLock();
+		}
+
+		[TestMethod]
 		public void TestSyncApi()
 		{
-			var mx = new Mutex(false);
-			var sf = new Semaphore(2, 2);
-			ISynchronizable.LockOne(sf, mx);
-			ISynchronizable.LockAll(sf, mx);
-			ISynchronizable.TryLockOne(sf, mx);
-			ISynchronizable.TryLockAll(sf, mx);
+			var mx = new Synchronization.Mutex(false);
+			var sf = new Synchronization.Semaphore(2, 2);
+
+			ReadOnlySpan<ISynchronizable> span = new ISynchronizable[2] { sf, mx };
+			MultiSync.LockOne(span);
+			MultiSync.LockAll(span);
+			MultiSync.TryLockOne(span);
+			MultiSync.TryLockAll(span);
 		}
 
 		[TestMethod]
 		public void TestSemanticVersionApi()
 		{
-			var version = Models.SemanticVersion.GetApiVersion();
+			var version = SemanticVersion.GetApiVersion();
 			version.CheckCompatibility(version);
 		}
 
 		[TestMethod]
 		public void TestColorApi()
 		{
-			var color = new Models.Color();
-			var hdr = new Models.HDRColor();
+			var color = new Color();
+			var hdr = new HDRColor();
 			color = new(hdr);
 			hdr = new(color);
 
-			color = new(new Models.HSVA());
-			color = new(new Models.HSLA());
-			color = new(new Models.CMYK());
+			color = new(new HSVA());
+			color = new(new HSLA());
+			color = new(new CMYK());
 
-			hdr = new(new Models.HSVA());
-			hdr = new(new Models.HSLA());
-			hdr = new(new Models.CMYK());
+			hdr = new(new HSVA());
+			hdr = new(new HSLA());
+			hdr = new(new CMYK());
 
 			var hsva = hdr.ToHsla();
 			var hsla = hdr.ToHsva();

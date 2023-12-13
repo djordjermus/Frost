@@ -1,12 +1,15 @@
-﻿namespace Frost.Net.Test
+﻿using Frost.Net.Synchronization;
+using Frost.Net.Synchronization.Interface;
+
+namespace Frost.Net.Test
 {
-	[TestClass]
+    [TestClass]
 	public class SyncTest
 	{
 		[TestMethod]
 		public void TestSemaphore()
 		{
-			var sf = new Semaphore(2, 2);
+			var sf = new Synchronization.Semaphore(2, 2);
 			Assert.AreEqual(sf.Lock(), true);
 			Assert.AreEqual(sf.TryLock(), true);
 			Assert.AreEqual(sf.TryLock(), false);
@@ -18,7 +21,7 @@
 		[TestMethod]
 		public void TestMutex()
 		{
-			var mx = new Mutex(false);
+			var mx = new Synchronization.Mutex(false);
 			Assert.AreEqual(mx.Lock(), true);
 			Assert.AreEqual(mx.TryLock(), true);
 			Assert.AreEqual(mx.TryLock(), true);
@@ -31,14 +34,15 @@
 		[TestMethod]
 		public void TestMultipleSync()
 		{
-			var sf = new Semaphore(2, 4);
-			var mx = new Mutex(false);
+			var sf = new Synchronization.Semaphore(2, 4);
+			var mx = new Synchronization.Mutex(false);
+			ReadOnlySpan<ISynchronizable> span = new ISynchronizable[2] { sf, mx };
 
-			Assert.AreEqual(ISynchronizable.LockAll(sf, mx), true);
-			Assert.AreEqual(ISynchronizable.LockAll(sf, mx), true);
-			Assert.AreEqual(ISynchronizable.TryLockAll(sf, mx), false);
-			Assert.AreEqual(ISynchronizable.LockOne(sf, mx), 1);
-			Assert.AreEqual(ISynchronizable.TryLockOne(sf, mx), 1);
+			Assert.AreEqual(MultiSync.LockAll(span), true);
+			Assert.AreEqual(MultiSync.LockAll(span), true);
+			Assert.AreEqual(MultiSync.TryLockAll(span), false);
+			Assert.AreEqual(MultiSync.LockOne(span), 1);
+			Assert.AreEqual(MultiSync.TryLockOne(span), 1);
 		}
 	}
 }
