@@ -10,25 +10,25 @@ namespace Frost.Net.Test
 		public void TestSemaphore()
 		{
 			var sf = new Synchronization.Semaphore(2, 2);
-			Assert.AreEqual(sf.Lock(), true);
-			Assert.AreEqual(sf.TryLock(), true);
-			Assert.AreEqual(sf.TryLock(), false);
-			Assert.AreEqual(sf.Unlock(), true);
-			Assert.AreEqual(sf.Unlock(), true);
-			Assert.AreEqual(sf.Unlock(), false);
+			Assert.AreEqual(sf.Wait(), true);
+			Assert.AreEqual(sf.TryWait(), true);
+			Assert.AreEqual(sf.TryWait(), false);
+			Assert.AreEqual(sf.Signal(), true);
+			Assert.AreEqual(sf.Signal(), true);
+			Assert.AreEqual(sf.Signal(), false);
 		}
 
 		[TestMethod]
 		public void TestMutex()
 		{
 			var mx = new Synchronization.Mutex(false);
-			Assert.AreEqual(mx.Lock(), true);
-			Assert.AreEqual(mx.TryLock(), true);
-			Assert.AreEqual(mx.TryLock(), true);
-			Assert.AreEqual(mx.Unlock(), true);
-			Assert.AreEqual(mx.Unlock(), true);
-			Assert.AreEqual(mx.Unlock(), true);
-			Assert.AreEqual(mx.Unlock(), false);
+			Assert.AreEqual(mx.Wait(), true);
+			Assert.AreEqual(mx.TryWait(), true);
+			Assert.AreEqual(mx.TryWait(), true);
+			Assert.AreEqual(mx.Signal(), true);
+			Assert.AreEqual(mx.Signal(), true);
+			Assert.AreEqual(mx.Signal(), true);
+			Assert.AreEqual(mx.Signal(), false);
 		}
 
 		[TestMethod]
@@ -38,11 +38,11 @@ namespace Frost.Net.Test
 			var mx = new Synchronization.Mutex(false);
 			ReadOnlySpan<ISynchronizable> span = new ISynchronizable[2] { sf, mx };
 
-			Assert.AreEqual(MultiSync.LockAll(span), true);
-			Assert.AreEqual(MultiSync.LockAll(span), true);
-			Assert.AreEqual(MultiSync.TryLockAll(span), false);
-			Assert.AreEqual(MultiSync.LockOne(span), 1);
-			Assert.AreEqual(MultiSync.TryLockOne(span), 1);
+			Assert.AreEqual(MultiSync.WaitAll(span), true);
+			Assert.AreEqual(MultiSync.WaitAll(span), true);
+			Assert.AreEqual(MultiSync.TryWaitAll(span), false);
+			Assert.AreEqual(MultiSync.WaitOne(span), 1);
+			Assert.AreEqual(MultiSync.TryWaitOne(span), 1);
 		}
 	}
 }

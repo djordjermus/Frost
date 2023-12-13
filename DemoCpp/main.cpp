@@ -30,14 +30,14 @@ int main()
 {
 	std::thread th([]() {
 		std::this_thread::sleep_for(std::chrono::seconds(10));
-		synchronizable_unlock(e);
+		synchronizable_signal(e);
 		std::this_thread::sleep_for(std::chrono::seconds(10));
-		synchronizable_unlock(e);
+		synchronizable_signal(e);
 		});
-	synchronizable_lock(e);
+	synchronizable_wait(e);
 	std::cout << "1st\n";
 	synchronizable_event_reset(e);
-	synchronizable_lock(e);
+	synchronizable_wait(e);
 	std::cout << "2nd\n";
 	th.join();
 }
@@ -51,23 +51,23 @@ void test_synchronizable()
 	auto s2 = sf;
 	bool b;
 	i32 i;
-	b = synchronizable_lock(mx.get());		// TRUE
-	b = synchronizable_lock(sf.get());		// TRUE
-	b = synchronizable_lock(sf.get());		// TRUE
-	b = synchronizable_try_lock(sf.get());	// FALSE
-	b = synchronizable_unlock(mx.get());	// TRUE
-	b = synchronizable_unlock(mx.get());	// FALSE
-	b = synchronizable_unlock(sf.get());	// TRUE
-	b = synchronizable_unlock(sf.get());	// TRUE
-	b = synchronizable_unlock(sf.get());	// FALSE
+	b = synchronizable_wait(mx.get());		// TRUE
+	b = synchronizable_wait(sf.get());		// TRUE
+	b = synchronizable_wait(sf.get());		// TRUE
+	b = synchronizable_try_wait(sf.get());	// FALSE
+	b = synchronizable_signal(mx.get());	// TRUE
+	b = synchronizable_signal(mx.get());	// FALSE
+	b = synchronizable_signal(sf.get());	// TRUE
+	b = synchronizable_signal(sf.get());	// TRUE
+	b = synchronizable_signal(sf.get());	// FALSE
 
 	std::vector<ref> vec;
 	vec.push_back(sf.get());
 	vec.push_back(mx.get());
 
-	b = synchronizable_lock_all(vec.data()->get_array(), vec.size());		// TRUE
-	b = synchronizable_lock_all(vec.data()->get_array(), vec.size());		// TRUE
-	b = synchronizable_try_lock_all(vec.data()->get_array(), vec.size());	// FALSE
-	i = synchronizable_lock_one(vec.data()->get_array(), vec.size());		// 1
-	i = synchronizable_try_lock_one(vec.data()->get_array(), vec.size());	// 1
+	b = synchronizable_wait_all(vec.data()->get_array(), vec.size());		// TRUE
+	b = synchronizable_wait_all(vec.data()->get_array(), vec.size());		// TRUE
+	b = synchronizable_try_wait_all(vec.data()->get_array(), vec.size());	// FALSE
+	i = synchronizable_wait_one(vec.data()->get_array(), vec.size());		// 1
+	i = synchronizable_try_wait_one(vec.data()->get_array(), vec.size());	// 1
 }

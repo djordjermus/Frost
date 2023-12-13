@@ -5,13 +5,13 @@ using Frost.Net.Synchronization.Interface;
 
 public static class MultiSyncExtensions
 {
-	public static int LockOneExtension(this ReadOnlySpan<ISynchronizable> syncObjects) => MultiSync.LockOne(syncObjects);
-	public static bool LockAllExtension(this ReadOnlySpan<ISynchronizable> syncObjects) => MultiSync.LockAll(syncObjects);
-	public static int TryLockOneExtension(this ReadOnlySpan<ISynchronizable> syncObjects) => MultiSync.TryLockOne(syncObjects);
-	public static bool TryLockAllExtension(this ReadOnlySpan<ISynchronizable> syncObjects) => MultiSync.TryLockAll(syncObjects);
+	public static int WaitOneExtension(this ReadOnlySpan<ISynchronizable> syncObjects) => MultiSync.WaitOne(syncObjects);
+	public static bool WaitAllExtension(this ReadOnlySpan<ISynchronizable> syncObjects) => MultiSync.WaitAll(syncObjects);
+	public static int TryWaitOneExtension(this ReadOnlySpan<ISynchronizable> syncObjects) => MultiSync.TryWaitOne(syncObjects);
+	public static bool TryWaitAllExtension(this ReadOnlySpan<ISynchronizable> syncObjects) => MultiSync.TryWaitAll(syncObjects);
 
-	public static int LockOneExtension(this ISynchronizable[] syncObjects) => MultiSync.LockOne(syncObjects);
-	public static bool LockAllExtension(this ISynchronizable[] syncObjects) => MultiSync.LockAll(syncObjects);
-	public static int TryLockOneExtension(this ISynchronizable[] syncObjects) => MultiSync.TryLockOne(syncObjects);
-	public static bool TryLockAllExtension(this ISynchronizable[] syncObjects) => MultiSync.TryLockAll(syncObjects);
+	public static int WaitOneExtension(this ISynchronizable[] syncObjects) => MultiSync.WaitOne(syncObjects);
+	public static bool WaitAllExtension(this ISynchronizable[] syncObjects) => MultiSync.WaitAll(syncObjects);
+	public static int TryWaitOneExtension(this ISynchronizable[] syncObjects) => MultiSync.TryWaitOne(syncObjects);
+	public static bool TryWaitAllExtension(this ISynchronizable[] syncObjects) => MultiSync.TryWaitAll(syncObjects);
 }

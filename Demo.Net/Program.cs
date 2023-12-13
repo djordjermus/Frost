@@ -13,13 +13,13 @@ var task = Task.Run(() =>
 	while (true)
 	{
 		Thread.Sleep(100);
-		e.Unlock();
+		e.Signal();
 	}
 });
 
 while (true)
 {
 	Console.WriteLine(i++);
-	e.Lock();
+	e.Wait();
 	e.Reset();
 }

@@ -5,7 +5,7 @@ using Frost.Net.Synchronization.Interface;
 
 public static class MultiSync
 {
-	public static int LockOne(ReadOnlySpan<ISynchronizable> syncObjects)
+	public static int WaitOne(ReadOnlySpan<ISynchronizable> syncObjects)
 	{
 		unsafe
 		{
@@ -14,10 +14,10 @@ public static class MultiSync
 				arr[i] = syncObjects[i].Handle;
 
 			fixed (IntPtr* ptr = arr)
-				return FrostApi.Synchronizable.LockOne((IntPtr)ptr, arr.Length);
+				return FrostApi.Synchronizable.WaitOne((IntPtr)ptr, arr.Length);
 		}
 	}
-	public static bool LockAll(ReadOnlySpan<ISynchronizable> syncObjects)
+	public static bool WaitAll(ReadOnlySpan<ISynchronizable> syncObjects)
 	{
 		unsafe
 		{
@@ -27,10 +27,10 @@ public static class MultiSync
 				arr[i] = syncObjects[i].Handle;
 
 			fixed (IntPtr* ptr = arr)
-				return FrostApi.Synchronizable.LockAll((IntPtr)ptr, arr.Length);
+				return FrostApi.Synchronizable.WaitAll((IntPtr)ptr, arr.Length);
 		}
 	}
-	public static int TryLockOne(ReadOnlySpan<ISynchronizable> syncObjects)
+	public static int TryWaitOne(ReadOnlySpan<ISynchronizable> syncObjects)
 	{
 		unsafe
 		{
@@ -39,10 +39,10 @@ public static class MultiSync
 				arr[i] = syncObjects[i].Handle;
 
 			fixed (IntPtr* ptr = arr)
-				return FrostApi.Synchronizable.TryLockOne((IntPtr)ptr, arr.Length);
+				return FrostApi.Synchronizable.TryWaitOne((IntPtr)ptr, arr.Length);
 		}
 	}
-	public static bool TryLockAll(ReadOnlySpan<ISynchronizable> syncObjects)
+	public static bool TryWaitAll(ReadOnlySpan<ISynchronizable> syncObjects)
 	{
 		unsafe
 		{
@@ -51,7 +51,7 @@ public static class MultiSync
 				arr[i] = syncObjects[i].Handle;
 
 			fixed (IntPtr* ptr = arr)
-				return FrostApi.Synchronizable.TryLockAll((IntPtr)ptr, arr.Length);
+				return FrostApi.Synchronizable.TryWait((IntPtr)ptr, arr.Length);
 		}
 	}
 }

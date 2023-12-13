@@ -4,8 +4,8 @@ namespace Frost.Net.Synchronization.Interface
 {
     public interface ISynchronizable : IFrostResource
     {
-        public bool Lock() => FrostApi.Synchronizable.Lock(Handle);
-        public bool TryLock() => FrostApi.Synchronizable.TryLock(Handle);
-        public bool Unlock() => FrostApi.Synchronizable.Unlock(Handle);
+        public bool Wait() => FrostApi.Synchronizable.Wait(Handle);
+        public bool TryWait() => FrostApi.Synchronizable.TryWait(Handle);
+        public bool Signal() => FrostApi.Synchronizable.Signal(Handle);
     }
 }

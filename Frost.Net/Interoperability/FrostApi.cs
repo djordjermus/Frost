@@ -364,22 +364,22 @@ internal static class FrostApi
         [DllImport(
             dllName: frostApiPath,
             CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_lock")]
-        public static extern bool Lock(IntPtr target);
+            EntryPoint = "synchronizable_wait")]
+        public static extern bool Wait(IntPtr target);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DllImport(
             dllName: frostApiPath,
             CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_try_lock")]
-        public static extern bool TryLock(IntPtr target);
+            EntryPoint = "synchronizable_try_wait")]
+        public static extern bool TryWait(IntPtr target);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DllImport(
             dllName: frostApiPath,
             CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_unlock")]
-        public static extern bool Unlock(IntPtr target);
+            EntryPoint = "synchronizable_signal")]
+        public static extern bool Signal(IntPtr target);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DllImport(
@@ -404,29 +404,29 @@ internal static class FrostApi
         [DllImport(
             dllName: frostApiPath,
             CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_lock_one")]
-        public static extern int LockOne(IntPtr pArray, int count);
+            EntryPoint = "synchronizable_wait_one")]
+        public static extern int WaitOne(IntPtr pArray, int count);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DllImport(
             dllName: frostApiPath,
             CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_lock_all")]
-        public static extern bool LockAll(IntPtr pArray, int count);
+            EntryPoint = "synchronizable_wait_all")]
+        public static extern bool WaitAll(IntPtr pArray, int count);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DllImport(
             dllName: frostApiPath,
             CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_try_lock_one")]
-        public static extern int TryLockOne(IntPtr pArray, int count);
+            EntryPoint = "synchronizable_try_wait_one")]
+        public static extern int TryWaitOne(IntPtr pArray, int count);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DllImport(
             dllName: frostApiPath,
             CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_try_lock_all")]
-        public static extern bool TryLockAll(IntPtr pArray, int count);
+            EntryPoint = "synchronizable_try_wait_all")]
+        public static extern bool TryWait(IntPtr pArray, int count);
 
 
 

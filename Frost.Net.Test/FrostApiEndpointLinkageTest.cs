@@ -31,27 +31,27 @@ namespace Frost.Net.Test
 		public void TestSyncSemaphoreApi()
 		{
 			var sf = new Synchronization.Semaphore(2, 2);
-			sf.Lock();
-			sf.TryLock();
-			sf.Unlock();
+			sf.Wait();
+			sf.TryWait();
+			sf.Signal();
 		}
 
 		[TestMethod]
 		public void TestSyncMutexApi()
 		{
 			var mx = new Synchronization.Mutex(false);
-			mx.Lock();
-			mx.TryLock();
-			mx.Unlock();
+			mx.Wait();
+			mx.TryWait();
+			mx.Signal();
 		}
 
 		[TestMethod]
 		public void TestSyncEventApi()
 		{
 			var ev = new SyncEvent();
-			ev.Unlock();
-			ev.Lock();
-			ev.TryLock();
+			ev.Signal();
+			ev.Wait();
+			ev.TryWait();
 		}
 
 		[TestMethod]
@@ -61,10 +61,10 @@ namespace Frost.Net.Test
 			var sf = new Synchronization.Semaphore(2, 2);
 
 			ReadOnlySpan<ISynchronizable> span = new ISynchronizable[2] { sf, mx };
-			MultiSync.LockOne(span);
-			MultiSync.LockAll(span);
-			MultiSync.TryLockOne(span);
-			MultiSync.TryLockAll(span);
+			MultiSync.WaitOne(span);
+			MultiSync.WaitAll(span);
+			MultiSync.TryWaitOne(span);
+			MultiSync.TryWaitAll(span);
 		}
 
 		[TestMethod]

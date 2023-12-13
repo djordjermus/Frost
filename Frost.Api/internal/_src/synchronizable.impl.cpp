@@ -11,12 +11,12 @@ namespace frost::impl
 	synchronizable_mutex::synchronizable_mutex(bool initial_owner) :
 		synchronizable(::CreateMutexW(nullptr, initial_owner, nullptr)) {}
 
-	bool synchronizable_mutex::unlock() const { return ::ReleaseMutex(_handle); }
+	bool synchronizable_mutex::signal() const { return ::ReleaseMutex(_handle); }
 
 	synchronizable_semaphore::synchronizable_semaphore(i32 count, i32 maximum) :
 		synchronizable(::CreateSemaphoreW(nullptr, count, maximum, nullptr)) {}
 
-	bool synchronizable_semaphore::unlock() const { return ::ReleaseSemaphore(_handle, 1, nullptr); }
+	bool synchronizable_semaphore::signal() const { return ::ReleaseSemaphore(_handle, 1, nullptr); }
 
 	/* 
 	 * EVENT
@@ -24,7 +24,7 @@ namespace frost::impl
 	synchronizable_event::synchronizable_event() : 
 		synchronizable(::CreateEventW(nullptr, TRUE, FALSE, nullptr)){}
 
-	bool synchronizable_event::unlock() const
+	bool synchronizable_event::signal() const
 	{
 		return ::SetEvent(_handle);
 	}
@@ -50,14 +50,14 @@ namespace frost::impl
 		return _handle;
 	}
 
-	bool synchronizable::lock() const
+	bool synchronizable::wait() const
 	{
 		return ::WaitForSingleObjectEx(_handle, ~0ul, FALSE) == WAIT_OBJECT_0;
 	}
 
 
 
-	i32  synchronizable::lock_one(synchronizable* const* target_list, i32 count)
+	i32  synchronizable::wait_one(synchronizable* const* target_list, i32 count)
 	{
 		if (count > MAXIMUM_WAIT_OBJECTS)
 			return false;
@@ -79,7 +79,7 @@ namespace frost::impl
 		else
 			return -1;
 	}
-	bool synchronizable::lock_all(synchronizable* const* target_list, i32 count)
+	bool synchronizable::wait_all(synchronizable* const* target_list, i32 count)
 	{
 		if (count > MAXIMUM_WAIT_OBJECTS)
 			return false;
@@ -98,7 +98,7 @@ namespace frost::impl
 
 		return (result >= WAIT_OBJECT_0) && (result < (WAIT_OBJECT_0 + count));
 	}
-	i32  synchronizable::try_lock_one(synchronizable* const* target_list, i32 count)
+	i32  synchronizable::try_wait_one(synchronizable* const* target_list, i32 count)
 	{
 		if (count > MAXIMUM_WAIT_OBJECTS)
 			return false;
@@ -120,7 +120,7 @@ namespace frost::impl
 		else
 			return -1;
 	}
-	bool synchronizable::try_lock_all(synchronizable* const* target_list, i32 count)
+	bool synchronizable::try_wait_all(synchronizable* const* target_list, i32 count)
 	{
 		if (count > MAXIMUM_WAIT_OBJECTS)
 			return false;
@@ -142,7 +142,7 @@ namespace frost::impl
 
 
 
-	bool synchronizable::try_lock() const
+	bool synchronizable::try_wait() const
 	{
 		return ::WaitForSingleObjectEx(_handle, 0ul, FALSE) == WAIT_OBJECT_0;
 	}
