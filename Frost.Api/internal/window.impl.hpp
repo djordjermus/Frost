@@ -72,7 +72,7 @@ namespace frost::impl
 
 		static LRESULT wm_input_language_changed(HWND hwnd, UINT msg, WPARAM w, LPARAM l);
 
-		static LRESULT window_procedure(HWND hwnd, UINT msg, WPARAM w, LPARAM l);
+		static LRESULT CALLBACK window_procedure(HWND hwnd, UINT msg, WPARAM w, LPARAM l);
 
 	public:
 

@@ -9,54 +9,75 @@ private:
 
 public:
 	/* CONSTRUCTORS */
-	ref() :
+	inline ref() :
 		_ptr(nullptr) {}
-	ref(frost::api::resource* ptr) :
+	inline ref(frost::api::resource* ptr) :
 		_ptr(inc(ptr)) {}
-	ref(const ref& reference) :
+	inline ref(const ref& reference) :
 		_ptr(inc(reference._ptr)) {}
-	ref(const ref&& reference) noexcept :
+	inline ref(const ref&& reference) noexcept :
 		_ptr(inc(reference._ptr)) {}
-	~ref() { dec(_ptr); }
+	inline ~ref() { dec(_ptr); }
 
 	/* OPERATORS */
-	ref& operator=(frost::api::resource* ptr)
+	inline ref& operator=(frost::api::resource* ptr)
 	{
 		dec(_ptr);
 		_ptr = inc(ptr);
 		return *this;
 	}
-	ref& operator=(const ref& reference)
+	inline ref& operator=(const ref& reference)
 	{
 		dec(_ptr);
 		_ptr = inc(reference._ptr);
 		return *this;
 	}
-	ref& operator=(ref&& reference) noexcept
+	inline ref& operator=(ref&& reference) noexcept
 	{
 		dec(_ptr);
 		_ptr = inc(reference._ptr);
 		return *this;
 	}
 
-	operator bool() const { return _ptr != nullptr; }
-	bool operator == (frost::api::resource* ptr) const { return _ptr == ptr; }
-	bool operator != (frost::api::resource* ptr) const { return _ptr != ptr; }
-	bool operator == (ref rhs) const { return _ptr == rhs._ptr; }
-	bool operator != (ref rhs) const { return _ptr != rhs._ptr; }
+	inline operator frost::api::resource* ()
+	{
+		return _ptr;
+	}
+	inline operator bool() const
+	{
+		return _ptr != nullptr;
+	}
 
-	frost::api::resource* operator->() const
+	inline bool operator == (frost::api::resource* ptr) const
+	{
+		return _ptr == ptr;
+	}
+	inline bool operator != (frost::api::resource* ptr) const
+	{
+		return _ptr != ptr;
+	}
+
+	inline bool operator == (ref rhs) const
+	{
+		return _ptr == rhs._ptr;
+	}
+	inline bool operator != (ref rhs) const
+	{
+		return _ptr != rhs._ptr;
+	}
+
+	inline frost::api::resource* operator->() const
 	{
 		return _ptr;
 	}
 
 	/* METHODS */
-	frost::api::resource* get() const
+	inline frost::api::resource* get() const
 	{
 		return _ptr;
 	}
 
-	frost::api::resource* const* get_array() const
+	inline frost::api::resource* const* get_array() const
 	{
 		return &_ptr;
 	}

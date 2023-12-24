@@ -72,6 +72,12 @@
     <ClInclude Include="internal\window.impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="thread.api.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="internal\thread.impl.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_src\clock.api.cpp">
@@ -117,6 +123,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_src\keycode.api.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="internal\_src\thread.impl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="_src\thread.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
