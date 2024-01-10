@@ -1,4 +1,5 @@
 ﻿using Frost.Net.Interoperability;
+
 namespace Frost.Net.Models;
 
 public struct Layers

@@ -1,7 +1,7 @@
-﻿namespace Frost.Net.Synchronization;
-
-using Frost.Net.Interoperability;
+﻿using Frost.Net.Interoperability;
 using Frost.Net.Synchronization.Interface;
+
+namespace Frost.Net.Synchronization;
 
 public static class MultiSync
 {

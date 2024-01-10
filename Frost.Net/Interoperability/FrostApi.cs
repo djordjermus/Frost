@@ -1,128 +1,115 @@
-﻿namespace Frost.Net.Interoperability;
-
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.Marshalling;
+
+namespace Frost.Net.Interoperability;
 
 /// <summary>
 /// Static class housing frost.api methods
 /// </summary>
-internal static class FrostApi
+internal static partial class FrostApi
 {
 	public const string frostApiPath = "Frost.Api.dll";
-    public static class Clock
+    public static partial class Clock
 	{
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "clock_get_frequency")]
-        public static extern ulong GetFrequency();
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "clock_get_frequency")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial ulong GetFrequency();
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "clock_get_period")]
-        public static extern double GetPeriod();
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "clock_get_period")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial double GetPeriod();
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "clock_get_timestamp")]
-        public static extern ulong GetTimestamp();
-    }
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "clock_get_timestamp")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial ulong GetTimestamp();
+	}
 
-    public static class Color
+    public static partial class Color
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
+        [LibraryImport(
+			frostApiPath,
             EntryPoint = "color_rgba8_to_rgba32")]
-        public extern static void Rgba8ToRgba32(int input, IntPtr output);
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void Rgba8ToRgba32(int input, IntPtr output);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "color_rgba32_to_rgba8")]
-        public extern static void Rgba32ToRgba8(IntPtr input, IntPtr output);
-
-
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "color_rgba32_to_hsva")]
-        public extern static void Rgba32ToHsva(IntPtr input, IntPtr output);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "color_rgba32_to_hsla")]
-        public extern static void Rgba32ToHsla(IntPtr input, IntPtr output);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "color_rgba32_to_cmyk")]
-        public extern static void Rgba32ToCmyk(IntPtr input, IntPtr output);
+		[LibraryImport(
+	        frostApiPath,
+	        EntryPoint = "color_rgba32_to_rgba8")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void Rgba32ToRgba8(IntPtr input, IntPtr output);
 
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "color_hsva_to_rgba32")]
-        public extern static void HsvaToRgba32(IntPtr input, IntPtr output);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "color_rgba32_to_hsva")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void Rgba32ToHsva(IntPtr input, IntPtr output);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "color_hsla_to_rgba32")]
-        public extern static void HslaToRgba32(IntPtr input, IntPtr output);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "color_rgba32_to_hsla")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void Rgba32ToHsla(IntPtr input, IntPtr output);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "color_cmyk_to_rgba32")]
-        public extern static void CmykToRgba32(IntPtr input, IntPtr output);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "color_rgba32_to_cmyk")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void Rgba32ToCmyk(IntPtr input, IntPtr output);
+
+
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "color_hsva_to_rgba32")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void HsvaToRgba32(IntPtr input, IntPtr output);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "color_hsla_to_rgba32")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void HslaToRgba32(IntPtr input, IntPtr output);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "color_cmyk_to_rgba32")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void CmykToRgba32(IntPtr input, IntPtr output);
     }
 
-    public static class Random
+    public static partial class Random
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "random_generate")]
-        public static extern ulong Generate(IntPtr pSeed);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "random_generate")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial ulong Generate(IntPtr pSeed);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "random_generate_range")]
-        public static extern ulong GenerateRange(IntPtr pSeed, ulong min, ulong range);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "random_generate_range")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial ulong GenerateRange(IntPtr pSeed, ulong min, ulong range);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "random_generate_range_double")]
-        public static extern double GenerateF64(IntPtr pSeed, double min, double range);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "random_generate_range_double")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial double GenerateF64(IntPtr pSeed, double min, double range);
     }
 
-    public static class SemanticVersion
+    public static partial class SemanticVersion
     {
         [StructLayout(LayoutKind.Sequential)]
         public struct FrostSemanticVersion
@@ -132,24 +119,23 @@ internal static class FrostApi
             public uint patch;
             public IntPtr decoration;
         }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "semantic_version_get_api_version")]
-        public static extern void GetApiVersion(out FrostSemanticVersion output);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "semantic_version_get_api_version")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void GetApiVersion(out FrostSemanticVersion output);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "semantic_version_check_compatibility")]
-        public static extern bool CheckCompatibility(
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "semantic_version_check_compatibility")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool CheckCompatibility(
             FrostSemanticVersion version,
             FrostSemanticVersion target);
     }
 
-    public static class EventSystem
+    public static partial class EventSystem
     {
         public struct RawLogEvent
         {
@@ -178,66 +164,58 @@ internal static class FrostApi
 
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "event_system_get_api_broadcast_layer")]
-        public static extern ulong GetApiBroadcastLayer();
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "event_system_get_api_broadcast_layer")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial ulong GetApiBroadcastLayer();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "event_system_emit")]
-        public static extern void Emit(ulong tag, ulong layer, IntPtr p_data);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "event_system_emit")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void Emit(ulong tag, ulong layer, IntPtr p_data);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "event_system_subscribe")]
-        public static extern void Subscribe(ulong tag, ulong activation_layers, HandlerSig handler);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "event_system_subscribe")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void Subscribe(ulong tag, ulong activation_layers, HandlerSig handler);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "event_system_unsubscribe")]
-        public static extern void Unsubscribe(ulong tag, ulong activation_layers, HandlerSig handler);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "event_system_unsubscribe")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void Unsubscribe(ulong tag, ulong activation_layers, HandlerSig handler);
 
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "event_system_subscribe_relay")]
-        public static extern void SubscribeRelay(RelaySig relay);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "event_system_subscribe_relay")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void SubscribeRelay(RelaySig relay);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "event_system_unsubscribe_relay")]
-        public static extern void UnsubscribeRelay(RelaySig relay);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "event_system_unsubscribe_relay")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void UnsubscribeRelay(RelaySig relay);
     }
 
-    public static class Logging
+    public static partial class Logging
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "logging_get_log_event_tag")]
-        public static extern ulong GetLogEventTag();
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "logging_get_log_event_tag")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial ulong GetLogEventTag();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "logging_verbose")]
-        public static extern void LogVerbose(
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "logging_verbose")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void LogVerbose(
             IntPtr message_template,
             ulong template_length,
             IntPtr parameters,
@@ -245,12 +223,11 @@ internal static class FrostApi
             ulong param_count,
             ulong activation_layers);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "logging_debug")]
-        public static extern void LogDebug(
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "logging_debug")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void LogDebug(
             IntPtr message_template,
             ulong template_length,
             IntPtr parameters,
@@ -258,12 +235,11 @@ internal static class FrostApi
             ulong param_count,
             ulong activation_layers);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "logging_info")]
-        public static extern void LogInfo(
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "logging_info")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void LogInfo(
             IntPtr message_template,
             ulong template_length,
             IntPtr parameters,
@@ -271,12 +247,11 @@ internal static class FrostApi
             ulong param_count,
             ulong activation_layers);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "logging_warning")]
-        public static extern void LogWarning(
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "logging_warning")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void LogWarning(
             IntPtr message_template,
             ulong template_length,
             IntPtr parameters,
@@ -284,12 +259,11 @@ internal static class FrostApi
             ulong param_count,
             ulong activation_layers);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "logging_error")]
-        public static extern void LogError(
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "logging_error")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void LogError(
             IntPtr message_template,
             ulong template_length,
             IntPtr parameters,
@@ -297,12 +271,11 @@ internal static class FrostApi
             ulong param_count,
             ulong activation_layers);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "logging_critical")]
-        public static extern void LogCritical(
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "logging_critical")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void LogCritical(
             IntPtr message_template,
             ulong template_length,
             IntPtr parameters,
@@ -311,151 +284,142 @@ internal static class FrostApi
             ulong activation_layers);
     }
 
-    public static class Resource
+    public static partial class Resource
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "resource_get_reference_count")]
-        public static extern ulong GetRefCount(IntPtr ptr);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "resource_get_reference_count")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial ulong GetRefCount(IntPtr ptr);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "resource_acquire_reference")]
-        public static extern void AcquireReference(IntPtr ptr);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "resource_acquire_reference")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void AcquireReference(IntPtr ptr);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "resource_release_reference")]
-        public static extern void ReleaseReference(IntPtr ptr);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "resource_release_reference")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void ReleaseReference(IntPtr ptr);
     }
 
-    public static class Synchronizable
+    public static partial class Synchronizable
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
+        [LibraryImport(
+            frostApiPath,
             EntryPoint = "synchronizable_create_mutex")]
-        public static extern IntPtr CreateMutex(bool initialOwner);
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial IntPtr CreateMutex([MarshalAs(UnmanagedType.Bool)] bool initialOwner);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_create_semaphore")]
-        public static extern IntPtr CreateSemaphore(int count, int max);
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_create_event")]
-        public static extern IntPtr CreateEvent();
-
-
-
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_wait")]
-        public static extern bool Wait(IntPtr target);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_try_wait")]
-        public static extern bool TryWait(IntPtr target);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_signal")]
-        public static extern bool Signal(IntPtr target);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_get_internal_handle")]
-        public static extern IntPtr GetSystemHandle(IntPtr target);
-
-
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_event_reset")]
-        public static extern bool ResetEvent(IntPtr target);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "synchronizable_create_semaphore")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial IntPtr CreateSemaphore(int count, int max);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "synchronizable_create_event")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial IntPtr CreateEvent();
 
 
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_wait_one")]
-        public static extern int WaitOne(IntPtr pArray, int count);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "synchronizable_wait")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool Wait(IntPtr target);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_wait_all")]
-        public static extern bool WaitAll(IntPtr pArray, int count);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "synchronizable_try_wait")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		[return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool TryWait(IntPtr target);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_try_wait_one")]
-        public static extern int TryWaitOne(IntPtr pArray, int count);
+		[LibraryImport(
+	        frostApiPath,
+	        EntryPoint = "synchronizable_signal")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		[return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool Signal(IntPtr target);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "synchronizable_try_wait_all")]
-        public static extern bool TryWait(IntPtr pArray, int count);
-
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "synchronizable_get_internal_handle")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial IntPtr GetSystemHandle(IntPtr target);
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "resource_is_synchronizable")]
-        public static extern bool IsSynchronizable(IntPtr handle);
-    }
 
-    public static class Keycode
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "synchronizable_event_reset")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		[return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool ResetEvent(IntPtr target);
+
+
+
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "synchronizable_wait_one")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial int WaitOne(IntPtr pArray, int count);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "synchronizable_wait_all")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		[return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool WaitAll(IntPtr pArray, int count);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "synchronizable_try_wait_one")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial int TryWaitOne(IntPtr pArray, int count);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "synchronizable_try_wait_all")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		[return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool TryWait(IntPtr pArray, int count);
+
+
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "resource_is_synchronizable")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		[return: MarshalAs(UnmanagedType.Bool)]
+        public static partial bool IsSynchronizable(IntPtr handle);
+	}
+
+    public static partial class Keycode
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "keycode_to_wcs")]
-        public static extern ulong ToString(
-            byte keycode,
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "keycode_to_wcs")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial ulong ToString(
+			byte keycode,
             IntPtr output,
             ulong capacity,
-            bool normalize_case);
+            [MarshalAs(UnmanagedType.Bool)]bool normalize_case);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [DllImport(
-            dllName: frostApiPath,
-            CallingConvention = CallingConvention.StdCall,
-            EntryPoint = "keycode_get_name")]
-        public static extern IntPtr GetName(byte keycode);
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "keycode_get_name")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial IntPtr GetName(byte keycode);
     }
 }

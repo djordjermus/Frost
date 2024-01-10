@@ -1,7 +1,7 @@
-﻿namespace Frost.Net.Models;
-
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using Frost.Net.Interoperability;
+
+namespace Frost.Net.Models;
 
 /// <summary>
 /// High dynamic range RGBA Color model - Red, Green, Blue, Alpha

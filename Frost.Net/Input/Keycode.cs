@@ -2,6 +2,7 @@
 using Frost.Net.Utilities;
 
 namespace Frost.Net.Input;
+
 public static class Key
 {
 	public static string Translate(Keycode keycode, bool normalizeCase = true)

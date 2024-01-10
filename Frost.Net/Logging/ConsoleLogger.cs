@@ -46,13 +46,13 @@ public class ConsoleLogger
 			(ConsoleColor bg, ConsoleColor fg) = (Console.BackgroundColor, Console.ForegroundColor);
 			(Console.BackgroundColor, Console.ForegroundColor) = (colors.Item1, colors.Item2);
 			Console.WriteLine(header);
-			Console.WriteLine($"    {e.message}\n");
+			Console.WriteLine($"    {e.message}");
 			(Console.BackgroundColor, Console.ForegroundColor) = (bg, fg);
 		}
 		else
 		{
 			Console.WriteLine(header);
-			Console.WriteLine($"{e.message}\n");
+			Console.WriteLine($"    {e.message}");
 		}
 	}
 

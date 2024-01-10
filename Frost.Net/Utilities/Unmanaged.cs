@@ -1,6 +1,6 @@
-﻿namespace Frost.Net.Utilities;
+﻿using System.Text;
 
-using System.Text;
+namespace Frost.Net.Utilities;
 
 internal static class Unmanaged
 {

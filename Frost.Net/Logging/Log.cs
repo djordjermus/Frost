@@ -1,8 +1,8 @@
-﻿namespace Frost.Net.Logging;
-
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using Frost.Net.Interoperability;
 using Frost.Net.Models;
+
+namespace Frost.Net.Logging;
 
 /// <summary>
 /// Contains log event data
