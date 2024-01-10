@@ -58,6 +58,7 @@ namespace frost::impl
 
 	thread::message* thread::message::create()
 	{
+		::PeekMessageW(nullptr, nullptr, 0, 0, PM_NOREMOVE);
 		auto ret = new message();
 		return ret;
 	}
