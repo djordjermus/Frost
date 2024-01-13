@@ -17,8 +17,8 @@ extern "C"
 		void(_stdcall* procedure)(void*),
 		void* argument);
 	FROST_API bool _stdcall frost_api_thread_message_send_async(
-		u64 thread,
 		frost::api::resource* sync_event,
+		u64 thread,
 		void(_stdcall* procedure)(void*),
 		void* argument);
 }

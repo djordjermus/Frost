@@ -403,7 +403,6 @@ internal static partial class FrostApi
 
     public static partial class Keycode
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_keycode_to_wcs")]
@@ -414,11 +413,82 @@ internal static partial class FrostApi
             ulong capacity,
             [MarshalAs(UnmanagedType.Bool)]bool normalize_case);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_keycode_get_name")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
         public static partial IntPtr GetName(byte keycode);
     }
+
+    public static partial class Thread
+    {
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
+		public delegate void Procedure(IntPtr pData);
+
+		[LibraryImport(
+		    frostApiPath,
+		    EntryPoint = "frost_api_thread_create")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial IntPtr Create(Procedure procedure, IntPtr argument);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_thread_get_current_id")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial ulong GetCurrentId();
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_thread_get_id")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial ulong GetId(IntPtr ptr);
+
+
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_thread_message_create")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial IntPtr CreateMessage();
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_thread_message_wait")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial void WaitMessage(IntPtr messagePtr);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_thread_message_peek")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial void PeekMessage(IntPtr messagePtr);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_thread_message_dispatch")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial void DispatchMessage(IntPtr messagePtr);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_thread_message_discard")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial void DiscardMessage(IntPtr messagePtr);
+
+
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_thread_message_send")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool SendMessage(ulong threadId, Procedure procedure, IntPtr argument);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_thread_message_send_async")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool SendMessageAsync(IntPtr syncEvent, ulong threadId, Procedure procedure, IntPtr argument);
+	}
 }

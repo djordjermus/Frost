@@ -52,8 +52,8 @@ FROST_API bool _stdcall frost_api_thread_message_send(
 	return success;
 }
 FROST_API bool _stdcall frost_api_thread_message_send_async(
-	u64 thread,
 	frost::api::resource* sync,
+	u64 thread,
 	void(_stdcall* procedure)(void*),
 	void* argument)
 {
