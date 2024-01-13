@@ -27,9 +27,11 @@ namespace frost::impl
 	static inline int state_to_int(frost::api::window_state state);
 	static inline frost::api::window_state int_to_state(int state);
 	static inline frost::impl::window* get_hwnd_data(HWND hwnd) { return reinterpret_cast<frost::impl::window*>(::GetWindowLongPtrW(hwnd, GWLP_USERDATA)); }
+	window::window(HWND hwnd) :
+		synchronizable(hwnd) {}
 	window::~window()
 	{
-		::DestroyWindow(_hwnd);
+		::DestroyWindow(get_hwnd());
 	}
 
 	bool window::is_enabled() const
@@ -73,9 +75,9 @@ namespace frost::impl
 		if ((flag && enabled) || !(flag || enabled))
 			return;
 
-		if (!is_deferred_invoke_required())
+		if (is_direct_invoke_required())
 		{
-			::EnableWindow(_hwnd, static_cast<BOOL>(enabled));
+			::EnableWindow(get_hwnd(), static_cast<BOOL>(enabled));
 			return;
 		}
 		else
@@ -95,12 +97,12 @@ namespace frost::impl
 		if ((flag && active) || !(flag || active))
 			return;
 
-		if (!is_deferred_invoke_required())
+		if (is_direct_invoke_required())
 		{
 			if (flag && !active)
 				::SetActiveWindow(nullptr);
 			else if (!flag && active)
-				::SetActiveWindow(_hwnd);
+				::SetActiveWindow(get_hwnd());
 			return;
 		}
 		else
@@ -119,12 +121,12 @@ namespace frost::impl
 		if ((flag && focus) || !(flag || focus))
 			return;
 
-		if (!is_deferred_invoke_required())
+		if (is_direct_invoke_required())
 		{
 			if (flag && !focus)
 				::SetFocus(nullptr);
 			else if (!flag && focus)
-				::SetFocus(_hwnd);
+				::SetFocus(get_hwnd());
 			return;
 		}
 		else
@@ -140,9 +142,9 @@ namespace frost::impl
 
 	void window::set_state(api::window_state state)
 	{
-		if (!is_deferred_invoke_required())
+		if (is_direct_invoke_required())
 		{
-			::ShowWindow(_hwnd, state_to_int(state));
+			::ShowWindow(get_hwnd(), state_to_int(state));
 		}
 		else
 		{
@@ -156,9 +158,9 @@ namespace frost::impl
 
 	void window::set_position(point2d<i32> position)
 	{
-		if (!is_deferred_invoke_required())
+		if (is_direct_invoke_required())
 		{
-			::SetWindowPos(_hwnd, nullptr, position.x, position.y, 0, 0, SWP_NOSIZE);
+			::SetWindowPos(get_hwnd(), nullptr, position.x, position.y, 0, 0, SWP_NOSIZE);
 		}
 		else
 		{
@@ -171,9 +173,9 @@ namespace frost::impl
 	}
 	void window::set_size(size2d<i32> size)
 	{
-		if (!is_deferred_invoke_required())
+		if (is_direct_invoke_required())
 		{
-			::SetWindowPos(_hwnd, nullptr, 0, 0, size.width , size.height, SWP_NOMOVE);
+			::SetWindowPos(get_hwnd(), nullptr, 0, 0, size.width , size.height, SWP_NOMOVE);
 		}
 		else
 		{
@@ -193,13 +195,22 @@ namespace frost::impl
 		_data = data;
 	}
 
-	bool window::is_deferred_invoke_required() const
+	bool window::signal() const
+	{
+		return true;
+		/* DO NOTHING */
+	}
+	HWND window::get_hwnd() const
+	{
+		return reinterpret_cast<HWND>(get_system_handle());
+	}
+	bool window::is_direct_invoke_required() const
 	{
 		return _thread_id == ::GetCurrentThreadId();
 	}
 	bool window::execute_deferred(execute_deferred_data* data, bool wait)
 	{
-		if (!is_deferred_invoke_required())
+		if (!is_direct_invoke_required())
 			return false;
 
 		if (wait)
@@ -242,7 +253,7 @@ namespace frost::impl
 	void window::update_state()
 	{
 		WINDOWPLACEMENT wp{};
-		::GetWindowPlacement(_hwnd, &wp);
+		::GetWindowPlacement(get_hwnd(), &wp);
 		frost::api::window_state new_state = int_to_state(wp.showCmd);
 
 		if (_state != new_state)
@@ -260,7 +271,7 @@ namespace frost::impl
 	void window::update_rect()
 	{
 		RECT new_rect = {};
-		::GetWindowRect(_hwnd, &new_rect);
+		::GetWindowRect(get_hwnd(), &new_rect);
 		_rect = new_rect;
 	}
 	void window::update_last_cursor_position(LPARAM l)
@@ -731,9 +742,54 @@ namespace frost::impl
 
 	LRESULT window::wm_create(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 	{
-		::SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(*(void**)l));
+		frost::api::window_description* desc = *reinterpret_cast<frost::api::window_description**>(l);
+		window* result					= new window(hwnd);
+		::SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(result));
+		result->_last_cursor_position	= {};
+		result->_flags					= _flag_enabled | _flag_active | _flag_focused;
+		result->_state					= fold_state(desc->state);
+		result->_procedure				= desc->procedure;
+		result->_data					= desc->data;
+		result->_thread_id				= ::GetCurrentThreadId();
+		result->_hkl					= ::GetKeyboardLayout(result->_thread_id);
+		result->_rect = {
+			desc->position.x,
+			desc->position.y,
+			desc->position.x + desc->size.width,
+			desc->position.y + desc->size.height
+		};
+
+		/* TRACK MOUSE LEAVING CLIENT AREA */
+		result->_track_mouse_event.cbSize = sizeof(_track_mouse_event);
+		result->_track_mouse_event.hwndTrack = result->get_hwnd();
+		result->_track_mouse_event.dwHoverTime = 0;
+		result->_track_mouse_event.dwFlags = TME_LEAVE;
+
+		/* INPUT HOOKS */
+		RAWINPUTDEVICE rid[2] = {};
+		for (auto& device : rid)
+		{
+			device.hwndTarget = result->get_hwnd();
+			device.dwFlags = 0x00;
+			device.usUsagePage = HID_USAGE_PAGE_GENERIC;
+		}
+		rid[0].usUsage = HID_USAGE_GENERIC_MOUSE;
+		rid[1].usUsage = HID_USAGE_GENERIC_KEYBOARD;
+
+		if (!::RegisterRawInputDevices(rid, sizeof(rid) / sizeof(*rid), sizeof(*rid)))
+		{
+			::DestroyWindow(result->get_hwnd());
+			result->acquire_reference();
+			result->release_reference();
+			return ::DefWindowProcW(hwnd, msg, w, l);
+		}
+
+		/* LAYERED WINDOW SETUP */
+		::SetLayeredWindowAttributes(result->get_hwnd(), 0, 255, 0);
+		::ShowWindow(result->get_hwnd(), state_to_int(result->_state));
 		auto data = get_hwnd_data(hwnd);
-		// data->acquire_reference();
+		
+		/* EMIT EVENT */
 		if (data->_procedure)
 		{
 			frost::api::window_event e;
@@ -828,23 +884,7 @@ namespace frost::impl
 
 	frost::impl::window* window::create(const frost::api::window_description* description)
 	{
-		auto* result = new window();
-		result->_last_cursor_position = {};
-		result->_flags		= _flag_enabled | _flag_active | _flag_focused;
-		result->_state		= fold_state(description->state);
-		result->_procedure	= description->procedure;
-		result->_data		= description->data;
-		result->_thread_id	= ::GetCurrentThreadId();
-		result->_hkl		= ::GetKeyboardLayout(result->_thread_id);
-		result->_rect		= {
-			description->position.x,
-			description->position.y,
-			description->position.x + description->size.width,
-			description->position.y + description->size.height
-		};
-
-		/* CREATE WINDOW */
-		result->_hwnd = ::CreateWindowExW(
+		auto hwnd = ::CreateWindowExW(
 			WS_EX_LAYERED,
 			(LPCWSTR)_window_class,
 			nullptr, WS_CLIPCHILDREN | WS_SIZEBOX,
@@ -855,52 +895,18 @@ namespace frost::impl
 			nullptr,
 			nullptr,
 			nullptr,
-			reinterpret_cast<void*>(result));
+			const_cast<void*>(reinterpret_cast<const void*>(description)));
 
-		if (result->_hwnd == nullptr)
-		{	// ERROR
-			result->acquire_reference();
-			result->release_reference();
-			// TODO: log_message(msg_window_creation_failed);
+		if (hwnd == nullptr)
 			return nullptr;
-		}
-
-		/* TRACK MOUSE LEAVING CLIENT AREA */
-		result->_track_mouse_event.cbSize		= sizeof(_track_mouse_event);
-		result->_track_mouse_event.hwndTrack	= result->_hwnd;
-		result->_track_mouse_event.dwHoverTime	= 0;
-		result->_track_mouse_event.dwFlags		= TME_LEAVE;
-
-		/* INPUT HOOKS */
-		RAWINPUTDEVICE rid[2] = {};
-		for (auto& device : rid)
-		{
-			device.hwndTarget	= result->_hwnd;
-			device.dwFlags		= 0x00;
-			device.usUsagePage	= HID_USAGE_PAGE_GENERIC;
-		}
-		rid[0].usUsage = HID_USAGE_GENERIC_MOUSE;
-		rid[1].usUsage = HID_USAGE_GENERIC_KEYBOARD;
-
-		if (!::RegisterRawInputDevices(rid, sizeof(rid) / sizeof(*rid), sizeof(*rid)))
-		{
-			::DestroyWindow(result->_hwnd);
-			result->_hwnd = nullptr;
-			result->acquire_reference();
-			result->release_reference();
-			// TODO: log_message(msg_window_input_initialization_failed);
-			return nullptr;
-		}
-
-		::SetLayeredWindowAttributes(result->_hwnd, 0, 255, 0);
-		::ShowWindow(result->_hwnd, state_to_int(result->_state));
-
-		return result;
+		
+		LONG_PTR ptr = ::GetWindowLongPtrW(hwnd, GWLP_USERDATA);
+		return reinterpret_cast<frost::impl::window*>(ptr);
 	}
 	void window::pump_messages()
 	{
 		MSG msg{};
-		while (::GetMessageW(&msg, _hwnd, 0, 0))
+		while (::GetMessageW(&msg, get_hwnd(), 0, 0))
 		{
 			if (msg.message == modify_deferred_msg)
 			{

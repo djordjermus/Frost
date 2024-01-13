@@ -30,38 +30,10 @@ ref e = ::synchronizable_create_event();
 
 int main()
 {
-	ref th = thread_create(
-		[](void* arg) {
-			ref msg = thread_message_create();
-			thread_message_peek(msg);
-			synchronizable_signal(e);
-			for (int i = 0; i < 10000; i++)
-			{
-				std::cout << i << '\n';
-			}
-			thread_message_wait(msg);
-			thread_message_dispatch(msg);
-		},
-		nullptr);
-	synchronizable_wait(e);
-	synchronizable_event_reset(e);
-	thread_message_send_async(thread_get_id(th), e, [](void*) {std::cout << "Hello World!"; }, nullptr);
-
-	synchronizable_wait(e);
-	/*
-	std::thread th([]() {
-		std::this_thread::sleep_for(std::chrono::seconds(10));
-		synchronizable_signal(e);
-		std::this_thread::sleep_for(std::chrono::seconds(10));
-		synchronizable_signal(e);
-		});
-	synchronizable_wait(e);
-	std::cout << "1st\n";
-	synchronizable_event_reset(e);
-	synchronizable_wait(e);
-	std::cout << "2nd\n";
-	th.join();
-	*/
+	auto desc = frost::api::window_description();
+	desc.procedure = window_proc;
+	ref window = window_create(&desc);
+	window_pump_messages(window);
 }
 
 void test_synchronizable()

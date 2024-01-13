@@ -1,15 +1,15 @@
-#include "resource.impl.hpp"
+#include "synchronizable.impl.hpp"
 #include "../window.api.hpp"
 #pragma once
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
 #include <windows.h>
 namespace frost::impl
 {
-	class window final : public api::resource
+	class window final : public frost::impl::synchronizable
 	{
 	private:
 		class execute_deferred_data;
-		window() = default;
+		window(HWND hwnd);
 		~window();
 
 		static WORD _window_class;
@@ -17,7 +17,6 @@ namespace frost::impl
 		RECT _rect = {};
 		TRACKMOUSEEVENT _track_mouse_event = {};
 		point2d<i32> _last_cursor_position = {};
-		HWND _hwnd = nullptr;
 		HKL _hkl = nullptr;
 		u64 _flags = 0;
 
@@ -33,7 +32,9 @@ namespace frost::impl
 		constexpr static u64 _flag_focused			= (1ull << 2);
 		constexpr static u64 _flag_cursor_inside	= (1ull << 3);
 
-		bool is_deferred_invoke_required() const;
+		bool signal() const override;
+		HWND get_hwnd() const;
+		bool is_direct_invoke_required() const;
 		bool execute_deferred(execute_deferred_data* data, bool wait = true);
 
 		void update_state();
@@ -75,7 +76,6 @@ namespace frost::impl
 		static LRESULT CALLBACK window_procedure(HWND hwnd, UINT msg, WPARAM w, LPARAM l);
 
 	public:
-
 		bool is_enabled() const;
 		bool is_active() const;
 		bool is_focused() const;
