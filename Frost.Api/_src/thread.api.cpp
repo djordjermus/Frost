@@ -3,41 +3,41 @@
 #define TO_IMPL(x) static_cast<frost::impl::thread*>(x)
 #define TO_IMPL_MSG(x) static_cast<frost::impl::thread::message*>(x)
 
-FROST_API frost::api::resource* _stdcall thread_create(void(_stdcall* procedure)(void*), void* argument)
+FROST_API frost::api::resource* _stdcall frost_api_thread_create(void(_stdcall* procedure)(void*), void* argument)
 {
 	return new frost::impl::thread(procedure, argument);
 }
-FROST_API u64 _stdcall thread_get_current_id()
+FROST_API u64 _stdcall frost_api_thread_get_current_id()
 {
 	return frost::impl::thread::get_current_id();
 }
-FROST_API u64 _stdcall thread_get_id(frost::api::resource* thread)
+FROST_API u64 _stdcall frost_api_thread_get_id(frost::api::resource* thread)
 {
 	return TO_IMPL(thread)->get_id();
 }
 
-FROST_API frost::api::resource* _stdcall thread_message_create()
+FROST_API frost::api::resource* _stdcall frost_api_thread_message_create()
 {
 	return new frost::impl::thread::message();
 }
-FROST_API void _stdcall thread_message_wait(frost::api::resource* message)
+FROST_API void _stdcall frost_api_thread_message_wait(frost::api::resource* message)
 {
 	TO_IMPL_MSG(message)->wait();
 }
-FROST_API void _stdcall thread_message_peek(frost::api::resource* message)
+FROST_API void _stdcall frost_api_thread_message_peek(frost::api::resource* message)
 {
 	TO_IMPL_MSG(message)->peek();
 }
-FROST_API void _stdcall thread_message_dispatch(frost::api::resource* message)
+FROST_API void _stdcall frost_api_thread_message_dispatch(frost::api::resource* message)
 {
 	TO_IMPL_MSG(message)->dispatch();
 }
-FROST_API void _stdcall thread_message_discard(frost::api::resource* message)
+FROST_API void _stdcall frost_api_thread_message_discard(frost::api::resource* message)
 {
 	TO_IMPL_MSG(message)->discard();
 }
 
-FROST_API bool _stdcall thread_message_send(
+FROST_API bool _stdcall frost_api_thread_message_send(
 	u64 thread,
 	void(_stdcall* procedure)(void*),
 	void* argument)
@@ -51,7 +51,7 @@ FROST_API bool _stdcall thread_message_send(
 	sync->release_reference();
 	return success;
 }
-FROST_API bool _stdcall thread_message_send_async(
+FROST_API bool _stdcall frost_api_thread_message_send_async(
 	u64 thread,
 	frost::api::resource* sync,
 	void(_stdcall* procedure)(void*),

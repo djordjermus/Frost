@@ -1,6 +1,6 @@
 #include "../keycode.api.hpp"
 #include "../internal/sysmap.impl.hpp"
-FROST_API u64 _stdcall keycode_to_wcs(
+FROST_API u64 _stdcall frost_api_keycode_to_wcs(
 	frost::api::keycode keycode,
 	wchar_t* output,
 	u64 output_length,
@@ -9,7 +9,7 @@ FROST_API u64 _stdcall keycode_to_wcs(
 	return frost::impl::sysmap::keycode_to_wcs(keycode, output, output_length, normalize_case);
 }
 
-FROST_API const wchar_t* _stdcall keycode_get_name(frost::api::keycode keycode)
+FROST_API const wchar_t* _stdcall frost_api_keycode_get_name(frost::api::keycode keycode)
 {
 	switch (keycode)
 	{

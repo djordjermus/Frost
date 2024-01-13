@@ -27,7 +27,7 @@ void frost::impl::debug::log_resource_creation(const frost::api::resource* targe
 		// DEBUG LOG
 		const wchar_t* params[param_count] = { address };
 		const u64 param_lengths[param_count] = { address_length };
-		logging_debug(_template, _template_length, params, param_lengths, param_count, event_system_get_api_broadcast_layer());
+		frost_api_logging_debug(_template, _template_length, params, param_lengths, param_count, frost_api_event_system_get_api_broadcast_layer());
 	}
 	catch (const std::exception& e)
 	{
@@ -35,11 +35,13 @@ void frost::impl::debug::log_resource_creation(const frost::api::resource* targe
 		u64 what_length = strlen(c_what) + 1;
 		std::wstring what = std::wstring(c_what, c_what + what_length);
 		const wchar_t* wcs_what = what.c_str();
-		logging_error(_exception_template, _exception_template_length, &wcs_what, &what_length, 1, event_system_get_api_broadcast_layer());
+		frost_api_logging_error(
+			_exception_template, _exception_template_length, &wcs_what, &what_length, 1, frost_api_event_system_get_api_broadcast_layer());
 	}
 	catch (...)
 	{
-		logging_error(_error_template, _error_template_length, nullptr, nullptr, 0, event_system_get_api_broadcast_layer());
+		frost_api_logging_error(
+			_error_template, _error_template_length, nullptr, nullptr, 0, frost_api_event_system_get_api_broadcast_layer());
 	}
 #endif
 }
@@ -78,7 +80,7 @@ void frost::impl::debug::log_resource_destruction(const frost::api::resource* ta
 		// DEBUG LOG
 		const wchar_t* params[param_count]		= { address, name };
 		const u64 param_lengths[param_count]	= { address_length, (u64)(write - name) };
-		logging_debug(_template, _template_length, params, param_lengths, param_count, event_system_get_api_broadcast_layer());
+		frost_api_logging_debug(_template, _template_length, params, param_lengths, param_count, frost_api_event_system_get_api_broadcast_layer());
 	}
 	catch (const std::exception& e)
 	{
@@ -86,11 +88,11 @@ void frost::impl::debug::log_resource_destruction(const frost::api::resource* ta
 		u64 what_length = strlen(c_what) + 1;
 		std::wstring what = std::wstring(c_what, c_what + what_length);
 		const wchar_t* wcs_what = what.c_str();
-		logging_error(_exception_template, _exception_template_length, &wcs_what, &what_length, 1, event_system_get_api_broadcast_layer());
+		frost_api_logging_error(_exception_template, _exception_template_length, &wcs_what, &what_length, 1, frost_api_event_system_get_api_broadcast_layer());
 	}
 	catch (...)
 	{
-		logging_error(_error_template, _error_template_length, nullptr, nullptr, 0, event_system_get_api_broadcast_layer());
+		frost_api_logging_error(_error_template, _error_template_length, nullptr, nullptr, 0, frost_api_event_system_get_api_broadcast_layer());
 	}
 #endif
 }

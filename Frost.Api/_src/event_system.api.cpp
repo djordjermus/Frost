@@ -10,11 +10,12 @@ static std::map<u64, std::map<u64, handler_group>> handlers;
 static std::map<u64, layer_collection> _handlers;
 
 static inline void emit_to_handlers(u64 tag, u64 layer, void* p_data);
-u64 event_system_get_api_broadcast_layer()
+
+FROST_API u64 _stdcall frost_api_event_system_get_api_broadcast_layer()
 {
 	return 0x8000'0000'0000'0000;
 }
-void event_system_emit(u64 tag, u64 layer, void* p_data)
+FROST_API void _stdcall frost_api_event_system_emit(u64 tag, u64 layer, void* p_data)
 {
 	// Emit to handlers
 	emit_to_handlers(tag, layer, p_data);
@@ -24,11 +25,11 @@ void event_system_emit(u64 tag, u64 layer, void* p_data)
 		relay(tag, layer, p_data);
 }
 
-void event_system_subscribe(u64 tag, u64 activation_layers, event_system_handler handler)
+FROST_API void _stdcall frost_api_event_system_subscribe(u64 tag, u64 activation_layers, event_system_handler handler)
 {
 	handlers[tag][activation_layers].emplace_back(handler);
 }
-void event_system_unsubscribe(u64 tag, u64 activation_layers, event_system_handler handler)
+FROST_API void _stdcall frost_api_event_system_unsubscribe(u64 tag, u64 activation_layers, event_system_handler handler)
 {
 	auto layer_group = _handlers.find(tag);
 	if (layer_group == _handlers.end())
@@ -48,11 +49,11 @@ void event_system_unsubscribe(u64 tag, u64 activation_layers, event_system_handl
 	}
 }
 
-void event_system_subscribe_relay(event_system_relay relay)
+FROST_API void _stdcall frost_api_event_system_subscribe_relay(event_system_relay relay)
 {
 	relays.emplace_back(relay);
 }
-void event_system_unsubscribe_relay(event_system_relay relay)
+FROST_API void _stdcall frost_api_event_system_unsubscribe_relay(event_system_relay relay)
 {
 	auto it = std::find(relays.begin(), relays.end(), relay);
 	if (it != relays.end())

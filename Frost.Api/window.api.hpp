@@ -11,39 +11,39 @@ namespace frost::api
 }
 extern "C"
 {
-	FROST_API bool _stdcall window_is_enabled(frost::api::resource* target);
-	FROST_API bool _stdcall window_is_active(frost::api::resource* target);
-	FROST_API bool _stdcall window_is_focused(frost::api::resource* target);
+	FROST_API bool _stdcall frost_api_window_is_enabled(frost::api::resource* target);
+	FROST_API bool _stdcall frost_api_window_is_active(frost::api::resource* target);
+	FROST_API bool _stdcall frost_api_window_is_focused(frost::api::resource* target);
 	
-	FROST_API frost::api::window_state _stdcall window_get_state(frost::api::resource* target);
+	FROST_API frost::api::window_state _stdcall frost_api_window_get_state(frost::api::resource* target);
 
-	FROST_API bool _stdcall window_get_key_state(frost::api::resource* target, frost::api::keycode key);
+	FROST_API bool _stdcall frost_api_window_get_key_state(frost::api::resource* target, frost::api::keycode key);
 	
-	FROST_API void _stdcall window_get_position(frost::api::resource* target, point2d<i32>* output);
-	FROST_API void _stdcall window_get_size(frost::api::resource* target, size2d<i32>* output);
+	FROST_API void _stdcall frost_api_window_get_position(frost::api::resource* target, point2d<i32>* output);
+	FROST_API void _stdcall frost_api_window_get_size(frost::api::resource* target, size2d<i32>* output);
 	
-	FROST_API frost::api::window_procedure_sig _stdcall window_get_procedure(frost::api::resource* target);
-	FROST_API void* _stdcall window_get_data(frost::api::resource* target);
+	FROST_API frost::api::window_procedure_sig _stdcall frost_api_window_get_procedure(frost::api::resource* target);
+	FROST_API void* _stdcall frost_api_window_get_data(frost::api::resource* target);
 
 
 
-	FROST_API void window_set_enabled(frost::api::resource* target, bool enabled);
-	FROST_API void window_set_active(frost::api::resource* target, bool active);
-	FROST_API void window_set_focused(frost::api::resource* target, bool focused);
+	FROST_API void frost_api_window_set_enabled(frost::api::resource* target, bool enabled);
+	FROST_API void frost_api_window_set_active(frost::api::resource* target, bool active);
+	FROST_API void frost_api_window_set_focused(frost::api::resource* target, bool focused);
 	
-	FROST_API void window_set_state(frost::api::resource* target, frost::api::window_state state);
+	FROST_API void frost_api_window_set_state(frost::api::resource* target, frost::api::window_state state);
 	
-	FROST_API void window_set_position(frost::api::resource* target, point2d<i32> position);
-	FROST_API void window_set_size(frost::api::resource* target, size2d<i32> size);
-	FROST_API void window_set_procedure(frost::api::resource* target, frost::api::window_procedure_sig procedure);
-	FROST_API void window_set_data(frost::api::resource* target, void* data);
+	FROST_API void frost_api_window_set_position(frost::api::resource* target, point2d<i32> position);
+	FROST_API void frost_api_window_set_size(frost::api::resource* target, size2d<i32> size);
+	FROST_API void frost_api_window_set_procedure(frost::api::resource* target, frost::api::window_procedure_sig procedure);
+	FROST_API void frost_api_window_set_data(frost::api::resource* target, void* data);
 
 
 
-	FROST_API void _stdcall window_pump_messages(frost::api::resource* target);
+	FROST_API void _stdcall frost_api_window_pump_messages(frost::api::resource* target);
 
-	FROST_API frost::api::resource* _stdcall window_create(const frost::api::window_description* description);
-	FROST_API bool _stdcall resource_is_window(frost::api::resource* target);
+	FROST_API frost::api::resource* _stdcall frost_api_window_create(const frost::api::window_description* description);
+	FROST_API bool _stdcall frost_api_resource_is_window(frost::api::resource* target);
 }
 
 namespace frost::api

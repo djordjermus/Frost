@@ -12,6 +12,6 @@ extern "C"
 		const wchar_t* decoration;
 	};
 
-	FROST_API bool _stdcall semantic_version_check_compatibility(semantic_version version, semantic_version target);
-	FROST_API void _stdcall semantic_version_get_api_version(semantic_version* output);
+	FROST_API bool _stdcall frost_api_semantic_version_check_compatibility(semantic_version version, semantic_version target);
+	FROST_API void _stdcall frost_api_semantic_version_get_api_version(semantic_version* output);
 }

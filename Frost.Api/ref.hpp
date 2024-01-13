@@ -4,8 +4,8 @@ class ref final
 {
 private:
 	frost::api::resource* _ptr;
-	static inline frost::api::resource* inc(frost::api::resource* ptr) { if (ptr != nullptr) resource_acquire_reference(ptr); return ptr; }
-	static inline frost::api::resource* dec(frost::api::resource* ptr) { if (ptr != nullptr) resource_release_reference(ptr); return ptr; }
+	static inline frost::api::resource* inc(frost::api::resource* ptr) { if (ptr != nullptr) frost_api_resource_acquire_reference(ptr); return ptr; }
+	static inline frost::api::resource* dec(frost::api::resource* ptr) { if (ptr != nullptr) frost_api_resource_release_reference(ptr); return ptr; }
 
 public:
 	/* CONSTRUCTORS */
