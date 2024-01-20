@@ -11,8 +11,4 @@
     <ProjectReference Include="..\Frost.Net\Frost.Net.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
-
 </Project>
