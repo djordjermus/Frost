@@ -27,16 +27,16 @@ extern "C"
 
 
 
-	FROST_API void frost_api_window_set_enabled(frost::api::resource* target, bool enabled);
-	FROST_API void frost_api_window_set_active(frost::api::resource* target, bool active);
-	FROST_API void frost_api_window_set_focused(frost::api::resource* target, bool focused);
+	FROST_API void _stdcall frost_api_window_set_enabled(frost::api::resource* target, bool enabled);
+	FROST_API void _stdcall frost_api_window_set_active(frost::api::resource* target, bool active);
+	FROST_API void _stdcall frost_api_window_set_focused(frost::api::resource* target, bool focused);
 	
-	FROST_API void frost_api_window_set_state(frost::api::resource* target, frost::api::window_state state);
+	FROST_API void _stdcall frost_api_window_set_state(frost::api::resource* target, frost::api::window_state state);
 	
-	FROST_API void frost_api_window_set_position(frost::api::resource* target, point2d<i32> position);
-	FROST_API void frost_api_window_set_size(frost::api::resource* target, size2d<i32> size);
-	FROST_API void frost_api_window_set_procedure(frost::api::resource* target, frost::api::window_procedure_sig procedure);
-	FROST_API void frost_api_window_set_data(frost::api::resource* target, void* data);
+	FROST_API void _stdcall frost_api_window_set_position(frost::api::resource* target, point2d<i32> position);
+	FROST_API void _stdcall frost_api_window_set_size(frost::api::resource* target, size2d<i32> size);
+	FROST_API void _stdcall frost_api_window_set_procedure(frost::api::resource* target, frost::api::window_procedure_sig procedure);
+	FROST_API void _stdcall frost_api_window_set_data(frost::api::resource* target, void* data);
 
 
 
