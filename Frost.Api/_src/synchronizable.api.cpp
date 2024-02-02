@@ -16,10 +16,6 @@ FROST_API bool _stdcall frost_api_synchronizable_signal(frost::api::resource* ta
 {
 	return TO_IMPL(target)->signal();
 }
-FROST_API void* _stdcall frost_api_synchronizable_get_internal_handle(frost::api::resource* target)
-{
-	return TO_IMPL(target)->get_system_handle();
-}
 
 FROST_API bool _stdcall frost_api_synchronizable_event_reset(frost::api::resource* target)
 {

@@ -1,19 +1,17 @@
 #include "../synchronizable.api.hpp"
-#include "resource.impl.hpp"
+#include "system_resource.impl.hpp"
 #pragma once
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
 #include <windows.h>
 namespace frost::impl
 {
-	class synchronizable : public api::resource
+	class synchronizable : public system_resource
 	{
 	protected:
-		HANDLE _handle;
 		synchronizable(HANDLE handle);
 		~synchronizable() override;
 
 	public:
-		HANDLE get_system_handle() const;
 		bool wait() const;
 		bool try_wait() const;
 		virtual bool signal() const = 0;

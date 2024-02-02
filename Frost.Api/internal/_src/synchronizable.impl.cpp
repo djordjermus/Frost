@@ -11,12 +11,12 @@ namespace frost::impl
 	synchronizable_mutex::synchronizable_mutex(bool initial_owner) :
 		synchronizable(::CreateMutexW(nullptr, initial_owner, nullptr)) {}
 
-	bool synchronizable_mutex::signal() const { return ::ReleaseMutex(_handle); }
+	bool synchronizable_mutex::signal() const { return ::ReleaseMutex(_system_handle); }
 
 	synchronizable_semaphore::synchronizable_semaphore(i32 count, i32 maximum) :
 		synchronizable(::CreateSemaphoreW(nullptr, count, maximum, nullptr)) {}
 
-	bool synchronizable_semaphore::signal() const { return ::ReleaseSemaphore(_handle, 1, nullptr); }
+	bool synchronizable_semaphore::signal() const { return ::ReleaseSemaphore(_system_handle, 1, nullptr); }
 
 	/* 
 	 * EVENT
@@ -26,11 +26,11 @@ namespace frost::impl
 
 	bool synchronizable_event::signal() const
 	{
-		return ::SetEvent(_handle);
+		return ::SetEvent(_system_handle);
 	}
 	bool synchronizable_event::reset() const
 	{
-		return ::ResetEvent(_handle);
+		return ::ResetEvent(_system_handle);
 	}
 
 
@@ -39,20 +39,17 @@ namespace frost::impl
 	 */
 
 	synchronizable::synchronizable(HANDLE handle) :
-		_handle(handle) {}
+		system_resource(handle) {}
 	synchronizable::~synchronizable()
 	{
-		::CloseHandle(_handle);
+		::CloseHandle(_system_handle);
 	}
 
-	HANDLE synchronizable::get_system_handle() const
-	{
-		return _handle;
-	}
+	
 
 	bool synchronizable::wait() const
 	{
-		return ::WaitForSingleObjectEx(_handle, ~0ul, FALSE) == WAIT_OBJECT_0;
+		return ::WaitForSingleObjectEx(_system_handle, ~0ul, FALSE) == WAIT_OBJECT_0;
 	}
 
 
@@ -144,7 +141,7 @@ namespace frost::impl
 
 	bool synchronizable::try_wait() const
 	{
-		return ::WaitForSingleObjectEx(_handle, 0ul, FALSE) == WAIT_OBJECT_0;
+		return ::WaitForSingleObjectEx(_system_handle, 0ul, FALSE) == WAIT_OBJECT_0;
 	}
 }
 

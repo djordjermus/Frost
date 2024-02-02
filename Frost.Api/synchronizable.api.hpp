@@ -5,7 +5,6 @@ extern "C"
 	FROST_API bool _stdcall  frost_api_synchronizable_wait(frost::api::resource* target);
 	FROST_API bool _stdcall  frost_api_synchronizable_try_wait(frost::api::resource* target);
 	FROST_API bool _stdcall  frost_api_synchronizable_signal(frost::api::resource* target);
-	FROST_API void* _stdcall frost_api_synchronizable_get_internal_handle(frost::api::resource* target);
 
 	FROST_API bool _stdcall frost_api_synchronizable_event_reset(frost::api::resource* target);
 

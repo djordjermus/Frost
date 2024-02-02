@@ -289,6 +289,8 @@ internal static partial class FrostApi
             ulong activation_layers);
     }
 
+
+
     public static partial class Resource
     {
 		[LibraryImport(
@@ -309,6 +311,15 @@ internal static partial class FrostApi
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
         public static partial void ReleaseReference(IntPtr ptr);
     }
+
+	public static partial class SystemResource
+	{
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_system_resource_get_system_handle")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial IntPtr GetSystemHandle(IntPtr target);
+	}
 
     public static partial class Synchronizable
     {
@@ -352,12 +363,6 @@ internal static partial class FrostApi
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool Signal(IntPtr target);
-
-		[LibraryImport(
-			frostApiPath,
-			EntryPoint = "frost_api_synchronizable_get_internal_handle")]
-        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial IntPtr GetSystemHandle(IntPtr target);
 
 
 
