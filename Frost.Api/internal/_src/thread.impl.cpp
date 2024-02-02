@@ -75,7 +75,7 @@ namespace frost::impl
 	thread::message* thread::message::create()
 	{
 		MSG temp = {};
-		::PeekMessageW(&temp, nullptr, 0, 0, PM_NOREMOVE);
+		::PeekMessageW(&temp, nullptr, WM_USER, WM_USER, PM_NOREMOVE);
 		auto ret = new message();
 		return ret;
 	}
@@ -93,12 +93,19 @@ namespace frost::impl
 		if (sync != nullptr)
 			sync->acquire_reference();
 
+		auto handle = thread->get_system_handle();
+		if (handle == nullptr)
+			return false;
+
+		auto id = ::GetThreadId(handle);
+		if (id == 0)
+			return false;
+
 		BOOL result = ::PostThreadMessageW(
-			::GetThreadId(thread->get_system_handle()),
+			id,
 			msg_execute_procedure,
 			reinterpret_cast<WPARAM>(info),
 			reinterpret_cast<LPARAM>(sync));
-
 		return !!result;
 	}
 
@@ -161,7 +168,7 @@ namespace frost::impl
 		catch (...) { /* SUPPRESS */ }
 	}
 
-	void thread::message::execute_procedure()
+	void thread::message::execute_procedure() const
 	{
 		if (_msg.wParam == 0)
 			return;
@@ -173,7 +180,7 @@ namespace frost::impl
 		}
 		catch (...) { /* SUPPRESS */ }
 	}
-	void thread::message::signal()
+	void thread::message::signal() const
 	{
 		if (_msg.lParam == 0)
 			return;
