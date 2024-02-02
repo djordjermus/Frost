@@ -9,7 +9,7 @@ namespace frost::impl
 	{
 	protected:
 		synchronizable(HANDLE handle);
-		~synchronizable() override;
+		~synchronizable() = default;
 
 	public:
 		bool wait() const;

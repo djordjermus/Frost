@@ -1,7 +1,23 @@
+#include "../../ref.hpp"
 #include "../thread.impl.hpp"
+#include <iostream>
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
 namespace frost::impl
 {
+	thread_reference::thread_reference(HANDLE thread_handle) : 
+		synchronizable(thread_handle),
+		_thread_id(::GetThreadId(thread_handle)) {}
+
+	bool thread_reference::signal() const { return true; /* DO NOTHING */ }
+
+	thread_reference* thread_reference::get_current()
+	{
+		thread_local ref thread_ref = new thread_reference(::OpenThread(THREAD_ALL_ACCESS, FALSE, ::GetCurrentThreadId()));
+		return static_cast<thread_reference*>(thread_ref.get());
+	}
+
+
+
 	struct thread::thread_startup_info
 	{
 		void(_stdcall*procedure)(void* argument);
@@ -17,8 +33,7 @@ namespace frost::impl
 		wait();
 	}
 	thread::thread(void(_stdcall* procedure)(void*), void* argument) :
-		synchronizable(create_thread(new thread_startup_info(procedure, argument), &_id)) {}
-	bool thread::signal() const { return true; /* DO NOTHING */ }
+		thread_reference(create_thread(new thread_startup_info(procedure, argument), &_id)) {}
 
 	u64 thread::get_id() const { return _id; }
 	u64 thread::get_current_id() { return ::GetCurrentThreadId(); }
@@ -38,6 +53,7 @@ namespace frost::impl
 			tsi->procedure(tsi->argument);
 		}
 		catch (...) { }
+
 		try
 		{
 			delete tsi;
@@ -58,18 +74,18 @@ namespace frost::impl
 
 	thread::message* thread::message::create()
 	{
-		::PeekMessageW(nullptr, nullptr, 0, 0, PM_NOREMOVE);
+		MSG temp = {};
+		::PeekMessageW(&temp, nullptr, 0, 0, PM_NOREMOVE);
 		auto ret = new message();
 		return ret;
 	}
 
 	bool thread::message::send(
-		u64 thread,
+		frost::impl::thread_reference* thread,
 		impl::synchronizable* sync,
 		void(_stdcall* procedure)(void* argument),
 		void* argument)
 	{
-
 		auto* info = new procedure_message_info();
 		info->procedure = procedure;
 		info->argument = argument;
@@ -78,7 +94,7 @@ namespace frost::impl
 			sync->acquire_reference();
 
 		BOOL result = ::PostThreadMessageW(
-			static_cast<DWORD>(thread),
+			::GetThreadId(thread->get_system_handle()),
 			msg_execute_procedure,
 			reinterpret_cast<WPARAM>(info),
 			reinterpret_cast<LPARAM>(sync));

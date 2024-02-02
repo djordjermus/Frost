@@ -4,15 +4,32 @@
 #include <windows.h>
 namespace frost::impl
 {
-	class thread final : public frost::impl::synchronizable
+	class thread_reference : public synchronizable
 	{
+		u64 _thread_id;
+	protected:
+		~thread_reference() = default;
+
+	public:
+		thread_reference(HANDLE thread_handle);
+		bool signal() const override;
+
+		static thread_reference* get_current();
+	};
+
+	class thread : public thread_reference
+	{
+	protected:
 		~thread() override;
+
 	public:
 		thread(void(_stdcall* procedure)(void*), void* argument);
-		bool signal() const override;
 
 		u64 get_id() const;
 		static u64 get_current_id();
+
+
+
 		class message final : public frost::api::resource
 		{
 		public:
@@ -20,7 +37,7 @@ namespace frost::impl
 			static message* create();
 
 			static bool send(
-				u64 thread,
+				frost::impl::thread_reference* thread,
 				impl::synchronizable* sync,
 				void (_stdcall*procedure)(void* argument),
 				void* argument);

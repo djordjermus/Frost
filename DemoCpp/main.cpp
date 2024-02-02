@@ -15,6 +15,8 @@ frost::api::resource* wnd;
 
 void window_proc(frost::api::window_event* e)
 {
+	auto x = frost_api_thread_get_current();
+
 	if (e->type == frost::api::window_event::event_type::key_down)
 		std::wcout << L"DOWN: " << frost_api_keycode_get_name(e->key_down.key) << " | " << e->key_down.text << L" : " << e->key_down.repeat << L'\n';
 	if (e->type == frost::api::window_event::event_type::key_up)
@@ -27,13 +29,29 @@ void thread_procedure()
 	frost_api_window_set_size(wnd, { 200, 200 });
 }
 ref e = ::frost_api_synchronizable_create_event();
-
+int i = 0;
 int main()
 {
-	auto desc = frost::api::window_description();
-	desc.procedure = window_proc;
-	ref window = frost_api_window_create(&desc);
-	frost_api_window_pump_messages(window);
+	ref thread = frost_api_thread_create([](void* ptr)
+		{
+			ref msg = frost_api_thread_message_create();
+			frost_api_synchronizable_signal(e);
+			for (int i = 0; i < 100; i++)
+			{
+				frost_api_thread_message_wait(msg.get());
+				frost_api_thread_message_dispatch(msg.get());
+			}
+		},
+		nullptr);
+	frost_api_synchronizable_wait(e);
+
+	while (true)
+	{
+		bool success = frost_api_thread_message_send(thread, [](void* ptr) { i++; }, nullptr);
+		if (!success)
+			break;
+	}
+	std::cout << i;
 }
 
 void test_synchronizable()

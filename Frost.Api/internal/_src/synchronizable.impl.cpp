@@ -40,10 +40,6 @@ namespace frost::impl
 
 	synchronizable::synchronizable(HANDLE handle) :
 		system_resource(handle) {}
-	synchronizable::~synchronizable()
-	{
-		::CloseHandle(_system_handle);
-	}
 
 	
 
