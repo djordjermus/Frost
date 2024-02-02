@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using static Frost.Net.Interoperability.FrostApi.Thread;
 
 namespace Frost.Net.Interoperability;
 
@@ -9,7 +10,12 @@ namespace Frost.Net.Interoperability;
 internal static partial class FrostApi
 {
 	public const string frostApiPath = "Frost.Api.dll";
-    public static partial class Clock
+	public struct Point2D { public int x; public int y; }
+	public struct Size2D { public int width; public int height; }
+	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
+	public delegate void Procedure(IntPtr pData);
+
+	public static partial class Clock
 	{
 		[LibraryImport(
 			frostApiPath,
@@ -422,8 +428,7 @@ internal static partial class FrostApi
 
     public static partial class Thread
     {
-		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		public delegate void Procedure(IntPtr pData);
+
 
 		[LibraryImport(
 		    frostApiPath,
@@ -490,5 +495,140 @@ internal static partial class FrostApi
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static partial bool SendMessageAsync(IntPtr syncEvent, ulong threadId, Procedure procedure, IntPtr argument);
+	}
+
+	public static partial class Window
+	{
+		[StructLayout(LayoutKind.Sequential)]
+		public struct Description
+		{
+            public Description() {}
+            public Point2D position = new Point2D() { x = 200, y = 200 };
+			public Size2D size = new Size2D() { width = 1280, height = 720 };
+
+			public IntPtr procedure = IntPtr.Zero;
+			public IntPtr data = IntPtr.Zero;
+
+			public byte state = 2;
+		}
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_is_enabled")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool IsEnabled(IntPtr window);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_is_active")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool IsActive(IntPtr window);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_is_focused")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool IsFocused(IntPtr window);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_get_state")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial byte GetState(IntPtr window);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_get_position")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial Point2D GetPosition(IntPtr window);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_get_size")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial Size2D GetSize(IntPtr window);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_get_procedure")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial IntPtr GetProcedure(IntPtr window);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_get_data")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial IntPtr GetData(IntPtr window);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_set_enabled")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial void SetEnabled(IntPtr window, [MarshalAs(UnmanagedType.Bool)]bool enabled);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_set_active")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial void SetActive(IntPtr window, [MarshalAs(UnmanagedType.Bool)]bool active);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_set_focused")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial void SetFocused(IntPtr window, [MarshalAs(UnmanagedType.Bool)]bool focused);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_set_state")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial void SetState(IntPtr window, byte state);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_set_position")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial void SetPosition(IntPtr window, Point2D position);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_set_size")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial void SetSize(IntPtr window, Size2D size);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_set_procedure")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial void SetProcedure(IntPtr window, Procedure procedure);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_set_data")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial void SetData(IntPtr window, IntPtr pData);
+
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_pump_messages")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial void Pump(IntPtr window);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_window_create")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial IntPtr Create(IntPtr pDesc);
+
+		[LibraryImport(
+			frostApiPath,
+			EntryPoint = "frost_api_resource_is_window")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static partial bool IsWindow(IntPtr resource);
 	}
 }

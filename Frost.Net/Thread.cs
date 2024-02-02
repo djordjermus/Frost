@@ -16,11 +16,11 @@ namespace Frost.Net
 		public bool Signal() => FrostApi.Synchronizable.Signal(Handle);
 
 
-		private static FrostApi.Thread.Procedure CreateProcedureFromAction(Action action)
+		private static FrostApi.Procedure CreateProcedureFromAction(Action action)
 		{
 			return (IntPtr) => action();
 		}
 
-		private readonly FrostApi.Thread.Procedure _procedure;
+		private readonly FrostApi.Procedure _procedure;
 	}
 }
