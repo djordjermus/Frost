@@ -4,6 +4,8 @@
 #include "../../keycode.api.hpp"
 #include "../../event_system.api.hpp"
 #include "../../logging.api.hpp"
+#include "../thread.impl.hpp"
+
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
 #include <winnt.h>
 #include <WindowsX.h>
@@ -15,7 +17,6 @@ namespace frost::impl
 	class window::execute_deferred_data
 	{
 	public:
-		void (*procedure)(window* target, void* p_argument);
 		window* target;
 		void* p_argument;
 	};
@@ -83,10 +84,15 @@ namespace frost::impl
 		else
 		{
 			execute_deferred_data data;
-			data.procedure	= [](window* target, void* arg) { target->set_enabled(*reinterpret_cast<bool*>(arg)); };
 			data.target		= this;
 			data.p_argument	= &enabled;
-			execute_deferred(&data);
+			frost::impl::thread::message::send(
+				static_cast<frost::impl::thread_reference*>(this->_thread.get()), 
+				[](void* arg) {
+					auto& d = *reinterpret_cast<execute_deferred_data*>(arg);
+					d.target->set_enabled(*reinterpret_cast<bool*>(d.p_argument));
+				},
+				&data);
 		}
 	}
 	void window::set_active(bool active)
@@ -108,10 +114,15 @@ namespace frost::impl
 		else
 		{
 			execute_deferred_data data;
-			data.procedure	= [](window* target, void* arg) { target->set_active(*reinterpret_cast<bool*>(arg)); };
-			data.target		= this;
-			data.p_argument	= &active;
-			execute_deferred(&data);
+			data.target = this;
+			data.p_argument = &active;
+			frost::impl::thread::message::send(
+				static_cast<frost::impl::thread_reference*>(this->_thread.get()),
+				[](void* arg) {
+					auto& d = *reinterpret_cast<execute_deferred_data*>(arg);
+					d.target->set_active(*reinterpret_cast<bool*>(d.p_argument));
+				},
+				&data);
 		}
 #pragma warning(pop)
 	}
@@ -132,10 +143,15 @@ namespace frost::impl
 		else
 		{
 			execute_deferred_data data;
-			data.procedure	= [](window* target, void* arg) { target->set_focus(*reinterpret_cast<bool*>(arg)); };
-			data.target		= this;
-			data.p_argument	= &focus;
-			execute_deferred(&data);
+			data.target = this;
+			data.p_argument = &focus;
+			frost::impl::thread::message::send(
+				static_cast<frost::impl::thread_reference*>(this->_thread.get()),
+				[](void* arg) {
+					auto& d = *reinterpret_cast<execute_deferred_data*>(arg);
+					d.target->set_focus(*reinterpret_cast<bool*>(d.p_argument));
+				},
+				&data);
 		}
 		return; // TODO DEFERRED
 	}
@@ -149,10 +165,15 @@ namespace frost::impl
 		else
 		{
 			execute_deferred_data data;
-			data.procedure	= [](window* target, void* arg) { target->set_state(*reinterpret_cast<api::window_state*>(arg)); };
-			data.target		= this;
-			data.p_argument	= &state;
-			execute_deferred(&data);
+			data.target = this;
+			data.p_argument = &state;
+			frost::impl::thread::message::send(
+				static_cast<frost::impl::thread_reference*>(this->_thread.get()),
+				[](void* arg) {
+					auto& d = *reinterpret_cast<execute_deferred_data*>(arg);
+					d.target->set_state(*reinterpret_cast<api::window_state*>(d.p_argument));
+				},
+				&data);
 		}
 	}
 
@@ -165,10 +186,15 @@ namespace frost::impl
 		else
 		{
 			execute_deferred_data data;
-			data.procedure		= [](window* target, void* arg) { target->set_position(*reinterpret_cast<point2d<i32>*>(arg)); };
-			data.target			= this;
+			data.target = this;
 			data.p_argument		= &position;
-			execute_deferred(&data);
+			frost::impl::thread::message::send(
+				static_cast<frost::impl::thread_reference*>(this->_thread.get()),
+				[](void* arg) {
+					auto& d = *reinterpret_cast<execute_deferred_data*>(arg);
+					d.target->set_position(*reinterpret_cast<point2d<i32>*>(d.p_argument));
+				},
+				&data);
 		}
 	}
 	void window::set_size(size2d<i32> size)
@@ -180,10 +206,15 @@ namespace frost::impl
 		else
 		{
 			execute_deferred_data data;
-			data.procedure	= [](window* target, void* arg) { target->set_size(*reinterpret_cast<size2d<i32>*>(arg)); };
-			data.target		= this;
-			data.p_argument	= &size;
-			execute_deferred(&data);
+			data.target = this;
+			data.p_argument = &size;
+			frost::impl::thread::message::send(
+				static_cast<frost::impl::thread_reference*>(this->_thread.get()),
+				[](void* arg) {
+					auto& d = *reinterpret_cast<execute_deferred_data*>(arg);
+					d.target->set_size(*reinterpret_cast<size2d<i32>*>(d.p_argument));
+				},
+				&data);
 		}
 	}
 	void window::set_procedure(api::window_procedure_sig procedure)
@@ -207,48 +238,6 @@ namespace frost::impl
 	bool window::is_direct_invoke_required() const
 	{
 		return _thread_id == ::GetCurrentThreadId();
-	}
-	bool window::execute_deferred(execute_deferred_data* data, bool wait)
-	{
-		if (!is_direct_invoke_required())
-			return false;
-
-		if (wait)
-		{
-			HANDLE e = ::CreateEventW(nullptr, false, false,	nullptr);
-			if (e == nullptr)
-				return false;
-
-			BOOL result = ::PostThreadMessageW(_thread_id, modify_deferred_msg, reinterpret_cast<WPARAM>(data), reinterpret_cast<LPARAM>(e));
-			if (result != TRUE)
-			{
-				::CloseHandle(e);
-				return false;
-			}
-
-			if (::WaitForSingleObject(e, ~0ul) != WAIT_OBJECT_0)
-			{
-				::CloseHandle(e);
-				return false;
-			}
-			else
-			{
-				::CloseHandle(e);
-				return true;
-			}
-		}
-		else
-		{
-			execute_deferred_data* delete_me = new execute_deferred_data();
-			*delete_me = *data;
-			BOOL result = ::PostThreadMessageW(_thread_id, modify_deferred_msg, reinterpret_cast<WPARAM>(data), 0);
-			if (result != TRUE)
-			{
-				delete delete_me;
-				return false;
-			}
-			return true;
-		}
 	}
 	void window::update_state()
 	{
@@ -750,6 +739,7 @@ namespace frost::impl
 		result->_state					= fold_state(desc->state);
 		result->_procedure				= desc->procedure;
 		result->_data					= desc->data;
+		result->_thread					= frost::impl::thread_reference::get_current();
 		result->_thread_id				= ::GetCurrentThreadId();
 		result->_hkl					= ::GetKeyboardLayout(result->_thread_id);
 		result->_rect = {
@@ -828,7 +818,7 @@ namespace frost::impl
 	LRESULT window::wm_input_language_changed(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 	{
 		auto data = get_hwnd_data(hwnd);
-		data->_hkl = ::GetKeyboardLayout(data->_thread_id);
+		data->_hkl = ::GetKeyboardLayout(::GetCurrentThreadId());
 		return ::DefWindowProcW(hwnd, msg, w, l);
 	}
 
@@ -902,27 +892,6 @@ namespace frost::impl
 		
 		LONG_PTR ptr = ::GetWindowLongPtrW(hwnd, GWLP_USERDATA);
 		return reinterpret_cast<frost::impl::window*>(ptr);
-	}
-	void window::pump_messages()
-	{
-		MSG msg{};
-		while (::GetMessageW(&msg, get_hwnd(), 0, 0))
-		{
-			if (msg.message == modify_deferred_msg)
-			{
-				execute_deferred_data* data = reinterpret_cast<execute_deferred_data*>(msg.wParam);
-				HANDLE e = reinterpret_cast<HANDLE>(msg.lParam);
-
-				data->procedure(data->target, data->p_argument);
-				if (e != nullptr)
-					SetEvent(e);	// Synchronous event
-				else
-					delete data;	// Fire and forget
-				continue;
-			}
-			::TranslateMessage(&msg);
-			::DispatchMessageW(&msg);
-		}
 	}
 	static inline frost::api::window_state fold_state(frost::api::window_state  state)
 	{

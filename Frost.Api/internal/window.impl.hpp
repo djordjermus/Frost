@@ -1,5 +1,6 @@
 #include "synchronizable.impl.hpp"
 #include "../window.api.hpp"
+#include "../ref.hpp"
 #pragma once
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
 #include <windows.h>
@@ -23,6 +24,7 @@ namespace frost::impl
 		frost::api::window_procedure_sig _procedure = nullptr;
 		void* _data = nullptr;
 
+		ref _thread = nullptr;
 		DWORD _thread_id = 0;
 
 		frost::api::window_state _state = frost::api::window_state::invalid;
@@ -35,7 +37,6 @@ namespace frost::impl
 		bool signal() const override;
 		HWND get_hwnd() const;
 		bool is_direct_invoke_required() const;
-		bool execute_deferred(execute_deferred_data* data, bool wait = true);
 
 		void update_state();
 		void update_rect();
@@ -100,7 +101,6 @@ namespace frost::impl
 		void set_data(void* data);
 
 		static window* create(const frost::api::window_description* description);
-		void pump_messages();
 
 		static constexpr u64 modify_deferred_msg = 0xBFFF;
 	};

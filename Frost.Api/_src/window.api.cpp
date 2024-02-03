@@ -79,11 +79,6 @@ FROST_API void _stdcall frost_api_window_set_data(frost::api::resource* target, 
 	TO_IMPL(target)->set_data(data);
 }
 
-FROST_API void _stdcall frost_api_window_pump_messages(frost::api::resource* target)
-{
-	TO_IMPL(target)->pump_messages();
-}
-
 FROST_API frost::api::resource* _stdcall frost_api_window_create(const frost::api::window_description* description)
 {
 	return frost::impl::window::create(description);

@@ -47,28 +47,7 @@ FROST_API bool _stdcall frost_api_thread_message_send(
 	void(_stdcall* procedure)(void*),
 	void* argument)
 {
-	auto sync = new frost::impl::synchronizable_event();
-	sync->acquire_reference();
-	bool success = frost::impl::thread::message::send(
-		static_cast<frost::impl::thread_reference*>(thread),
-		sync,
-		procedure,
-		argument);
-	
-	if (success)
-	{
-		frost::impl::synchronizable* arr[2] = { sync, static_cast<frost::impl::synchronizable*>(thread)};
-		auto x = frost::impl::synchronizable::wait_one(arr, 2);
-	
-		sync->release_reference();
-		return x == 0;
-	}
-	else
-	{
-		auto x = ::GetLastError();
-		sync->release_reference();
-		return success;
-	}
+	return frost::impl::thread::message::send(static_cast<frost::impl::thread_reference*>(thread), procedure, argument);
 }
 FROST_API bool _stdcall frost_api_thread_message_send_async(
 	frost::api::resource* thread,
@@ -76,5 +55,5 @@ FROST_API bool _stdcall frost_api_thread_message_send_async(
 	void(_stdcall* procedure)(void*),
 	void* argument)
 {
-	return frost::impl::thread::message::send(static_cast<frost::impl::thread_reference*>(thread), static_cast<frost::impl::synchronizable*>(sync), procedure, argument);
+	return frost::impl::thread::message::send_async(static_cast<frost::impl::thread_reference*>(thread), static_cast<frost::impl::synchronizable*>(sync), procedure, argument);
 }

@@ -82,6 +82,44 @@ namespace frost::impl
 
 	bool thread::message::send(
 		frost::impl::thread_reference* thread,
+		void(_stdcall* procedure)(void* argument),
+		void* argument)
+	{
+		auto handle = thread->get_system_handle();
+		if (handle == nullptr)
+			return false;
+
+		auto id = ::GetThreadId(handle);
+		if (id == 0)
+			return false;
+
+		auto* info = new procedure_message_info();
+		info->procedure = procedure;
+		info->argument = argument;
+
+		auto sync = new frost::impl::synchronizable_event();
+		sync->acquire_reference();
+		BOOL result = ::PostThreadMessageW(
+			id,
+			msg_execute_procedure_asynchronous,
+			reinterpret_cast<WPARAM>(info),
+			reinterpret_cast<LPARAM>(sync));
+		if (!!result)
+		{
+			frost::impl::synchronizable* syncs[] = {sync, thread};
+			auto ix = frost::impl::synchronizable::wait_one(syncs, 2);
+			sync->release_reference();
+			return ix == 0;
+		}
+		else
+		{
+			sync->release_reference();
+			return false;
+		}
+	}
+
+	bool thread::message::send_async(
+		frost::impl::thread_reference* thread,
 		impl::synchronizable* sync,
 		void(_stdcall* procedure)(void* argument),
 		void* argument)
@@ -103,7 +141,7 @@ namespace frost::impl
 
 		BOOL result = ::PostThreadMessageW(
 			id,
-			msg_execute_procedure,
+			msg_execute_procedure_asynchronous,
 			reinterpret_cast<WPARAM>(info),
 			reinterpret_cast<LPARAM>(sync));
 		return !!result;
@@ -124,7 +162,7 @@ namespace frost::impl
 	{
 		try
 		{
-			if (_msg.message == msg_execute_procedure)
+			if (_msg.message == msg_execute_procedure_asynchronous)
 			{
 				execute_procedure();
 				delete_info();
@@ -142,7 +180,7 @@ namespace frost::impl
 
 	void thread::message::discard()
 	{
-		if (_msg.message == msg_execute_procedure)
+		if (_msg.message == msg_execute_procedure_asynchronous)
 		{
 			delete_info();
 			signal();

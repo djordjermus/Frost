@@ -40,8 +40,6 @@ extern "C"
 
 
 
-	FROST_API void _stdcall frost_api_window_pump_messages(frost::api::resource* target);
-
 	FROST_API frost::api::resource* _stdcall frost_api_window_create(const frost::api::window_description* description);
 	FROST_API bool _stdcall frost_api_resource_is_window(frost::api::resource* target);
 }
