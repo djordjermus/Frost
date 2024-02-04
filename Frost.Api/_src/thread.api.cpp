@@ -12,14 +12,6 @@ FROST_API frost::api::resource* _stdcall frost_api_thread_get_current()
 {
 	return frost::impl::thread_reference::get_current();
 }
-FROST_API u64 _stdcall frost_api_thread_get_current_id()
-{
-	return frost::impl::thread::get_current_id();
-}
-FROST_API u64 _stdcall frost_api_thread_get_id(frost::api::resource* thread)
-{
-	return TO_IMPL(thread)->get_id();
-}
 
 FROST_API frost::api::resource* _stdcall frost_api_thread_message_create()
 {

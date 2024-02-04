@@ -11,12 +11,6 @@ namespace Frost.Net
 			_proc = proc;
 		}
 
-		public void Run()
-		{
-			FrostApi.Window.Pump(Handle);
-		}
-
-
 		private static IntPtr InternalCreate(out FrostApi.Procedure proc)
 		{
 			var desc = new FrostApi.Window.Description();

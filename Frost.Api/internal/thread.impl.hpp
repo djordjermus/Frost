@@ -33,7 +33,6 @@ namespace frost::impl
 		class message final : public frost::api::resource
 		{
 		public:
-			static constexpr u64 msg_execute_procedure_synchronous = 0xBFFE;
 			static constexpr u64 msg_execute_procedure_asynchronous = 0xBFFF;
 			static message* create();
 

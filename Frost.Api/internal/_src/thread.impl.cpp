@@ -1,6 +1,5 @@
 #include "../../ref.hpp"
 #include "../thread.impl.hpp"
-#include <iostream>
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
 namespace frost::impl
 {
@@ -75,7 +74,7 @@ namespace frost::impl
 	thread::message* thread::message::create()
 	{
 		MSG temp = {};
-		::PeekMessageW(&temp, nullptr, WM_USER, WM_USER, PM_NOREMOVE);
+		::PeekMessageW(&temp, nullptr, 0, 0, PM_NOREMOVE);
 		auto ret = new message();
 		return ret;
 	}
