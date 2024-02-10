@@ -53,10 +53,6 @@ namespace frost::impl
 			void discard();
 
 		private:
-			void clear_state();
-			void delete_info();
-			void execute_procedure() const;
-			void signal() const;
 			MSG _msg = {};
 		};
 

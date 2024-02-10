@@ -1,6 +1,7 @@
 #include "../synchronizable.impl.hpp"
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
 #include <memory>
+#include <iostream>
 
 
 namespace frost::impl
@@ -22,7 +23,7 @@ namespace frost::impl
 	 * EVENT
 	 */
 	synchronizable_event::synchronizable_event() : 
-		synchronizable(::CreateEventW(nullptr, TRUE, FALSE, nullptr)){}
+		synchronizable(::CreateEventW(nullptr, TRUE, FALSE, nullptr)) {}
 
 	bool synchronizable_event::signal() const
 	{
@@ -37,7 +38,7 @@ namespace frost::impl
 	/*
 	 * SYNCHRONIZABLE
 	 */
-
+	synchronizable::~synchronizable() {}
 	synchronizable::synchronizable(HANDLE handle) :
 		system_resource(handle) {}
 
@@ -64,8 +65,7 @@ namespace frost::impl
 
 		auto result = ::WaitForMultipleObjects(static_cast<DWORD>(count), reinterpret_cast<HANDLE*>(data), FALSE, ~0u);
 
-		if ((sizeof(HANDLE) * count) > _ALLOCA_S_THRESHOLD)
-			free(data);
+		_freea(data);
 
 		if ((result >= WAIT_OBJECT_0) && (result < (WAIT_OBJECT_0 + count)))
 			return result - WAIT_OBJECT_0;
@@ -86,8 +86,7 @@ namespace frost::impl
 
 		auto result = ::WaitForMultipleObjects(static_cast<DWORD>(count), reinterpret_cast<HANDLE*>(data), TRUE, ~0u);
 
-		if ((sizeof(HANDLE) * count) > _ALLOCA_S_THRESHOLD)
-			free(data);
+		_freea(data);
 
 		return (result >= WAIT_OBJECT_0) && (result < (WAIT_OBJECT_0 + count));
 	}
@@ -105,8 +104,7 @@ namespace frost::impl
 
 		auto result = ::WaitForMultipleObjects(static_cast<DWORD>(count), reinterpret_cast<HANDLE*>(data), FALSE, 0u);
 
-		if ((sizeof(HANDLE) * count) > _ALLOCA_S_THRESHOLD)
-			free(data);
+		_freea(data);
 
 		if ((result >= WAIT_OBJECT_0) && (result < (WAIT_OBJECT_0 + count)))
 			return result - WAIT_OBJECT_0;
@@ -127,8 +125,7 @@ namespace frost::impl
 
 		auto result = ::WaitForMultipleObjects(static_cast<DWORD>(count), reinterpret_cast<HANDLE*>(data), TRUE, 0u);
 
-		if ((sizeof(HANDLE) * count) > _ALLOCA_S_THRESHOLD)
-			free(data);
+		_freea(data);
 
 		return (result >= WAIT_OBJECT_0) && (result < (WAIT_OBJECT_0 + count));
 	}

@@ -47,17 +47,9 @@ namespace frost::impl
 	u32 _stdcall thread::thread_procedure(void* info)
 	{
 		thread_startup_info* tsi = reinterpret_cast<thread_startup_info*>(info);
-		try
-		{
-			tsi->procedure(tsi->argument);
-		}
-		catch (...) { }
-
-		try
-		{
-			delete tsi;
-		}
-		catch (...) {}
+		tsi->procedure(tsi->argument);
+		delete tsi;
+		
 		return 0;
 	}
 
@@ -70,7 +62,6 @@ namespace frost::impl
 		void(_stdcall* procedure)(void* argument);
 		void* argument;
 	};
-
 	thread::message* thread::message::create()
 	{
 		MSG temp = {};
@@ -92,23 +83,28 @@ namespace frost::impl
 		if (id == 0)
 			return false;
 
-		auto* info = new procedure_message_info();
-		info->procedure = procedure;
-		info->argument = argument;
+		auto info = procedure_message_info();
+		info.procedure = procedure;
+		info.argument = argument;
 
 		auto sync = new frost::impl::synchronizable_event();
 		sync->acquire_reference();
+
 		BOOL result = ::PostThreadMessageW(
 			id,
 			msg_execute_procedure_asynchronous,
-			reinterpret_cast<WPARAM>(info),
+			reinterpret_cast<WPARAM>(&info),
 			reinterpret_cast<LPARAM>(sync));
 		if (!!result)
 		{
-			frost::impl::synchronizable* syncs[] = {sync, thread};
+			frost::impl::synchronizable* syncs[] = { sync, thread };
 			auto ix = frost::impl::synchronizable::wait_one(syncs, 2);
-			sync->release_reference();
-			return ix == 0;
+			if (ix != 0)
+			{
+				sync->release_reference();
+				return false;
+			}
+			return true;
 		}
 		else
 		{
@@ -127,9 +123,6 @@ namespace frost::impl
 		info->procedure = procedure;
 		info->argument = argument;
 
-		if (sync != nullptr)
-			sync->acquire_reference();
-
 		auto handle = thread->get_system_handle();
 		if (handle == nullptr)
 			return false;
@@ -143,6 +136,7 @@ namespace frost::impl
 			msg_execute_procedure_asynchronous,
 			reinterpret_cast<WPARAM>(info),
 			reinterpret_cast<LPARAM>(sync));
+
 		return !!result;
 	}
 
@@ -159,80 +153,51 @@ namespace frost::impl
 
 	void thread::message::dispatch()
 	{
-		try
+		if (_msg.message == msg_execute_procedure_asynchronous)
 		{
-			if (_msg.message == msg_execute_procedure_asynchronous)
+			try
 			{
-				execute_procedure();
-				delete_info();
-				signal();
+				if (_msg.wParam != 0)
+				{
+					auto* info = reinterpret_cast<procedure_message_info*>(_msg.wParam);
+					if (info->procedure)
+						info->procedure(info->argument);
+				}
 			}
-			else
+			catch (...) { /* ... */ }
+
+			try
 			{
-				::TranslateMessage(&_msg);
-				::DispatchMessageW(&_msg);
+				if (_msg.lParam != 0)
+				{
+					reinterpret_cast<frost::impl::synchronizable*>(_msg.lParam)->signal();
+				}
 			}
+			catch (...) { /* ... */ }
 		}
-		catch (...) { /* SUPPRESS */ }
-		clear_state();
+		else
+		{
+			::TranslateMessage(&_msg);
+			::DispatchMessageW(&_msg);
+		}
+		_msg = {};
 	}
 
 	void thread::message::discard()
 	{
 		if (_msg.message == msg_execute_procedure_asynchronous)
 		{
-			delete_info();
-			signal();
+			if (_msg.wParam != 0)
+			{
+				auto* info = reinterpret_cast<procedure_message_info*>(_msg.wParam);
+				delete info;
+			}
+			if (_msg.lParam != 0)
+			{
+				reinterpret_cast<frost::impl::synchronizable*>(_msg.lParam)->signal();
+			}
 		}
-		clear_state();
-	}
-
-	void thread::message::clear_state()
-	{
 		_msg = {};
-	}
-
-	void thread::message::delete_info()
-	{
-		if (_msg.wParam == 0)
-			return;
-
-		try
-		{
-			auto* info = reinterpret_cast<procedure_message_info*>(_msg.wParam);
-			delete info;
-		}
-		catch (...) { /* SUPPRESS */ }
-	}
-
-	void thread::message::execute_procedure() const
-	{
-		if (_msg.wParam == 0)
-			return;
-
-		try
-		{
-			auto* info = reinterpret_cast<procedure_message_info*>(_msg.wParam);
-			info->procedure(info->argument);
-		}
-		catch (...) { /* SUPPRESS */ }
-	}
-	void thread::message::signal() const
-	{
-		if (_msg.lParam == 0)
-			return;
-
-		auto sync = reinterpret_cast<frost::impl::synchronizable*>(_msg.lParam);
-		try
-		{
-			sync->signal();
-		}
-		catch (...) { /* SUPPRESS */ }
-		try
-		{
-			sync->release_reference();
-		}
-		catch (...) { /* SUPPRESS */ }
 	}
 }
 #else

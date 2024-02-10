@@ -1,6 +1,5 @@
 ﻿using Frost.Net.Interoperability;
 using Frost.Net.Synchronization.Interface;
-using System.Runtime.InteropServices;
 
 namespace Frost.Net
 {
@@ -43,6 +42,9 @@ namespace Frost.Net
 				FrostApi.Procedure proc = ptr => action();
 				return FrostApi.Thread.SendMessage(target.Handle, proc, IntPtr.Zero);
 			}
+
+			public static async Task<bool> SendAsync(Thread target, Action action) =>
+				await Task.Run(() => Send(target, action));
 		}
 
 		private readonly FrostApi.Procedure? _procedure;
