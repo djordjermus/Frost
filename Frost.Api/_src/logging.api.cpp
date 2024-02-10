@@ -148,9 +148,8 @@ static void log_internal(
 	e.level = level;
 
 	frost_api_event_system_emit(typeid(log_event).hash_code(), activation_layers, &e);
-
-	if (e.message_length > _ALLOCA_S_THRESHOLD)
-		delete message;
+	
+	_freea(message);
 }
 
 
