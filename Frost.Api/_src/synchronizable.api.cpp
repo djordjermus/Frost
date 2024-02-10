@@ -1,134 +1,61 @@
-#include "../synchronizable.api.hpp"
-#include "../internal/mutex.impl.hpp"
-#include "../internal/semaphore.impl.hpp"
+#include "../internal/synchronizable.impl.hpp"
 
-bool synchronizable_lock(frost::api::synchronizable* target) { return target->lock(); }
-bool synchronizable_try_lock(frost::api::synchronizable* target) { return target->try_lock(); }
-bool synchronizable_unlock(frost::api::synchronizable* target) { return target->unlock(); }
-void* synchronizable_get_internal_handle(frost::api::synchronizable* target) { return target->get_internal_handle(); }
+#define TO_IMPL(x) (static_cast<frost::impl::synchronizable*>(x))
+#define TO_IMPL_EVENT(x) (static_cast<frost::impl::synchronizable_event*>(x))
+#define TO_IMPL_LIST(x) (reinterpret_cast<frost::impl::synchronizable* const*>(x))
 
-i32  _stdcall synchronizable_lock_one(frost::api::synchronizable* const* target_list, i32 count)
+FROST_API bool _stdcall frost_api_synchronizable_wait(frost::api::resource* target)
 {
-	return frost::api::synchronizable::lock_one(target_list, count);
+	return TO_IMPL(target)->wait();
 }
-bool _stdcall synchronizable_lock_all(frost::api::synchronizable* const* target_list, i32 count)
+FROST_API bool _stdcall frost_api_synchronizable_try_wait(frost::api::resource* target)
 {
-	return frost::api::synchronizable::lock_all(target_list, count);
+	return TO_IMPL(target)->try_wait();
 }
-i32  _stdcall synchronizable_try_lock_one(frost::api::synchronizable* const* target_list, i32 count)
+FROST_API bool _stdcall frost_api_synchronizable_signal(frost::api::resource* target)
 {
-	return frost::api::synchronizable::try_lock_one(target_list, count);
-}
-bool _stdcall synchronizable_try_lock_all(frost::api::synchronizable* const* target_list, i32 count)
-{
-	return frost::api::synchronizable::try_lock_all(target_list, count);
+	return TO_IMPL(target)->signal();
 }
 
-frost::api::synchronizable* synchronizable_create_mutex(bool initial_owner)
+FROST_API bool _stdcall frost_api_synchronizable_event_reset(frost::api::resource* target)
 {
-	return frost::api::synchronizable::create_mutex(initial_owner);
-}
-frost::api::synchronizable* synchronizable_create_semaphore(i32 count, i32 max)
-{
-	return frost::api::synchronizable::create_semaphore(count, max);
+	return TO_IMPL_EVENT(target)->reset();
 }
 
-#if defined(TARGET_BUILD_PLATFORM_WINDOWS)
-#include <memory>
-#include <Windows.h>
 
-i32  frost::api::synchronizable::lock_one(frost::api::synchronizable* const* target_list, i32 count)
+
+FROST_API i32 _stdcall frost_api_synchronizable_wait_one(frost::api::resource* const* target_list, i32 count)
 {
-	if (count > MAXIMUM_WAIT_OBJECTS)
-		return false;
-
-	auto* data = reinterpret_cast<HANDLE*>(_malloca(sizeof(HANDLE) * count));
-	if (data == nullptr)
-		return false;
-
-	for (i32 i = 0; i < count; i++)
-		data[i] = target_list[i]->get_internal_handle();
-
-	auto result = ::WaitForMultipleObjects(static_cast<DWORD>(count), reinterpret_cast<HANDLE*>(data), FALSE, ~0u);
-
-	if ((sizeof(HANDLE) * count) > _ALLOCA_S_THRESHOLD)
-		free(data);
-
-	if ((result >= WAIT_OBJECT_0) && (result < (WAIT_OBJECT_0 + count)))
-		return result - WAIT_OBJECT_0;
-	else
-		return -1;
+	return frost::impl::synchronizable::wait_one(TO_IMPL_LIST(target_list), count);
 }
-bool frost::api::synchronizable::lock_all(frost::api::synchronizable* const* target_list, i32 count)
+FROST_API bool _stdcall frost_api_synchronizable_wait_all(frost::api::resource* const* target_list, i32 count)
 {
-	if (count > MAXIMUM_WAIT_OBJECTS)
-		return false;
-
-	auto* data = reinterpret_cast<HANDLE*>(_malloca(sizeof(HANDLE) * count));
-	if (data == nullptr)
-		return false;
-
-	for (i32 i = 0; i < count; i++)
-		data[i] = target_list[i]->get_internal_handle();
-
-	auto result = ::WaitForMultipleObjects(static_cast<DWORD>(count), reinterpret_cast<HANDLE*>(data), TRUE, ~0u);
-
-	if ((sizeof(HANDLE) * count) > _ALLOCA_S_THRESHOLD)
-		free(data);
-
-	return (result >= WAIT_OBJECT_0) && (result < (WAIT_OBJECT_0 + count));
+	return frost::impl::synchronizable::wait_all(TO_IMPL_LIST(target_list), count);
 }
-i32  frost::api::synchronizable::try_lock_one(frost::api::synchronizable* const* target_list, i32 count)
+FROST_API i32  _stdcall frost_api_synchronizable_try_wait_one(frost::api::resource* const* target_list, i32 count)
 {
-	if (count > MAXIMUM_WAIT_OBJECTS)
-		return false;
-
-	auto* data = reinterpret_cast<HANDLE*>(_malloca(sizeof(HANDLE) * count));
-	if (data == nullptr)
-		return false;
-
-	for (i32 i = 0; i < count; i++)
-		data[i] = target_list[i]->get_internal_handle();
-
-	auto result = ::WaitForMultipleObjects(static_cast<DWORD>(count), reinterpret_cast<HANDLE*>(data), FALSE, 0u);
-
-	if ((sizeof(HANDLE) * count) > _ALLOCA_S_THRESHOLD)
-		free(data);
-
-	if ((result >= WAIT_OBJECT_0) && (result < (WAIT_OBJECT_0 + count)))
-		return result - WAIT_OBJECT_0;
-	else
-		return -1;
+	return frost::impl::synchronizable::try_wait_one(TO_IMPL_LIST(target_list), count);
 }
-bool frost::api::synchronizable::try_lock_all(frost::api::synchronizable* const* target_list, i32 count)
+FROST_API bool _stdcall frost_api_synchronizable_try_wait_all(frost::api::resource* const* target_list, i32 count)
 {
-	if (count > MAXIMUM_WAIT_OBJECTS)
-		return false;
-
-	auto* data = reinterpret_cast<HANDLE*>(_malloca(sizeof(HANDLE) * count));
-	if (data == nullptr)
-		return false;
-
-	for (i32 i = 0; i < count; i++)
-		data[i] = target_list[i]->get_internal_handle();
-
-	auto result = ::WaitForMultipleObjects(static_cast<DWORD>(count), reinterpret_cast<HANDLE*>(data), TRUE, 0u);
-
-	if ((sizeof(HANDLE) * count) > _ALLOCA_S_THRESHOLD)
-		free(data);
-
-	return (result >= WAIT_OBJECT_0) && (result < (WAIT_OBJECT_0 + count));
+	return frost::impl::synchronizable::try_wait_all(TO_IMPL_LIST(target_list), count);
 }
 
-#else
-static_assert("PLATFORM NOT SUPPORTED!")
-#endif
 
-frost::api::synchronizable* frost::api::synchronizable::create_mutex(bool initial_owner)
+
+FROST_API frost::api::resource* _stdcall frost_api_synchronizable_create_mutex(bool initial_owner)
 {
-	return frost::impl::mutex::create(initial_owner);
+	return new frost::impl::synchronizable_mutex(initial_owner);
 }
-frost::api::synchronizable* frost::api::synchronizable::create_semaphore(i32 count, i32 max)
+FROST_API frost::api::resource* _stdcall frost_api_synchronizable_create_semaphore(i32 count, i32 max)
 {
-	return frost::impl::semaphore::create(count, max);
+	return new frost::impl::synchronizable_semaphore(count, max);
+}
+FROST_API frost::api::resource* _stdcall frost_api_synchronizable_create_event()
+{
+	return new frost::impl::synchronizable_event();
+}
+FROST_API bool _stdcall frost_api_resource_is_synchronizable(frost::api::resource* target)
+{
+	return dynamic_cast<frost::impl::synchronizable*>(target) != nullptr;
 }

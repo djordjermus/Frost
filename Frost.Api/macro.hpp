@@ -5,12 +5,25 @@
 #define FROST_API __declspec(dllimport)
 #endif
 
-//
-// PLATFORM SWITCH
-//
+
+
+/*
+ * PLATFORM SWITCH
+ */
 #if defined(_WIN32) || defined(_WIN64)
 #define TARGET_BUILD_PLATFORM_WINDOWS
 #endif
+
+
+
+/*
+ * DEBUG
+ */
+#if _DEBUG
+#define FROST_API_DEBUG_LOG_RESOURCE_CREATION 1
+#define FROST_API_DEBUG_LOG_RESOURCE_DESTRUCTION 1
+#endif
+
 
 
 /*

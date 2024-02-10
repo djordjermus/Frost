@@ -6,7 +6,7 @@ static constexpr u64 y = 25;
 static constexpr u64 z = 27;
 static constexpr u64 m = 2685821657736338717ULL;
 
-u64 random_generate(u64* p_seed)
+FROST_API u64 _stdcall frost_api_random_generate(u64* p_seed)
 {
 	u64 ret = *p_seed;
 	ret ^= ret << x;
@@ -16,7 +16,7 @@ u64 random_generate(u64* p_seed)
 
 	return ret;
 }
-u64 random_generate_range(u64* p_seed, u64 min, u64 range)
+FROST_API u64 _stdcall frost_api_random_generate_range(u64* p_seed, u64 min, u64 range)
 {
 	u64 ret = *p_seed;
 	ret ^= ret << x;
@@ -26,7 +26,7 @@ u64 random_generate_range(u64* p_seed, u64 min, u64 range)
 
 	return min + ret % range;
 }
-f64 random_generate_range_double(u64* p_seed, f64 min, f64 range)
+FROST_API f64 _stdcall frost_api_random_generate_range_double(u64* p_seed, f64 min, f64 range)
 {
 	u64 ret = *p_seed;
 	ret ^= ret << x;

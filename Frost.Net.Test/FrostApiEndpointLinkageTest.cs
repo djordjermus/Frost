@@ -1,3 +1,8 @@
+using Frost.Net.Models;
+using Frost.Net.Logging;
+using Frost.Net.Synchronization;
+using Frost.Net.Synchronization.Interface;
+
 namespace Frost.Net.Test
 {
     [TestClass]
@@ -8,7 +13,7 @@ namespace Frost.Net.Test
 		[TestMethod]
 		public void TestClockApi()
 		{
-			var frequency = Clock.Timestamp;
+			var frequency = Clock.Frequency;
 			var period = Clock.Period;
 			var timestamp = Clock.Timestamp;
 		}
@@ -25,54 +30,65 @@ namespace Frost.Net.Test
 		[TestMethod]
 		public void TestSyncSemaphoreApi()
 		{
-			var sf = new Semaphore(2, 2);
-			sf.Lock();
-			sf.TryLock();
-			sf.Unlock();
+			var sf = new Synchronization.Semaphore(2, 2);
+			sf.Wait();
+			sf.TryWait();
+			sf.Signal();
 		}
 
 		[TestMethod]
 		public void TestSyncMutexApi()
 		{
-			var mx = new Mutex(false);
-			mx.Lock();
-			mx.TryLock();
-			mx.Unlock();
+			var mx = new Synchronization.Mutex(false);
+			mx.Wait();
+			mx.TryWait();
+			mx.Signal();
+		}
+
+		[TestMethod]
+		public void TestSyncEventApi()
+		{
+			var ev = new SyncEvent();
+			ev.Signal();
+			ev.Wait();
+			ev.TryWait();
 		}
 
 		[TestMethod]
 		public void TestSyncApi()
 		{
-			var mx = new Mutex(false);
-			var sf = new Semaphore(2, 2);
-			ISynchronizable.LockOne(sf, mx);
-			ISynchronizable.LockAll(sf, mx);
-			ISynchronizable.TryLockOne(sf, mx);
-			ISynchronizable.TryLockAll(sf, mx);
+			var mx = new Synchronization.Mutex(false);
+			var sf = new Synchronization.Semaphore(2, 2);
+
+			ReadOnlySpan<ISynchronizable> span = new ISynchronizable[2] { sf, mx };
+			MultiSync.WaitOne(span);
+			MultiSync.WaitAll(span);
+			MultiSync.TryWaitOne(span);
+			MultiSync.TryWaitAll(span);
 		}
 
 		[TestMethod]
 		public void TestSemanticVersionApi()
 		{
-			var version = Models.SemanticVersion.GetApiVersion();
+			var version = SemanticVersion.GetApiVersion();
 			version.CheckCompatibility(version);
 		}
 
 		[TestMethod]
 		public void TestColorApi()
 		{
-			var color = new Models.Color();
-			var hdr = new Models.HDRColor();
+			var color = new Color();
+			var hdr = new HDRColor();
 			color = new(hdr);
 			hdr = new(color);
 
-			color = new(new Models.HSVA());
-			color = new(new Models.HSLA());
-			color = new(new Models.CMYK());
+			color = new(new HSVA());
+			color = new(new HSLA());
+			color = new(new CMYK());
 
-			hdr = new(new Models.HSVA());
-			hdr = new(new Models.HSLA());
-			hdr = new(new Models.CMYK());
+			hdr = new(new HSVA());
+			hdr = new(new HSLA());
+			hdr = new(new CMYK());
 
 			var hsva = hdr.ToHsla();
 			var hsla = hdr.ToHsva();
@@ -94,7 +110,7 @@ namespace Frost.Net.Test
 		[TestMethod]
 		public void TestLog()
 		{
-			EventSystem.Subscribe(1, (ref Log l) => Console.WriteLine($"[{l.logLevel}]{l.message}"));
+			EventSystem.Subscribe(1, (ref Log l) => Console.WriteLine($"[{l.level}]{l.message}"));
 			Log.Verbose("{1}, {0}!", "World", "Hello");
 			Log.Debug("{1}, {0}!", "World", "Hello");
 			Log.Info("{1}, {0}!", "World", "Hello");

@@ -1,40 +1,49 @@
+﻿#include "Frost.Api/keycode.api.hpp"
+#include "Frost.Api/window.api.hpp"
 #include "Frost.Api/synchronizable.api.hpp"
 #include "Frost.Api/resource.api.hpp"
+#include "Frost.Api/thread.api.hpp"
 #include "Frost.Api/ref.hpp"
+#include "Frost.Api/event_system.api.hpp"
+#include "Frost.Api/logging.api.hpp"
 #include <iostream>
+#include <thread>
+#include <fstream>
 #include <vector>
-void test_synchronizable();
+
+void thread_proc(void*);
+ref mainThread;
+ref e;
+ref th;
+
 int main()
 {
-	test_synchronizable();
+	// frost_api_event_system_subscribe(frost_api_logging_get_log_event_tag(), ~0ull, [](void* arg)
+	// {
+	// 	log_event* e = (log_event*)arg;
+	// 	std::wcout << e->message << '\n';
+	// });
+	// const wchar_t* params[] = { L"World", L"Hello"};
+	// const u64 lengths[] = { 5, 5 };
+	// 
+	// while (true)
+	// 	frost_api_logging_info(L"{1}, {0}!", wcslen(L"{1}, {0}!"), params, lengths, 2, 1);
+
+	mainThread = frost_api_thread_get_current();
+	th = frost_api_thread_create(thread_proc, nullptr);
+	ref message = frost_api_thread_message_create();
+	while (true)
+	{
+		frost_api_thread_message_wait(message);
+		frost_api_thread_message_dispatch(message);
+	}
 }
 
-void test_synchronizable()
+void thread_proc(void*)
 {
-	ref<frost::api::synchronizable> mx = synchronizable_create_mutex(false);
-	ref<frost::api::synchronizable> sf = synchronizable_create_semaphore(2, 2);
-	auto m2 = mx;
-	auto m3 = mx;
-	auto s2 = sf;
-	bool b;
-	i32 i;
-	b = mx->lock();		// TRUE
-	b = sf->lock();		// TRUE
-	b = sf->lock();		// TRUE
-	b = sf->try_lock();	// FALSE
-	b = mx->unlock();	// TRUE
-	b = mx->unlock();	// FALSE
-	b = sf->unlock();	// TRUE
-	b = sf->unlock();	// TRUE
-	b = sf->unlock();	// FALSE
-
-	std::vector<ref<frost::api::synchronizable>> vec;
-	vec.push_back(sf.get());
-	vec.push_back(mx.get());
-
-	b = synchronizable_lock_all(vec.data()->get_array(), vec.size());		// TRUE
-	b = synchronizable_lock_all(vec.data()->get_array(), vec.size());		// TRUE
-	b = synchronizable_try_lock_all(vec.data()->get_array(), vec.size());	// FALSE
-	i = synchronizable_lock_one(vec.data()->get_array(), vec.size());		// 1
-	i = synchronizable_try_lock_one(vec.data()->get_array(), vec.size());	// 1
+	while (true)
+		frost_api_thread_message_send(
+			mainThread.get(), [](void*)
+			{ },
+			nullptr);
 }

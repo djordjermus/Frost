@@ -1,14 +1,14 @@
-#include "../resource.api.hpp"
-
-u64 resource_get_reference_count(const frost::api::resource* target)
+#include "../internal/resource.impl.hpp"
+#include <typeinfo>
+FROST_API u64 _stdcall frost_api_resource_get_reference_count(frost::api::resource* target)
 {
 	return target->get_reference_count();
 }
-void resource_acquire_reference(const frost::api::resource* target)
+FROST_API void _stdcall frost_api_resource_acquire_reference(frost::api::resource* target)
 {
 	return target->acquire_reference();
 }
-void resource_release_reference(const frost::api::resource* target)
+FROST_API void _stdcall frost_api_resource_release_reference(frost::api::resource* target)
 {
 	return target->release_reference();
 }

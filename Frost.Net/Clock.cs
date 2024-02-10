@@ -1,12 +1,34 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using Frost.Net.Interoperability;
+using System.Runtime.CompilerServices;
 
-namespace Frost.Net
+namespace Frost.Net;
+
+public static class Clock
 {
-	public static class Clock
+	/// <summary>
+	/// Returns the frequency of the clock (ticks per second)
+	/// </summary>
+	public static ulong Frequency
 	{
-		public static ulong Frequency => FrostApi.Clock.GetFrequency();
-		public static double Period => FrostApi.Clock.GetPeriod();
-		public static ulong Timestamp => FrostApi.Clock.GetTimestamp();
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		get => FrostApi.Clock.GetFrequency();
+	}
+
+	/// <summary>
+	/// Returns the period of the clock (seconds per clock tick)
+	/// </summary>
+	public static double Period
+	{
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		get => FrostApi.Clock.GetPeriod();
+	}
+
+	/// <summary>
+	/// Returns current timestamp (ticks)
+	/// </summary>
+	public static ulong Timestamp
+	{
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		get => FrostApi.Clock.GetTimestamp();
 	}
 }

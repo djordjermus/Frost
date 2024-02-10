@@ -1,44 +1,48 @@
-﻿namespace Frost.Net.Test
+﻿using Frost.Net.Synchronization;
+using Frost.Net.Synchronization.Interface;
+
+namespace Frost.Net.Test
 {
-	[TestClass]
+    [TestClass]
 	public class SyncTest
 	{
 		[TestMethod]
 		public void TestSemaphore()
 		{
-			var sf = new Semaphore(2, 2);
-			Assert.AreEqual(sf.Lock(), true);
-			Assert.AreEqual(sf.TryLock(), true);
-			Assert.AreEqual(sf.TryLock(), false);
-			Assert.AreEqual(sf.Unlock(), true);
-			Assert.AreEqual(sf.Unlock(), true);
-			Assert.AreEqual(sf.Unlock(), false);
+			var sf = new Synchronization.Semaphore(2, 2);
+			Assert.AreEqual(sf.Wait(), true);
+			Assert.AreEqual(sf.TryWait(), true);
+			Assert.AreEqual(sf.TryWait(), false);
+			Assert.AreEqual(sf.Signal(), true);
+			Assert.AreEqual(sf.Signal(), true);
+			Assert.AreEqual(sf.Signal(), false);
 		}
 
 		[TestMethod]
 		public void TestMutex()
 		{
-			var mx = new Mutex(false);
-			Assert.AreEqual(mx.Lock(), true);
-			Assert.AreEqual(mx.TryLock(), true);
-			Assert.AreEqual(mx.TryLock(), true);
-			Assert.AreEqual(mx.Unlock(), true);
-			Assert.AreEqual(mx.Unlock(), true);
-			Assert.AreEqual(mx.Unlock(), true);
-			Assert.AreEqual(mx.Unlock(), false);
+			var mx = new Synchronization.Mutex(false);
+			Assert.AreEqual(mx.Wait(), true);
+			Assert.AreEqual(mx.TryWait(), true);
+			Assert.AreEqual(mx.TryWait(), true);
+			Assert.AreEqual(mx.Signal(), true);
+			Assert.AreEqual(mx.Signal(), true);
+			Assert.AreEqual(mx.Signal(), true);
+			Assert.AreEqual(mx.Signal(), false);
 		}
 
 		[TestMethod]
 		public void TestMultipleSync()
 		{
-			var sf = new Semaphore(2, 4);
-			var mx = new Mutex(false);
+			var sf = new Synchronization.Semaphore(2, 4);
+			var mx = new Synchronization.Mutex(false);
+			ReadOnlySpan<ISynchronizable> span = new ISynchronizable[2] { sf, mx };
 
-			Assert.AreEqual(ISynchronizable.LockAll(sf, mx), true);
-			Assert.AreEqual(ISynchronizable.LockAll(sf, mx), true);
-			Assert.AreEqual(ISynchronizable.TryLockAll(sf, mx), false);
-			Assert.AreEqual(ISynchronizable.LockOne(sf, mx), 1);
-			Assert.AreEqual(ISynchronizable.TryLockOne(sf, mx), 1);
+			Assert.AreEqual(MultiSync.WaitAll(span), true);
+			Assert.AreEqual(MultiSync.WaitAll(span), true);
+			Assert.AreEqual(MultiSync.TryWaitAll(span), false);
+			Assert.AreEqual(MultiSync.WaitOne(span), 1);
+			Assert.AreEqual(MultiSync.TryWaitOne(span), 1);
 		}
 	}
 }

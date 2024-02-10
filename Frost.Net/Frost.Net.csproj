@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -9,8 +9,6 @@
 
   <ItemGroup>
     <Compile Remove="Sync\**" />
-    <EmbeddedResource Remove="Sync\**" />
-    <None Remove="Sync\**" />
   </ItemGroup>
 
   <ItemGroup>

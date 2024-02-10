@@ -132,9 +132,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="clock.api.hpp" />
-    <ClInclude Include="internal\mutex.impl.hpp" />
+    <ClInclude Include="internal\debug.impl.hpp" />
+    <ClInclude Include="internal\sysmap.impl.hpp" />
+    <ClInclude Include="composites.hpp" />
+    <ClInclude Include="internal\system_resource.impl.hpp" />
+    <ClInclude Include="internal\thread.impl.hpp" />
+    <ClInclude Include="internal\window.impl.hpp" />
+    <ClInclude Include="system_resource.api.hpp" />
+    <ClInclude Include="thread.api.hpp" />
+    <ClInclude Include="window.api.hpp" />
+    <ClInclude Include="keycode.api.hpp" />
     <ClInclude Include="internal\resource.impl.hpp" />
-    <ClInclude Include="internal\semaphore.impl.hpp" />
+    <ClInclude Include="internal\synchronizable.impl.hpp" />
     <ClInclude Include="macro.hpp" />
     <ClInclude Include="resource.api.hpp" />
     <ClInclude Include="primitives.hpp" />
@@ -147,17 +156,25 @@
     <ClInclude Include="synchronizable.api.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="internal\_src\mutex.impl.cpp" />
+    <ClCompile Include="internal\_src\debug.impl.cpp" />
     <ClCompile Include="internal\_src\resource.impl.cpp" />
-    <ClCompile Include="internal\_src\semaphore.impl.cpp" />
+    <ClCompile Include="internal\_src\synchronizable.impl.cpp" />
+    <ClCompile Include="internal\_src\sysmap.impl.cpp" />
+    <ClCompile Include="internal\_src\system_resource.impl.cpp" />
+    <ClCompile Include="internal\_src\thread.impl.cpp" />
+    <ClCompile Include="internal\_src\window.impl.cpp" />
     <ClCompile Include="_src\clock.api.cpp" />
     <ClCompile Include="_src\color.api.cpp" />
     <ClCompile Include="_src\event_system.api.cpp" />
+    <ClCompile Include="_src\keycode.api.cpp" />
     <ClCompile Include="_src\logging.api.cpp" />
     <ClCompile Include="_src\resource.api.cpp" />
     <ClCompile Include="_src\synchronizable.api.cpp" />
     <ClCompile Include="_src\random.api.cpp" />
     <ClCompile Include="_src\semantic_version.api.cpp" />
+    <ClCompile Include="_src\system_resource.api.cpp" />
+    <ClCompile Include="_src\thread.api.cpp" />
+    <ClCompile Include="_src\window.api.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
