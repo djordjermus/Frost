@@ -155,25 +155,31 @@ namespace frost::impl
 	{
 		if (_msg.message == msg_execute_procedure_asynchronous)
 		{
-			try
+			if (_msg.wParam != 0)
 			{
-				if (_msg.wParam != 0)
+				try
 				{
 					auto* info = reinterpret_cast<procedure_message_info*>(_msg.wParam);
 					if (info->procedure)
 						info->procedure(info->argument);
 				}
+				catch (...) { /* ... */ }
 			}
-			catch (...) { /* ... */ }
 
-			try
+			if (_msg.lParam != 0)
 			{
-				if (_msg.lParam != 0)
+				auto sync = reinterpret_cast<frost::impl::synchronizable*>(_msg.lParam);
+				try
 				{
-					reinterpret_cast<frost::impl::synchronizable*>(_msg.lParam)->signal();
+					sync->signal();
 				}
+				catch (...) { /* ... */ }
+				try
+				{
+					sync->release_reference();
+				}
+				catch (...) { /* ... */ }
 			}
-			catch (...) { /* ... */ }
 		}
 		else
 		{

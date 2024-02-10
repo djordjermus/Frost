@@ -1,5 +1,6 @@
 ﻿using Frost.Net.Interoperability;
 using Frost.Net.Synchronization.Interface;
+using System.Runtime.InteropServices;
 
 namespace Frost.Net
 {
@@ -29,6 +30,9 @@ namespace Frost.Net
 
 		public class Message : FrostResource
 		{
+			[UnmanagedFunctionPointer(CallingConvention.StdCall)]
+			public delegate void Procedure();
+
 			public Message() :
 				base(FrostApi.Thread.CreateMessage()) { }
 
@@ -37,14 +41,14 @@ namespace Frost.Net
 			public void Dispatch() => FrostApi.Thread.DispatchMessage(Handle);
 			public void Discard() => FrostApi.Thread.DiscardMessage(Handle);
 
-			public static bool Send(Thread target, Action action)
+			public static bool Send(Thread target, Procedure procedure)
 			{
-				FrostApi.Procedure proc = ptr => action();
-				return FrostApi.Thread.SendMessage(target.Handle, proc, IntPtr.Zero);
+				var ptr = Marshal.GetFunctionPointerForDelegate(procedure);
+				return FrostApi.Thread.SendMessage(target.Handle, ptr, IntPtr.Zero);
 			}
 
-			public static async Task<bool> SendAsync(Thread target, Action action) =>
-				await Task.Run(() => Send(target, action));
+			public static async Task<bool> SendAsync(Thread target, Procedure procedure) =>
+				await Task.Run(() => Send(target, procedure));
 		}
 
 		private readonly FrostApi.Procedure? _procedure;
