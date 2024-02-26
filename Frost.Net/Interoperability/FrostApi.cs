@@ -484,14 +484,14 @@ internal static partial class FrostApi
 			EntryPoint = "frost_api_thread_message_send")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static partial bool SendMessage(IntPtr thread, IntPtr procedure, IntPtr argument);
+		public static partial bool SendMessage(IntPtr thread, Procedure procedure, IntPtr argument);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_thread_message_send_async")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static partial bool SendMessageAsync(IntPtr thread, IntPtr sync, IntPtr procedure, IntPtr argument);
+		public static partial bool SendMessageAsync(IntPtr thread, IntPtr sync, Procedure procedure, IntPtr argument);
 	}
 
 	public static partial class Window

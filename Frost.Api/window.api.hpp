@@ -114,8 +114,8 @@ namespace frost::api
 			cursor_enter	= 0x0D,
 			cursor_move		= 0x0E,
 			cursor_leave	= 0x0F,
-			mouse_move		= 0x10, // TODO
-			mouse_scroll	= 0x11, // TODO
+			mouse_move		= 0x10,
+			mouse_scroll	= 0x11,
 			
 			create			= 0x12,
 			close			= 0x13,

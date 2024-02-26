@@ -21,7 +21,7 @@ public static class EventSystem
 	public static void Subscribe(Layers activationLayers, MethodInfo method, object? obj = null)
 	{
 		var type = method.GetParameters().First().ParameterType.GetElementType();
-		var delegateType = typeof(Handler<>).MakeGenericType(type);
+		var delegateType = typeof(Handler<>).MakeGenericType(type!);
 		var hash = (ulong)type.GetHashCode();
 
 		// Register tagged relay

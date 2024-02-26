@@ -1,6 +1,5 @@
 #include "../window.impl.hpp"
 #include "../sysmap.impl.hpp"
-// TODO: #include "../logging_messages.hpp"
 #include "../../keycode.api.hpp"
 #include "../../event_system.api.hpp"
 #include "../../logging.api.hpp"
@@ -153,7 +152,7 @@ namespace frost::impl
 				},
 				&data);
 		}
-		return; // TODO DEFERRED
+		return;
 	}
 
 	void window::set_state(api::window_state state)
