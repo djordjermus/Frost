@@ -1,8 +1,8 @@
-﻿using Frost.Net.Interoperability;
-using Frost.Net.Synchronization.Interface;
+﻿using Frost.Interoperability;
+using Frost.Synchronization.Interface;
 using System.Runtime.InteropServices;
 
-namespace Frost.Net
+namespace Frost
 {
 	public sealed class Window : FrostResource, ISynchronizable
 	{

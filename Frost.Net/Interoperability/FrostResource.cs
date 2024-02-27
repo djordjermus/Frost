@@ -1,4 +1,4 @@
-﻿namespace Frost.Net.Interoperability;
+﻿namespace Frost.Interoperability;
 
 /// <summary>
 /// Frost.Api resource encapsulation

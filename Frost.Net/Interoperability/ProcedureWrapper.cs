@@ -1,11 +1,11 @@
-﻿namespace Frost.Net.Interoperability;
+﻿namespace Frost.Interoperability;
 
 #pragma warning disable CS8500
-internal struct ProcedureApiWrapper
+internal struct ProcedureWrapper
 {
     private readonly Procedure _procedure;
 
-    public ProcedureApiWrapper(
+    public ProcedureWrapper(
         Procedure procedure)
     {
         _procedure = procedure;
@@ -15,18 +15,18 @@ internal struct ProcedureApiWrapper
     {
         unsafe
         {
-            var ptr = (ProcedureApiWrapper*)pStruct;
+            var ptr = (ProcedureWrapper*)pStruct;
             ptr->_procedure();
         }
     }
 }
 
-internal struct ProcedureApiWrapper<T1>
+internal struct ProcedureWrapper<T1>
 {
     private readonly Procedure<T1> _procedure;
     private readonly T1 _argument1;
 
-    public ProcedureApiWrapper(
+    public ProcedureWrapper(
         Procedure<T1> procedure,
         T1 argument1)
     {
@@ -38,20 +38,20 @@ internal struct ProcedureApiWrapper<T1>
     {
         unsafe
         {
-            var ptr = (ProcedureApiWrapper<T1>*)pStruct;
+            var ptr = (ProcedureWrapper<T1>*)pStruct;
             ptr->_procedure(
                 ptr->_argument1);
         }
     }
 }
 
-internal struct ProcedureApiWrapper<T1, T2>
+internal struct ProcedureWrapper<T1, T2>
 {
     private readonly Procedure<T1, T2> _procedure;
     private readonly T1 _argument1;
     private readonly T2 _argument2;
 
-    public ProcedureApiWrapper(
+    public ProcedureWrapper(
         Procedure<T1, T2> procedure,
         T1 argument1,
         T2 argument2)
@@ -65,7 +65,7 @@ internal struct ProcedureApiWrapper<T1, T2>
     {
         unsafe
         {
-            var ptr = (ProcedureApiWrapper<T1, T2>*)pStruct;
+            var ptr = (ProcedureWrapper<T1, T2>*)pStruct;
             ptr->_procedure(
                 ptr->_argument1,
                 ptr->_argument2);
@@ -73,14 +73,14 @@ internal struct ProcedureApiWrapper<T1, T2>
     }
 }
 
-internal struct ProcedureApiWrapper<T1, T2, T3>
+internal struct ProcedureWrapper<T1, T2, T3>
 {
     private readonly Procedure<T1, T2, T3> _procedure;
     private readonly T1 _argument1;
     private readonly T2 _argument2;
     private readonly T3 _argument3;
 
-    public ProcedureApiWrapper(
+    public ProcedureWrapper(
         Procedure<T1, T2, T3> procedure,
         T1 argument1,
         T2 argument2,
@@ -96,7 +96,7 @@ internal struct ProcedureApiWrapper<T1, T2, T3>
     {
         unsafe
         {
-            var ptr = (ProcedureApiWrapper<T1, T2, T3>*)pStruct;
+            var ptr = (ProcedureWrapper<T1, T2, T3>*)pStruct;
             ptr->_procedure(
                 ptr->_argument1,
                 ptr->_argument2,
@@ -105,7 +105,7 @@ internal struct ProcedureApiWrapper<T1, T2, T3>
     }
 }
 
-internal struct ProcedureApiWrapper<T1, T2, T3, T4>
+internal struct ProcedureWrapper<T1, T2, T3, T4>
 {
     private readonly Procedure<T1, T2, T3, T4> _procedure;
     private readonly T1 _argument1;
@@ -113,7 +113,7 @@ internal struct ProcedureApiWrapper<T1, T2, T3, T4>
     private readonly T3 _argument3;
     private readonly T4 _argument4;
 
-    public ProcedureApiWrapper(
+    public ProcedureWrapper(
         Procedure<T1, T2, T3, T4> procedure,
         T1 argument1,
         T2 argument2,
@@ -131,7 +131,7 @@ internal struct ProcedureApiWrapper<T1, T2, T3, T4>
     {
         unsafe
         {
-            var ptr = (ProcedureApiWrapper<T1, T2, T3, T4>*)pStruct;
+            var ptr = (ProcedureWrapper<T1, T2, T3, T4>*)pStruct;
             ptr->_procedure(
                 ptr->_argument1,
                 ptr->_argument2,
@@ -141,7 +141,7 @@ internal struct ProcedureApiWrapper<T1, T2, T3, T4>
     }
 }
 
-internal struct ProcedureApiWrapper<T1, T2, T3, T4, T5>
+internal struct ProcedureWrapper<T1, T2, T3, T4, T5>
 {
     private readonly Procedure<T1, T2, T3, T4, T5> _procedure;
     private readonly T1 _argument1;
@@ -150,7 +150,7 @@ internal struct ProcedureApiWrapper<T1, T2, T3, T4, T5>
     private readonly T4 _argument4;
     private readonly T5 _argument5;
 
-    public ProcedureApiWrapper(
+    public ProcedureWrapper(
         Procedure<T1, T2, T3, T4, T5> procedure,
         T1 argument1,
         T2 argument2,
@@ -170,7 +170,7 @@ internal struct ProcedureApiWrapper<T1, T2, T3, T4, T5>
     {
         unsafe
         {
-            var ptr = (ProcedureApiWrapper<T1, T2, T3, T4, T5>*)pStruct;
+            var ptr = (ProcedureWrapper<T1, T2, T3, T4, T5>*)pStruct;
             ptr->_procedure(
                 ptr->_argument1,
                 ptr->_argument2,
@@ -181,7 +181,7 @@ internal struct ProcedureApiWrapper<T1, T2, T3, T4, T5>
     }
 }
 
-internal struct ProcedureApiWrapper<T1, T2, T3, T4, T5, T6>
+internal struct ProcedureWrapper<T1, T2, T3, T4, T5, T6>
 {
     private readonly Procedure<T1, T2, T3, T4, T5, T6> _procedure;
     private readonly T1 _argument1;
@@ -191,7 +191,7 @@ internal struct ProcedureApiWrapper<T1, T2, T3, T4, T5, T6>
     private readonly T5 _argument5;
     private readonly T6 _argument6;
 
-    public ProcedureApiWrapper(
+    public ProcedureWrapper(
         Procedure<T1, T2, T3, T4, T5, T6> procedure,
         T1 argument1,
         T2 argument2,
@@ -213,7 +213,7 @@ internal struct ProcedureApiWrapper<T1, T2, T3, T4, T5, T6>
     {
         unsafe
         {
-            var ptr = (ProcedureApiWrapper<T1, T2, T3, T4, T5, T6>*)pStruct;
+            var ptr = (ProcedureWrapper<T1, T2, T3, T4, T5, T6>*)pStruct;
             ptr->_procedure(
                 ptr->_argument1,
                 ptr->_argument2,
@@ -225,7 +225,7 @@ internal struct ProcedureApiWrapper<T1, T2, T3, T4, T5, T6>
     }
 }
 
-internal struct ProcedureApiWrapper<T1, T2, T3, T4, T5, T6, T7>
+internal struct ProcedureWrapper<T1, T2, T3, T4, T5, T6, T7>
 {
     private readonly Procedure<T1, T2, T3, T4, T5, T6, T7> _procedure;
     private readonly T1 _argument1;
@@ -236,7 +236,7 @@ internal struct ProcedureApiWrapper<T1, T2, T3, T4, T5, T6, T7>
     private readonly T6 _argument6;
     private readonly T7 _argument7;
 
-    public ProcedureApiWrapper(
+    public ProcedureWrapper(
         Procedure<T1, T2, T3, T4, T5, T6, T7> procedure,
         T1 argument1,
         T2 argument2,
@@ -260,7 +260,7 @@ internal struct ProcedureApiWrapper<T1, T2, T3, T4, T5, T6, T7>
     {
         unsafe
         {
-            var ptr = (ProcedureApiWrapper<T1, T2, T3, T4, T5, T6, T7>*)pStruct;
+            var ptr = (ProcedureWrapper<T1, T2, T3, T4, T5, T6, T7>*)pStruct;
             ptr->_procedure(
                 ptr->_argument1,
                 ptr->_argument2,
@@ -273,7 +273,7 @@ internal struct ProcedureApiWrapper<T1, T2, T3, T4, T5, T6, T7>
     }
 }
 
-internal struct ProcedureApiWrapper<T1, T2, T3, T4, T5, T6, T7, T8>
+internal struct ProcedureWrapper<T1, T2, T3, T4, T5, T6, T7, T8>
 {
     private readonly Procedure<T1, T2, T3, T4, T5, T6, T7, T8> _procedure;
     private readonly T1 _argument1;
@@ -285,7 +285,7 @@ internal struct ProcedureApiWrapper<T1, T2, T3, T4, T5, T6, T7, T8>
     private readonly T7 _argument7;
     private readonly T8 _argument8;
 
-    public ProcedureApiWrapper(
+    public ProcedureWrapper(
         Procedure<T1, T2, T3, T4, T5, T6, T7, T8> procedure,
         T1 argument1,
         T2 argument2,
@@ -311,7 +311,7 @@ internal struct ProcedureApiWrapper<T1, T2, T3, T4, T5, T6, T7, T8>
     {
         unsafe
         {
-            var ptr = (ProcedureApiWrapper<T1, T2, T3, T4, T5, T6, T7, T8>*)pStruct;
+            var ptr = (ProcedureWrapper<T1, T2, T3, T4, T5, T6, T7, T8>*)pStruct;
             ptr->_procedure(
                 ptr->_argument1,
                 ptr->_argument2,

@@ -1,4 +1,4 @@
-﻿namespace Frost.Net.Logging;
+﻿namespace Frost.Logging;
 
 /// <summary>
 /// Class for outputing log event data to console

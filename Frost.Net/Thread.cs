@@ -1,7 +1,7 @@
-﻿using Frost.Net.Interoperability;
-using Frost.Net.Synchronization.Interface;
+﻿using Frost.Interoperability;
+using Frost.Synchronization.Interface;
 
-namespace Frost.Net;
+namespace Frost;
 
 public class Thread : FrostResource, ISynchronizable
 {
@@ -50,13 +50,13 @@ public class Thread : FrostResource, ISynchronizable
 		{
 			unsafe
 			{
-				var dispatcher = new ProcedureApiWrapper(
+				var dispatcher = new ProcedureWrapper(
 					procedure);
 
 				var result =
 					FrostApi.Thread.SendMessage(
 						target.Handle,
-						ProcedureApiWrapper.Dispatch,
+						ProcedureWrapper.Dispatch,
 						(IntPtr)(&dispatcher));
 				return result;
 			}
@@ -70,14 +70,14 @@ public class Thread : FrostResource, ISynchronizable
 		{
 			unsafe
 			{
-				var dispatcher = new ProcedureApiWrapper<T1>(
+				var dispatcher = new ProcedureWrapper<T1>(
 					procedure,
 					argument1);
 
 				var result =
 					FrostApi.Thread.SendMessage(
 						target.Handle,
-						ProcedureApiWrapper<T1>.Dispatch,
+						ProcedureWrapper<T1>.Dispatch,
 						(IntPtr)(&dispatcher));
 				return result;
 			}
@@ -91,7 +91,7 @@ public class Thread : FrostResource, ISynchronizable
 		{
 			unsafe
 			{
-				var dispatcher = new ProcedureApiWrapper<T1, T2>(
+				var dispatcher = new ProcedureWrapper<T1, T2>(
 					procedure,
 					argument1,
 					argument2);
@@ -99,7 +99,7 @@ public class Thread : FrostResource, ISynchronizable
 				var result =
 					FrostApi.Thread.SendMessage(
 						target.Handle,
-						ProcedureApiWrapper<T1, T2>.Dispatch,
+						ProcedureWrapper<T1, T2>.Dispatch,
 						(IntPtr)(&dispatcher));
 				return result;
 			}
@@ -114,7 +114,7 @@ public class Thread : FrostResource, ISynchronizable
 		{
 			unsafe
 			{
-				var dispatcher = new ProcedureApiWrapper<T1, T2, T3>(
+				var dispatcher = new ProcedureWrapper<T1, T2, T3>(
 					procedure,
 					argument1,
 					argument2,
@@ -123,7 +123,7 @@ public class Thread : FrostResource, ISynchronizable
 				var result =
 					FrostApi.Thread.SendMessage(
 						target.Handle,
-						ProcedureApiWrapper<T1, T2, T3>.Dispatch,
+						ProcedureWrapper<T1, T2, T3>.Dispatch,
 						(IntPtr)(&dispatcher));
 				return result;
 			}
@@ -139,7 +139,7 @@ public class Thread : FrostResource, ISynchronizable
 		{
 			unsafe
 			{
-				var dispatcher = new ProcedureApiWrapper<T1, T2, T3, T4>(
+				var dispatcher = new ProcedureWrapper<T1, T2, T3, T4>(
 					procedure,
 					argument1,
 					argument2,
@@ -149,7 +149,7 @@ public class Thread : FrostResource, ISynchronizable
 				var result =
 					FrostApi.Thread.SendMessage(
 						target.Handle,
-						ProcedureApiWrapper<T1, T2, T3, T4>.Dispatch,
+						ProcedureWrapper<T1, T2, T3, T4>.Dispatch,
 						(IntPtr)(&dispatcher));
 				return result;
 			}
@@ -166,7 +166,7 @@ public class Thread : FrostResource, ISynchronizable
 		{
 			unsafe
 			{
-				var dispatcher = new ProcedureApiWrapper<T1, T2, T3, T4, T5>(
+				var dispatcher = new ProcedureWrapper<T1, T2, T3, T4, T5>(
 					procedure,
 					argument1,
 					argument2,
@@ -177,7 +177,7 @@ public class Thread : FrostResource, ISynchronizable
 				var result =
 					FrostApi.Thread.SendMessage(
 						target.Handle,
-						ProcedureApiWrapper<T1, T2, T3, T4, T5>.Dispatch,
+						ProcedureWrapper<T1, T2, T3, T4, T5>.Dispatch,
 						(IntPtr)(&dispatcher));
 				return result;
 			}
@@ -195,7 +195,7 @@ public class Thread : FrostResource, ISynchronizable
 		{
 			unsafe
 			{
-				var dispatcher = new ProcedureApiWrapper<T1, T2, T3, T4, T5, T6>(
+				var dispatcher = new ProcedureWrapper<T1, T2, T3, T4, T5, T6>(
 					procedure,
 					argument1,
 					argument2,
@@ -207,7 +207,7 @@ public class Thread : FrostResource, ISynchronizable
 				var result =
 					FrostApi.Thread.SendMessage(
 						target.Handle,
-						ProcedureApiWrapper<T1, T2, T3, T4, T5, T6>.Dispatch,
+						ProcedureWrapper<T1, T2, T3, T4, T5, T6>.Dispatch,
 						(IntPtr)(&dispatcher));
 				return result;
 			}
@@ -226,7 +226,7 @@ public class Thread : FrostResource, ISynchronizable
 		{
 			unsafe
 			{
-				var dispatcher = new ProcedureApiWrapper<T1, T2, T3, T4, T5, T6, T7>(
+				var dispatcher = new ProcedureWrapper<T1, T2, T3, T4, T5, T6, T7>(
 					procedure,
 					argument1,
 					argument2,
@@ -239,7 +239,7 @@ public class Thread : FrostResource, ISynchronizable
 				var result =
 					FrostApi.Thread.SendMessage(
 						target.Handle,
-						ProcedureApiWrapper<T1, T2, T3, T4, T5, T6, T7>.Dispatch,
+						ProcedureWrapper<T1, T2, T3, T4, T5, T6, T7>.Dispatch,
 						(IntPtr)(&dispatcher));
 				return result;
 			}
@@ -259,7 +259,7 @@ public class Thread : FrostResource, ISynchronizable
 		{
 			unsafe
 			{
-				var dispatcher = new ProcedureApiWrapper<T1, T2, T3, T4, T5, T6, T7, T8>(
+				var dispatcher = new ProcedureWrapper<T1, T2, T3, T4, T5, T6, T7, T8>(
 					procedure,
 					argument1,
 					argument2,
@@ -273,7 +273,7 @@ public class Thread : FrostResource, ISynchronizable
 				var result =
 					FrostApi.Thread.SendMessage(
 						target.Handle,
-						ProcedureApiWrapper<T1, T2, T3, T4, T5, T6, T7, T8>.Dispatch,
+						ProcedureWrapper<T1, T2, T3, T4, T5, T6, T7, T8>.Dispatch,
 						(IntPtr)(&dispatcher));
 				return result;
 			}

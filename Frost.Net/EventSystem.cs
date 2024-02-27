@@ -1,9 +1,9 @@
-﻿using Frost.Net.Interoperability;
-using Frost.Net.Models;
-using Frost.Net.Utilities;
+﻿using Frost.Interoperability;
+using Frost.Models;
+using Frost.Utilities;
 using System.Reflection;
 
-namespace Frost.Net;
+namespace Frost;
 
 public static class EventSystem
 {
@@ -22,7 +22,7 @@ public static class EventSystem
 	{
 		var type = method.GetParameters().First().ParameterType.GetElementType();
 		var delegateType = typeof(Handler<>).MakeGenericType(type!);
-		var hash = (ulong)type.GetHashCode();
+		var hash = (ulong)type!.GetHashCode();
 
 		// Register tagged relay
 		typeof(EventSystem)

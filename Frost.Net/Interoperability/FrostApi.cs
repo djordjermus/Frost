@@ -1,8 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static Frost.Net.Interoperability.FrostApi.Thread;
+using static Frost.Interoperability.FrostApi.Thread;
 
-namespace Frost.Net.Interoperability;
+namespace Frost.Interoperability;
 
 /// <summary>
 /// Static class housing frost.api methods

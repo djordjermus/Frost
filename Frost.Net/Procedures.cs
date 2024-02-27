@@ -1,4 +1,4 @@
-﻿namespace Frost.Net;
+﻿namespace Frost;
 
 public delegate void Procedure
 	();

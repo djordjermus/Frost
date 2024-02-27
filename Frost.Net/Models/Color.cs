@@ -1,8 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Frost.Net.Interoperability;
+using Frost.Interoperability;
 
-namespace Frost.Net.Models;
+namespace Frost.Models;
 
 /// <summary>
 /// RGBA color model - Red, Green, Blue, Alpha

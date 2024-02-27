@@ -1,4 +1,4 @@
-﻿namespace Frost.Net.Models;
+﻿namespace Frost.Models;
 
 /// <summary>
 /// HSVA Color model - Hue, Saturation, Value, Alpha

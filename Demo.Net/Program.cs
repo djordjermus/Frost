@@ -1,26 +1,14 @@
-﻿var mainThread = Frost.Net.Thread.ThisThread;
-var e = new Frost.Net.Synchronization.SyncEvent();
-var th = new Frost.Net.Thread(() => {
+﻿var mainThread = Frost.Thread.ThisThread;
+var e = new Frost.Synchronization.SyncEvent();
+var th = new Frost.Thread(() => {
 	TextClass data = new TextClass() { Text = "Hello World!" };
-	TextClassBundle bundle = new TextClassBundle()
-	{
-		t1 = data,
-		t2 = data,
-		t3 = data,
-		t4 = data,
-		t5 = data,
-		t6 = data,
-		t7 = data,
-		t8 = data,
-	};
 	e.Wait();
 	while (true)
 	{
-		Frost.Net.Thread.Message.Send(mainThread, TextClassBundle.PrintTextStatic8, bundle);
-		// Frost.Net.Thread.Message.Send(mainThread, TextClass.PrintTextStatic8, data, data, data, data, data, data, data, data);
+		Frost.Thread.Message.Send(mainThread, TextClass.PrintTextStatic8, data, data, data, data, data, data, data, data);
 	}
 });
-var message = new Frost.Net.Thread.Message();
+var message = new Frost.Thread.Message();
 e.Signal();
 while (true)
 {
@@ -30,7 +18,7 @@ while (true)
 
 class TextClass
 {
-	public string Text { get; set; }
+	public string Text { get; set; } = "Hello, World!";
 	public void PrintText() => Console.WriteLine(Text);
 	public static void PrintTextStatic(TextClass data) => Console.WriteLine(data.Text);
 	public static void PrintTextStatic8(TextClass a1, TextClass a2, TextClass a3, TextClass a4, TextClass a5, TextClass a6, TextClass a7, TextClass a8)
@@ -67,10 +55,4 @@ struct TextStruct
 		PrintTextStatic(a7);
 		PrintTextStatic(a8);
 	}
-}
-class TextClassBundle
-{
-	public TextClass t1, t2, t3, t4, t5, t6, t7, t8;
-	public static void PrintTextStatic8(TextClassBundle data) =>
-		TextClass.PrintTextStatic8(data.t1, data.t2, data.t3, data.t4, data.t5, data.t6, data.t7, data.t8);
 }

@@ -1,8 +1,8 @@
-﻿using Frost.Net.Synchronization;
-using Frost.Net.Synchronization.Interface;
+﻿using Frost.Synchronization;
+using Frost.Synchronization.Interface;
 using System.Runtime.CompilerServices;
 
-namespace Frost.Net.Extensions;
+namespace Frost.Extensions;
 
 public static class MultiSyncExtensions
 {

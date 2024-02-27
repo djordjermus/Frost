@@ -1,7 +1,7 @@
-﻿using Frost.Net.Interoperability;
-using Frost.Net.Utilities;
+﻿using Frost.Interoperability;
+using Frost.Utilities;
 
-namespace Frost.Net.Models;
+namespace Frost.Models;
 
 /// <summary>
 /// Semantic version model - Major, Minor, Patch, Decoration
