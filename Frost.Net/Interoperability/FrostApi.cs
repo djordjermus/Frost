@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static Frost.Interoperability.FrostApi.Thread;
 
 namespace Frost.Interoperability;
 
@@ -497,7 +496,7 @@ internal static partial class FrostApi
 	public static partial class Window
 	{
 		[StructLayout(LayoutKind.Sequential)]
-		public struct Description
+		public unsafe struct Description
 		{
             public Description() {}
             public Point2D position = new Point2D() { x = 200, y = 200 };
@@ -508,6 +507,74 @@ internal static partial class FrostApi
 
 			public byte state = 2;
 		}
+
+		[StructLayout(LayoutKind.Explicit)]
+		public unsafe struct WindowEvent
+		{
+			[FieldOffset(0)]
+			public ulong type;
+			[FieldOffset(8)]
+			public IntPtr target;
+
+			[FieldOffset(16)]
+			public Point2D position;
+			[FieldOffset(16)]
+			public Size2D size;
+			[FieldOffset(16)]
+			public DoubleClick doubleClick;
+
+			[FieldOffset(16)]
+			public Point2D cursorEnter;
+			[FieldOffset(16)]
+			public Point2D cursorMove;
+			[FieldOffset(16)]
+			public Point2D cursorLeave;
+
+			[FieldOffset(16)]
+			public Point2D mouseMove;
+			[FieldOffset(16)]
+			public KeyDown keyDown;
+			[FieldOffset(16)]
+			public KeyUp keyUp;
+
+			[FieldOffset(16)]
+			public Point2D mouseScroll;
+
+			public struct DoubleClick { public Point2D position; public byte key; }
+			public struct KeyDown { public byte key; public IntPtr text; public bool repeat; }
+			public struct KeyUp { public byte key; public IntPtr text; }
+
+			public const ulong 
+				invalid			= 0x00,
+				
+				enable			= 0x01,
+				disable			= 0x02,
+				
+				activate		= 0x03,
+				deactivate		= 0x04,
+				
+				gain_focus		= 0x05,
+				lose_focus		= 0x06,
+				
+				change_state	= 0x07,
+				
+				move			= 0x08,
+				resize			= 0x09,
+				
+				key_down		= 0x0A,
+				key_up			= 0x0B,
+				double_click	= 0x0C,
+								   
+				cursor_enter	= 0x0D,
+				cursor_move		= 0x0E,
+				cursor_leave	= 0x0F,
+				mouse_move		= 0x10,
+				mouse_scroll	= 0x11,
+				
+				create			= 0x12,
+				close			= 0x13,
+				destroy			= 0x14;
+	};
 
 		[LibraryImport(
 			frostApiPath,

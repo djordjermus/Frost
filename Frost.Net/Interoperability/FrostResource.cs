@@ -1,4 +1,6 @@
-﻿namespace Frost.Interoperability;
+﻿using System.Runtime.InteropServices;
+
+namespace Frost.Interoperability;
 
 /// <summary>
 /// Frost.Api resource encapsulation
@@ -10,8 +12,10 @@ public class FrostResource : IFrostResource
     /// <summary>
     /// Consturct null resource
     /// </summary>
-    protected FrostResource() =>
+    protected FrostResource()
+    {
         _handle = IntPtr.Zero;
+	}
 
     /// <summary>
     /// Constructs a resource from handle
@@ -23,8 +27,8 @@ public class FrostResource : IFrostResource
         {
             FrostApi.Resource.AcquireReference(handle);
             _handle = handle;
-        }
-    }
+		}
+	}
 
 
 
@@ -65,5 +69,5 @@ public class FrostResource : IFrostResource
         GC.SuppressFinalize(this);
         if (_handle != IntPtr.Zero)
             FrostApi.Resource.ReleaseReference(_handle);
-    }
+	}
 }
