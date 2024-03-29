@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Frost.Net.Models;
+﻿namespace Frost.Net.Models;
 
 public class WindowEvent
 {

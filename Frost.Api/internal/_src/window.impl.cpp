@@ -32,6 +32,7 @@ namespace frost::impl
 	window::~window()
 	{
 		::DestroyWindow(get_hwnd());
+		_system_handle = nullptr;
 	}
 
 	bool window::is_enabled() const
@@ -160,6 +161,7 @@ namespace frost::impl
 		if (is_direct_invoke_required())
 		{
 			::ShowWindow(get_hwnd(), state_to_int(state));
+			update_state();
 		}
 		else
 		{
@@ -240,9 +242,20 @@ namespace frost::impl
 	}
 	void window::update_state()
 	{
-		WINDOWPLACEMENT wp{};
-		::GetWindowPlacement(get_hwnd(), &wp);
-		frost::api::window_state new_state = int_to_state(wp.showCmd);
+		frost::api::window_state new_state;
+		HWND hwnd = get_hwnd();
+		bool visible = (GetWindowLongW(hwnd, GWL_STYLE) & WS_VISIBLE) != 0;
+		if (visible)
+		{
+			WINDOWPLACEMENT wp{};
+			::GetWindowPlacement(get_hwnd(), &wp);
+			new_state = int_to_state(wp.showCmd);
+		}
+		else
+		{
+			new_state = frost::api::window_state::hidden;
+		}
+
 
 		if (_state != new_state)
 		{
@@ -545,7 +558,7 @@ namespace frost::impl
 			e.type			= frost::api::window_event::event_type::move;
 			e.target		= data;
 			e.position.x	= static_cast<WORD>(l & 0xFFFF);
-			e.position.y	= static_cast<WORD>((l >> sizeof(WORD)) & 0xFFFF);
+			e.position.y	= static_cast<WORD>((l >> (sizeof(WORD) * 8)) & 0xFFFF);
 			data->_procedure(&e);
 		}
 		return ::DefWindowProcW(hwnd, msg, w, l);
@@ -561,7 +574,7 @@ namespace frost::impl
 			e.type			= frost::api::window_event::event_type::resize;
 			e.target		= data;
 			e.resize.width	= static_cast<WORD>(l & 0xFFFF);
-			e.resize.height	= static_cast<WORD>((l >> sizeof(WORD)) & 0xFFFF);
+			e.resize.height	= static_cast<WORD>((l >> (sizeof(WORD) * 8)) & 0xFFFF);
 			data->_procedure(&e);
 		}
 		return ::DefWindowProcW(hwnd, msg, w, l);

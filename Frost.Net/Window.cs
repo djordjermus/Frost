@@ -81,7 +81,8 @@ namespace Frost
 		{
 			var ptrEvent = (FrostApi.Window.WindowEvent*)ptr.ToPointer();
 			var e = FormEvent(ref *ptrEvent);
-			_procedure?.Invoke(e);
+			if (e is not null)
+				_procedure?.Invoke(e);
 		}
 
 		private WindowEvent? FormEvent(ref FrostApi.Window.WindowEvent e)

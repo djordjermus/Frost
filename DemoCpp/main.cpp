@@ -21,7 +21,7 @@ int main()
 	desc.procedure = fn;
 	window = frost_api_window_create(&desc);
 	msg = frost_api_thread_message_create();
-	while (true)
+	while (frost_api_window_get_state(window) != frost::api::window_state::hidden)
 	{
 		frost_api_thread_message_wait(msg);
 		frost_api_thread_message_dispatch(msg);
@@ -31,6 +31,6 @@ int main()
 
 void _stdcall fn(frost::api::window_event* e)
 {
-	if (e->type == frost::api::window_event::event_type::key_down)
-		int i = 0;
+	if (e->type == frost::api::window_event::event_type::key_down && e->key_down.key == frost::api::keycode::escape)
+		frost_api_window_set_state(e->target, frost::api::window_state::hidden);
 }
