@@ -45,20 +45,19 @@ void frost::impl::debug::log_resource_creation(const frost::api::resource* targe
 	}
 #endif
 }
-void frost::impl::debug::log_resource_destruction(const frost::api::resource* target, const std::type_info& type)
+void frost::impl::debug::log_resource_destruction(const frost::api::resource* target)
 {
 #if FROST_API_DEBUG_LOG_RESOURCE_DESTRUCTION == 1
-	constexpr u64 param_count = 2;
+	constexpr u64 param_count = 1;
 	constexpr u64 address_length = 17;
-	constexpr u64 name_max_length = 121;
 
-	static const wchar_t* _template = L"destroying resource at 0x{0} of concrete type \"{1}\"";
+	static const wchar_t* _template = L"destroying resource at 0x{0}";
 	static const u64 _template_length = wcslen(_template);
 
 	static const wchar_t* _exception_template = L"logging of resource destruction threw exception! message:\n{0}";
 	static const u64 _exception_template_length = wcslen(_exception_template);
 
-	static const wchar_t* _error_template = L"logging of resource destruction uncaught error!\n";
+	static const wchar_t* _error_template = L"logging of resource destruction uncaught error!";
 	static const u64 _error_template_length = wcslen(_error_template);
 	try
 	{
@@ -66,20 +65,10 @@ void frost::impl::debug::log_resource_destruction(const frost::api::resource* ta
 		wchar_t address[address_length]	= {};
 		swprintf_s(address, address_length, L"%p", target);
 		
-		// TYPE NAME
-		wchar_t name[name_max_length] = {};
-		wchar_t* write = name;
-		const char* read = typeid(*target).name();
-		while (write != (name + name_max_length - 1) && *read != '\0')
-		{
-			*write = *read;
-			write++;
-			read++;
-		}
 
 		// DEBUG LOG
-		const wchar_t* params[param_count]		= { address, name };
-		const u64 param_lengths[param_count]	= { address_length, (u64)(write - name) };
+		const wchar_t* params[param_count]		= { address };
+		const u64 param_lengths[param_count]	= { address_length };
 		frost_api_logging_debug(_template, _template_length, params, param_lengths, param_count, frost_api_event_system_get_api_broadcast_layer());
 	}
 	catch (const std::exception& e)

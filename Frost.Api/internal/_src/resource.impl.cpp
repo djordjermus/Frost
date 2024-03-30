@@ -8,7 +8,7 @@ namespace frost::api
 {
 	resource::~resource()
 	{
-		frost::impl::debug::log_resource_destruction(this, typeid(*this));
+		frost::impl::debug::log_resource_destruction(this);
 	}
 
 	resource::resource() : _reference_count()
