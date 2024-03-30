@@ -1,6 +1,6 @@
-﻿using Frost.Net.Interoperability;
+﻿using Frost.Interoperability;
 
-namespace Frost.Net.Synchronization.Interface;
+namespace Frost.Synchronization.Interface;
 
 internal interface ISynchronizableEvent : ISynchronizable
 {

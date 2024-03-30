@@ -1,7 +1,7 @@
-﻿using Frost.Net.Interoperability;
+﻿using Frost.Interoperability;
 using System.Runtime.CompilerServices;
 
-namespace Frost.Net;
+namespace Frost;
 
 public class Random
 {

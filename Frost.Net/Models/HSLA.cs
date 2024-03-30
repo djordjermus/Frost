@@ -1,4 +1,4 @@
-﻿namespace Frost.Net.Models;
+﻿namespace Frost.Models;
 
 /// <summary>
 /// HSLA Color model - Hue, Saturation, Lightness, Alpha

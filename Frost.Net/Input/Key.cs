@@ -1,7 +1,7 @@
-﻿using Frost.Net.Interoperability;
-using Frost.Net.Utilities;
+﻿using Frost.Interoperability;
+using Frost.Utilities;
 
-namespace Frost.Net.Input;
+namespace Frost.Input;
 
 public static class Key
 {

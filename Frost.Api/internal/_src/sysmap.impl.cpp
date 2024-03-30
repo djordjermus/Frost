@@ -56,7 +56,15 @@ namespace frost::impl
 		u16 flags = 0;
 		decompose_syskey(system_keycode, &make_code, &flags);
 
-		output_length = static_cast<u64>(::ToUnicodeEx(virtual_key, compose_scancode(make_code, flags), keyboard_state, output, output_length, 0, hkl));
+		output_length = static_cast<u64>(::ToUnicodeEx(
+			virtual_key, 
+			compose_scancode(make_code, flags), 
+			keyboard_state, 
+			output, 
+			static_cast<int>(output_length), 
+			0,
+			hkl));
+
 		if (output_length >= 0)
 		{
 			output[output_length] = L'\0'; // MSDN Docs: "..., any extra characters are invalid and should be ignored."

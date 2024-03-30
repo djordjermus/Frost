@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Frost.Net.Utilities;
+namespace Frost.Utilities;
 
 internal static class Unmanaged
 {

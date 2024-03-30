@@ -1,4 +1,4 @@
-﻿﻿namespace Frost.Net.Test
+﻿﻿namespace Frost.Test
 {
 	[TestClass]
 	public class RandomTest

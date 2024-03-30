@@ -1,4 +1,4 @@
-﻿namespace Frost.Net.Models;
+﻿namespace Frost.Models;
 
 /// <summary>
 /// CMYK Color model - Cyan, Magenta, Yellow, Key

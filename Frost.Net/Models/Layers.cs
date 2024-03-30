@@ -1,6 +1,6 @@
-﻿using Frost.Net.Interoperability;
+﻿using Frost.Interoperability;
 
-namespace Frost.Net.Models;
+namespace Frost.Models;
 
 public struct Layers
 {

@@ -1,8 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
-using Frost.Net.Interoperability;
-using Frost.Net.Models;
+using Frost.Interoperability;
+using Frost.Models;
 
-namespace Frost.Net.Logging;
+namespace Frost.Logging;
 
 /// <summary>
 /// Contains log event data

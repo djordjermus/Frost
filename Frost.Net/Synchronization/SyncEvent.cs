@@ -1,7 +1,7 @@
-﻿using Frost.Net.Interoperability;
-using Frost.Net.Synchronization.Interface;
+﻿using Frost.Interoperability;
+using Frost.Synchronization.Interface;
 
-namespace Frost.Net.Synchronization;
+namespace Frost.Synchronization;
 
 public class SyncEvent : FrostResource, ISynchronizableEvent
 {
