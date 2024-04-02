@@ -4,292 +4,180 @@
 #include "../event_system.api.hpp"
 #include "../logging.api.hpp"
 
-static void log_internal(
-	const wchar_t* message_template,
-	u64 template_length,
-	const wchar_t** params,
-	const u64* param_lengths,
-	u64 param_count,
-	u64 activation_layers,
-	u8 level);
+static u64 read_placeholder(
+	const wchar_t* start,
+	u64 length);
 
-static u64 get_thread_id();
-static u64 get_timestamp();
-static u64 get_param_index(const wchar_t* marker, u64 max_read, u64* consumed);
-static u64 render_message(
+static const frost::api::log_parameter* match_parameter(
+	const wchar_t* placeholder,
+	u64 placeholder_length,
+	const frost::api::log_parameter* parameters,
+	u64 parameter_count);
+
+static bool match_parameter_name(
+	const wchar_t* placeholder,
+	const frost::api::log_parameter* parameter);
+
+FROST_API u64 _stdcall frost_api_logging_render_message(
 	const wchar_t* message_template,
-	u64 template_length,
-	const wchar_t** parameters,
-	const u64* parameter_lengths,
+	u64 message_template_length,
+	const frost::api::log_parameter* parameters,
 	u64 parameter_count,
-	wchar_t* message,
-	u64 message_length);
-static u64 render_message_v2(
-	const wchar_t* message_template,
-	u64 template_length,
-	const wchar_t** parameters,
-	const u64* parameter_lengths,
-	u64 parameter_count,
-	wchar_t* message,
-	u64 message_length);
-
-
-static std::vector<std::wstring> params_to_vec(const wchar_t** params, u64 count)
+	wchar_t* output,
+	u64 output_length)
 {
-	std::vector<std::wstring> result;
-	for (u64 i = 0; i < count; i++)
-		result.emplace_back(params[i]);
+	u64 message_length = 0;
+	for (u64 sampler = 0; sampler < message_template_length; sampler++)
+	{
+		auto read = message_template + sampler;
+		auto left = message_template_length - sampler;
+		if (sampler < message_template_length - 3)
+		{
+			u64 param_placeholder_len = read_placeholder(read, left);
 
-	return result;
+			if (param_placeholder_len > 0)
+			{
+				const frost::api::log_parameter* parameter = match_parameter(
+					read,
+					param_placeholder_len,
+					parameters, 
+					parameter_count);
+
+				if (parameter != nullptr)
+				{
+					for (u64 copy = 0; (message_length + copy < output_length) && (copy < parameter->value_length); copy++)
+						output[message_length + copy] = parameter->value[copy];
+					
+					message_length += parameter->value_length;
+					sampler += param_placeholder_len;
+				}
+				else
+				{
+					if (output_length > message_length)
+						output[message_length] = *read;
+					message_length++;
+				}
+			}
+			else
+			{	// Directly copy character
+				if (output_length > message_length)
+					output[message_length] = *read;
+				message_length++;
+			}
+		}
+		else
+		{	// Directly copy character
+			if (output_length > message_length)
+				output[message_length] = *read;
+			message_length++;
+		}
+	}
+	if (output_length > message_length )
+		output[message_length] = L'\0';
+	return message_length;
+}
+
+#if defined(TARGET_BUILD_PLATFORM_WINDOWS) // Needed for _malloca and _freea
+FROST_API void _stdcall frost_api_logging_log(
+	u64 activation_layers,
+	const wchar_t* message_template,
+	u64 message_template_length,
+	const frost::api::log_parameter* parameters,
+	u64 parameter_count,
+	frost::api::log_level level)
+{
+	try
+	{
+		frost::api::log_event_data data = {};
+		data.message_template			= message_template;
+		data.message_template_length	= message_template_length;
+		data.message_length = frost_api_logging_render_message(
+			message_template,
+			message_template_length,
+			parameters,
+			parameter_count,
+			nullptr,
+			0);
+
+		wchar_t* message = reinterpret_cast<wchar_t*>(_malloca((data.message_length + 1) * sizeof(wchar_t)));
+		data.message = message;
+		data.message_length = frost_api_logging_render_message(
+			message_template,
+			message_template_length,
+			parameters,
+			parameter_count,
+			message,
+			data.message_length + 1);
+
+		data.parameters					= parameters;
+		data.parameter_count			= parameter_count;
+		data.level						= level;
+
+		frost_api_event_system_emit(typeid(frost::api::log_event_data).hash_code(), activation_layers, &data);
+		_freea(message);
+	}
+	catch (...) { /*SILENTLY SUPPRESS*/ }
+}
+#endif
+
+static u64 read_placeholder(const wchar_t* start, u64 length)
+{
+	if (length < 4) // at least "{@a}"
+		return 0;
+
+	if (start[0] != L'{' || start[1] != L'@' || !iswalpha(start[2]))
+		return 0;
+
+	for (u64 i = 3; i < length; i++)
+	{
+		if (start[i] == L'}')
+			return i;
+		else if (!iswalnum(start[i]))
+			return 0;
+	}
+	return 0;
+}
+
+static const frost::api::log_parameter* match_parameter(
+	const wchar_t* placeholder,
+	u64 placeholder_length,
+	const frost::api::log_parameter* parameters,
+	u64 parameter_count)
+{
+	// Adjust for placeholder braces
+	const wchar_t* placeholder_name = placeholder + 2;
+	u64 placeholder_name_length = placeholder_length - 2;
+
+	for (u64 i = 0; i < parameter_count; i++)
+	{
+		const frost::api::log_parameter* param = &parameters[i];
+		
+		if (param->name_length == placeholder_name_length)
+		{
+			if (match_parameter_name(placeholder_name, param))
+				return param;
+		}
+	}
+	return nullptr;
+}
+
+static bool match_parameter_name(
+	const wchar_t* placeholder,
+	const frost::api::log_parameter* parameter)
+{
+	for (u64 i = 0; i < parameter->name_length; i++)
+	{
+		if (placeholder[i] != parameter->name[i])
+			return false;
+	}
+	return true;
 }
 
 
 
 FROST_API u64 _stdcall frost_api_logging_get_log_event_tag()
 {
-	return typeid(log_event).hash_code();
-}
-
-FROST_API void _stdcall frost_api_logging_verbose(
-	const wchar_t* message_template,
-	u64 template_length,
-	const wchar_t** params,
-	const u64* param_lengths,
-	u64 param_count,
-	u64 activation_layers)
-{
-	log_internal(message_template, template_length, params, param_lengths, param_count, activation_layers, 1);
-}
-
-FROST_API void _stdcall frost_api_logging_debug(
-	const wchar_t* message_template,
-	u64 template_length,
-	const wchar_t** params,
-	const u64* param_lengths,
-	u64 param_count,
-	u64 activation_layers)
-{
-	log_internal(message_template, template_length, params, param_lengths, param_count, activation_layers, 2);
-}
-
-FROST_API void _stdcall frost_api_logging_info(
-	const wchar_t* message_template,
-	u64 template_length,
-	const wchar_t** params,
-	const u64* param_lengths,
-	u64 param_count,
-	u64 activation_layers)
-{
-	log_internal(message_template, template_length, params, param_lengths, param_count, activation_layers, 4);
-}
-
-FROST_API void _stdcall frost_api_logging_warning(
-	const wchar_t* message_template,
-	u64 template_length,
-	const wchar_t** params,
-	const u64* param_lengths,
-	u64 param_count,
-	u64 activation_layers)
-{
-	log_internal(message_template, template_length, params, param_lengths, param_count, activation_layers, 8);
-}
-
-FROST_API void _stdcall frost_api_logging_error(
-	const wchar_t* message_template,
-	u64 template_length,
-	const wchar_t** params,
-	const u64* param_lengths,
-	u64 param_count,
-	u64 activation_layers)
-{
-	log_internal(message_template, template_length, params, param_lengths, param_count, activation_layers, 16);
-}
-
-FROST_API void _stdcall frost_api_logging_critical(
-	const wchar_t* message_template,
-	u64 template_length,
-	const wchar_t** params,
-	const u64* param_lengths,
-	u64 param_count,
-	u64 activation_layers)
-{
-	log_internal(message_template, template_length, params, param_lengths, param_count, activation_layers, 32);
+	return typeid(frost::api::log_event_data).hash_code();
 }
 
 
-
-
-#if defined(TARGET_BUILD_PLATFORM_WINDOWS)
-#include <Windows.h>
-static void log_internal(
-	const wchar_t* message_template,
-	u64 template_length,
-	const wchar_t** params,
-	const u64* param_lengths,
-	u64 param_count,
-	u64 activation_layers,
-	u8 level)
-{
-	log_event e;
-	e.message_template = message_template;
-	e.template_length = template_length;
-
-	e.message_length = render_message_v2(message_template, template_length, params, param_lengths, param_count, nullptr, 0);
-	auto message = reinterpret_cast<wchar_t*>(_malloca((e.message_length + 1) * sizeof(wchar_t)));
-	render_message_v2(message_template, template_length, params, param_lengths, param_count, message, e.message_length + 1);
-	e.message = message;
-
-	e.parameters = params;
-	e.parameter_lengths = param_lengths;
-	e.parameter_count = param_count;
-
-	e.timestamp = get_timestamp();
-	e.thread_id = get_thread_id();
-	e.level = level;
-
-	frost_api_event_system_emit(typeid(log_event).hash_code(), activation_layers, &e);
-	
-	_freea(message);
-}
-
-
-static u64 get_thread_id()
-{
-	return static_cast<u64>(::GetCurrentThreadId());
-}
-
-static u64 get_timestamp()
-{
-	::FILETIME t;
-	GetSystemTimePreciseAsFileTime(&t);
-	return t.dwLowDateTime | (static_cast<u64>(t.dwHighDateTime) << 32);
-}
-
-static u64 get_param_index(const wchar_t* start, u64 length, u64* consumed)
-{
-	if (length == 0)
-	{
-		*consumed = 0;
-		return ~0ull;
-	}
-	if (start[0] != L'{')
-	{
-		*consumed = 1;
-		return ~0ull;
-	}
-
-	for (u64 i = 1; i < length; i++)
-	{
-		if (std::isdigit(start[i]))
-		{
-			continue;
-		}
-		else if (start[i] == L'}')
-		{
-			*consumed = i + 1;
-			return i > 1 ? _wtoi(&start[1]) : -1;
-		}
-		else
-		{
-			*consumed = i + 1;
-			return ~0ull;
-		}
-	}
-	*consumed = length;
-	return ~0ull;
-}
-
-static u64 render_message(
-	const wchar_t* message_template,
-	u64 template_length,
-	const wchar_t** parameters,
-	const u64* parameter_lengths,
-	u64 parameter_count,
-	wchar_t* buffer,
-	u64 buffer_size)
-{
-	u64 acc = template_length;
-	u64 write_index = 0;
-	for (u64 i = 0; i < template_length; i++)
-	{
-		u64 consumed = 0;
-		u64 param_index = get_param_index(&message_template[i], template_length - i, &consumed);
-		if (param_index == ~0ull || param_index >= parameter_count)
-		{
-			if (buffer != nullptr)
-			{
-				for (u64 read = i; read < (i + consumed) && write_index <= buffer_size; read++)
-				{
-					buffer[write_index++] = message_template[read];
-					if (write_index > buffer_size)
-						break;
-				}
-			}
-
-			i += consumed - 1;
-		}
-		else
-		{
-			if (buffer != nullptr)
-			{
-				for (u64 read = 0; read < parameter_lengths[param_index] && write_index < buffer_size; read++)
-				{
-					buffer[write_index++] = parameters[param_index][read];
-					if (write_index > buffer_size)
-						break;
-				}
-			}
-
-			acc = acc - consumed + parameter_lengths[param_index];
-			i += consumed - 1;
-		}
-	}
-	if (buffer && buffer_size > 0)
-		buffer[buffer_size] = L'\0';
-	return acc;
-}
-
-static u64 render_message_v2(
-	const wchar_t* message_template,
-	u64 template_length,
-	const wchar_t** parameters,
-	const u64* parameter_lengths,
-	u64 parameter_count,
-	wchar_t* buffer,
-	u64 buffer_size)
-{
-	u64 read = 0;
-	u64 write = 0;
-	u64 required_size = template_length;
-	for (u64 i = 0; i < template_length; i)
-	{
-		u64 consumed = 0;
-		u64 param_index = get_param_index(&message_template[i], template_length - i, &consumed);
-		if (param_index == ~0ull || param_index >= parameter_count)
-		{	// Invalid index, print normally
-			i += consumed;
-			if (buffer == nullptr)
-				continue;
-
-			for (u64 j = 0; j < consumed; j++)
-				buffer[write++] = message_template[i - consumed + j];
-		}
-		else
-		{	// Valid index, print parameter
-			required_size = required_size - consumed + parameter_lengths[param_index];
-			i += consumed;
-
-			if (buffer == nullptr)
-				continue;
-			for (u64 j = 0; j < parameter_lengths[param_index]; j++)
-			{
-				buffer[write++] = parameters[param_index][j];
-			}
-		}
-
-	}
-	if (buffer != nullptr)
-		buffer[write++] = L'\0';
-	return required_size;
-}
-#endif

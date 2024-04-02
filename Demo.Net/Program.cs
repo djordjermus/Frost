@@ -10,98 +10,102 @@ options.procedure = e =>
 {
 	if (e is WindowEvent.KeyDown keyDown)
 	{
-		Log.Verbose($"KEY DOWN: {keyDown.key}");
+		Log.EmitDebug(1, $"KEY DOWN: {keyDown.key}");
 	}
 	if (e is WindowEvent.KeyDown keyUp)
 	{
-		Log.Verbose($"KEY UP: {keyUp.key}");
+		Log.EmitDebug(1, $"KEY UP: {keyUp.key}");
 		if (keyUp.key == Keycode.Escape)
 			e.target.State = WindowState.Hidden;
 	}
 	if (e is WindowEvent.DoubleClick doubleClick)
 	{
-		Log.Verbose($"DOUBLE CLICK: {doubleClick.position.x}, {doubleClick.position.y}; {doubleClick.button}");
+		Log.EmitDebug(1, $"DOUBLE CLICK: {doubleClick.position.x}, {doubleClick.position.y}; {doubleClick.button}");
 	}
 	if (e is WindowEvent.Resize resize)
 	{
-		Log.Verbose($"RESIZE: {resize.size.width}, {resize.size.height}");
+		Log.EmitDebug(1, $"RESIZE: {resize.size.width}, {resize.size.height}");
 	}
 	if (e is WindowEvent.Move move)
 	{
-		Log.Verbose($"MOVE:   {move.position.x}, {move.position.y}");
+		Log.EmitDebug(1, $"MOVE:   {move.position.x}, {move.position.y}");
 	}
 	if (e is WindowEvent.MouseMove mouseMove)
 	{
-		Log.Verbose($"MOUSE MOVE: {mouseMove.delta.x}, {mouseMove.delta.y}");
+		Log.EmitDebug(1, $"MOUSE MOVE: {mouseMove.delta.x}, {mouseMove.delta.y}");
 	}
 	if (e is WindowEvent.MouseScroll scroll)
 	{
-		Log.Verbose($"SCROLL: {scroll.delta.x}, {scroll.delta.y}");
+		Log.EmitDebug(1, $"SCROLL: {scroll.delta.x}, {scroll.delta.y}");
 	}
 	if (e is WindowEvent.GainedFocus)
 	{
-		Log.Verbose($"GAINED FOCUS");
+		Log.EmitDebug(1, $"GAINED FOCUS");
 	}
 	if (e is WindowEvent.LostFocus)
 	{
-		Log.Verbose($"LOST FOCUS");
+		Log.EmitDebug(1, $"LOST FOCUS");
 	}
 	
 	if (e is WindowEvent.Activated)
 	{
-		Log.Verbose($"ACTIVATED");
+		Log.EmitDebug(1, $"ACTIVATED");
 	}
 	if (e is WindowEvent.Deactivated)
 	{
-		Log.Verbose($"DEACTIVATED");
+		Log.EmitDebug(1, $"DEACTIVATED");
 	}
 	
 	if (e is WindowEvent.Enabled)
 	{
-		Log.Verbose($"ENABLED");
+		Log.EmitDebug(1, $"ENABLED");
 	}
 	if (e is WindowEvent.Disabled)
 	{
-		Log.Verbose($"DISABLED");
+		Log.EmitDebug(1, $"DISABLED");
 	}
 	
 	if (e is WindowEvent.ChangeState)
 	{
-		Log.Verbose($"STATE CHANGED");
+		Log.EmitDebug(1, $"STATE CHANGED");
 	}
 	
 	if (e is WindowEvent.Create)
 	{
-		Log.Verbose($"CREATE");
+		Log.EmitDebug(1, $"CREATE");
 	}
 	if (e is WindowEvent.Close)
 	{
-		Log.Verbose($"CLOSE");
+		Log.EmitDebug(1, $"CLOSE");
 	}
 	if (e is WindowEvent.Destroy)
 	{
-		Log.Verbose($"DESTROY");
+		Log.EmitDebug(1, $"DESTROY");
 	}
 	
 	if (e is WindowEvent.CursorEnter cursorEnter)
 	{
-		Log.Verbose($"ENTER: {cursorEnter.position.x}, {cursorEnter.position.y}");
+		Log.EmitDebug(1, $"ENTER: {cursorEnter.position.x}, {cursorEnter.position.y}");
 	}
 	if (e is WindowEvent.CursorMove cursorMove)
 	{
-		Log.Verbose($"MOVE: {cursorMove.position.x}, {cursorMove.position.y}");
+		Log.EmitDebug(1, $"MOVE: {cursorMove.position.x}, {cursorMove.position.y}");
 	}
 	if (e is WindowEvent.CursorLeave cursorLeave)
 	{
-		Log.Verbose($"LEAVE: {cursorLeave.position.x}, {cursorLeave.position.y}");
+		Log.EmitDebug(1, $"LEAVE: {cursorLeave.position.x}, {cursorLeave.position.y}");
 	}
 };
-var consoleLogger = new ConsoleLogSink(
-	new ConsoleLogSink.Options
+
+var txt = Log.Render("{@Greeting}, {@Subject}!", new Dictionary<string, string> { { "Greeting", "Hello"}, { "Subject", "World" } });
+
+var consoleLogger = new ConsoleSink(
+	new ConsoleSink.Options
 {
 	filter = Log.Levels.All,
-	colorOptions = ConsoleLogSink.Options.ColorOptions.Colored
+	colorOptions = ConsoleSink.Options.ColorOptions.Colored
 });
+
 
 Log.Subscribe(Layers.All, consoleLogger.Handler);
 

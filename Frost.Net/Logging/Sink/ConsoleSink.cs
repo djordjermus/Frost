@@ -5,9 +5,9 @@ namespace Frost.Net.Logging.Sink;
 /// <summary>
 /// Class for outputing log event data to console
 /// </summary>
-public class ConsoleLogSink
+public class ConsoleSink
 {
-    private static readonly string _default_log_header_format = "LEVEL: {0}\nTHREAD: {1}\nTIMESTAMP: {2}";
+    private static readonly string _default_log_header_format = "LEVEL: {0}\n";
     private readonly Log.Levels _filter;
     private readonly string _log_header;
     private readonly Dictionary<Log.Level, (ConsoleColor, ConsoleColor)> _consoleColorMap;
@@ -19,7 +19,7 @@ public class ConsoleLogSink
     /// {2} is timestamp.
     /// </summary>
     /// <param name="headerFormat">Format string</param>
-    public ConsoleLogSink(Options options)
+    public ConsoleSink(Options options)
     {
         if (options is null)
             throw new ArgumentNullException(nameof(options));
@@ -31,17 +31,17 @@ public class ConsoleLogSink
         if (options!.colorOptions is not null)
         {
 		    if (options!.colorOptions!.verbose is not null)
-			    _consoleColorMap[Log.Level.Verbose] = options.colorOptions.verbose.Value;
+			    _consoleColorMap[Log.Level.Trace] = options.colorOptions.verbose.Value;
 		    if (options!.colorOptions!.debug is not null)
 			    _consoleColorMap[Log.Level.Debug] = options.colorOptions.debug.Value;
 		    if (options!.colorOptions!.info is not null)
-			    _consoleColorMap[Log.Level.Info] = options.colorOptions.info.Value;
+			    _consoleColorMap[Log.Level.Information] = options.colorOptions.info.Value;
 		    if (options!.colorOptions!.warning is not null)
 			    _consoleColorMap[Log.Level.Warning] = options.colorOptions.warning.Value;
 		    if (options!.colorOptions!.error is not null)
 			    _consoleColorMap[Log.Level.Error] = options.colorOptions.error.Value;
 		    if (options!.colorOptions!.critical is not null)
-			    _consoleColorMap[Log.Level.Critical] = options.colorOptions.critical.Value;
+			    _consoleColorMap[Log.Level.Fatal] = options.colorOptions.critical.Value;
         }
 	}
 
@@ -58,9 +58,7 @@ public class ConsoleLogSink
 
         var header = string.Format(
             _log_header,
-            e.level,
-            e.threadId,
-            DateTime.FromFileTime((long)e.timeStamp).ToString("yyyy.MM.dd hh.mm.ss.fffffff"));
+            e.level);
 
         if (_consoleColorMap.TryGetValue(e.level, out var colors))
         {
@@ -81,7 +79,7 @@ public class ConsoleLogSink
     {
         public Log.Levels filter = Log.Levels.All;
 
-        public string customHeaderFormat = "LEVEL: {0}\nTHREAD: {1}\nTIMESTAMP: {2}";
+        public string customHeaderFormat = "LEVEL: {0}";
 
         public ColorOptions colorOptions = ColorOptions.Default;
 

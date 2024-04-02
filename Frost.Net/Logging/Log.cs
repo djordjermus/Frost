@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Frost.Interoperability;
 using Frost.Models;
 
@@ -13,143 +14,115 @@ public struct Log
 	{
 		template = "";
 		message = "";
-		parameters = new List<string>();
-		timeStamp = 0;
-		threadId = 0;
+		parameters = new Dictionary<string, string>();
 		level = 0;
 	}
 
 	public readonly string template { get; init; }
 	public readonly string message { get; init; }
-	public readonly List<string> parameters { get; init; }
-	public readonly ulong timeStamp { get; init; }
-	public readonly ulong threadId { get; init; }
+	public readonly Dictionary<string, string> parameters { get; init; }
 	public readonly Level level { get; init; }
 
-
-
-	public static void Verbose(Layers activationLayers, string template, params string[] parameters)
+	public static string? Render(string template, IReadOnlyDictionary<string, string>? parameters)
 	{
 		unsafe
 		{
-			var lengths = ExtractParamsLengths(parameters);
-			var pointers = ParamsToIntPtrArray(parameters);
-			fixed (void* pTemplate = template, pParams = pointers, pLengths = lengths)
-				FrostApi.Logging.LogVerbose(
+			string? result = null;
+			var logParams = DictionaryToParameters(parameters, out var handles);
+
+			fixed (void* pTemplate = template, pParams = logParams)
+			{
+				ulong length = FrostApi.Logging.Render(
 					(IntPtr)pTemplate,
 					(ulong)template.Length,
 					(IntPtr)pParams,
-					(IntPtr)pLengths,
-					(ulong)parameters.Length,
-					activationLayers.Value);
+					(ulong)(logParams?.Length ?? 0),
+					IntPtr.Zero,
+					0);
+
+				result = new string('\0', (int)length);
+				fixed (void* pResult = result)
+				FrostApi.Logging.Render(
+					(IntPtr)pTemplate,
+					(ulong)template.Length,
+					(IntPtr)pParams,
+					(ulong)(logParams?.Length ?? 0),
+					(IntPtr)pResult,
+					length);
+			}
+			if (handles is not null)
+			{
+				foreach (var handle in handles)
+					handle.Free();
+			}
+
+			return result;
 		}
 	}
-	public static void Debug(Layers activationLayers, string template, params string[] parameters)
+
+	public static void Emit(
+		Layers activationLayers,
+		Level level,
+		string template,
+		IReadOnlyDictionary<string, string>? parameters)
 	{
 		unsafe
 		{
-			var lengths = ExtractParamsLengths(parameters);
-			var pointers = ParamsToIntPtrArray(parameters);
-			fixed (void* pTemplate = template, pParams = pointers, pLengths = lengths)
-				FrostApi.Logging.LogDebug(
+			var logParams = DictionaryToParameters(parameters, out var handles);
+
+			fixed (void* pTemplate = template, pParams = logParams)
+			{
+				FrostApi.Logging.Log(
+					activationLayers.Value,
 					(IntPtr)pTemplate,
 					(ulong)template.Length,
-					(IntPtr)pParams,
-					(IntPtr)pLengths,
-					(ulong)parameters.Length,
-					activationLayers.Value);
-		}
-	}
-	public static void Info(Layers activationLayers, string template, params string[] parameters)
-	{
-		unsafe
-		{
-			var lengths = ExtractParamsLengths(parameters);
-			var pointers = ParamsToIntPtrArray(parameters);
-			fixed (void* pTemplate = template, pParams = pointers, pLengths = lengths)
-				FrostApi.Logging.LogInfo(
-					(IntPtr)pTemplate,
-					(ulong)template.Length,
-					(IntPtr)pParams,
-					(IntPtr)pLengths,
-					(ulong)parameters.Length,
-					activationLayers.Value);
-		}
-	}
-	public static void Warning(Layers activationLayers, string template, params string[] parameters)
-	{
-		unsafe
-		{
-			var lengths = ExtractParamsLengths(parameters);
-			var pointers = ParamsToIntPtrArray(parameters);
-			fixed (void* pTemplate = template, pParams = pointers, pLengths = lengths)
-				FrostApi.Logging.LogWarning(
-					(IntPtr)pTemplate,
-					(ulong)template.Length,
-					(IntPtr)pParams,
-					(IntPtr)pLengths,
-					(ulong)parameters.Length,
-					activationLayers.Value);
-		}
-	}
-	public static void Error(Layers activationLayers, string template, params string[] parameters)
-	{
-		unsafe
-		{
-			var lengths = ExtractParamsLengths(parameters);
-			var pointers = ParamsToIntPtrArray(parameters);
-			fixed (void* pTemplate = template, pParams = pointers, pLengths = lengths)
-				FrostApi.Logging.LogError(
-					(IntPtr)pTemplate,
-					(ulong)template.Length,
-					(IntPtr)pParams,
-					(IntPtr)pLengths,
-					(ulong)parameters.Length,
-					activationLayers.Value);
-		}
-	}
-	public static void Critical(Layers activationLayers, string template, params string[] parameters)
-	{
-		unsafe
-		{
-			var lengths = ExtractParamsLengths(parameters);
-			var pointers = ParamsToIntPtrArray(parameters);
-			fixed (void* pTemplate = template, pParams = pointers, pLengths = lengths)
-				FrostApi.Logging.LogCritical(
-					(IntPtr)pTemplate,
-					(ulong)template.Length,
-					(IntPtr)pParams,
-					(IntPtr)pLengths,
-					(ulong)parameters.Length,
-					activationLayers.Value);
+					(IntPtr)pParams, 
+					(ulong)(logParams?.Length ?? 0),
+					(byte)level);
+			}
+			if (handles is not null)
+			{
+				foreach (var handle in handles)
+					handle.Free();
+			}
 		}
 	}
 
+	public static void EmitTrace(
+		Layers activationLayers,
+		string template,
+		IReadOnlyDictionary<string, string>? parameters = null) =>
+		Emit(activationLayers, Level.Trace, template, parameters);
 
+	public static void EmitDebug(
+		Layers activationLayers,
+		string template,
+		IReadOnlyDictionary<string, string>? parameters = null) =>
+		Emit(activationLayers, Level.Debug, template, parameters);
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void Verbose(string template, params string[] parameters) =>
-	Verbose(Layers.Default, template, parameters);
+	public static void EmitInformation(
+		Layers activationLayers,
+		string template,
+		IReadOnlyDictionary<string, string>? parameters = null) =>
+		Emit(activationLayers, Level.Information, template, parameters);
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void Debug(string template, params string[] parameters) =>
-		Debug(Layers.Default, template, parameters);
+	public static void EmitWarning(
+		Layers activationLayers,
+		string template,
+		IReadOnlyDictionary<string, string>? parameters = null) =>
+		Emit(activationLayers, Level.Warning, template, parameters);
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void Info(string template, params string[] parameters) =>
-		Info(Layers.Default, template, parameters);
+	public static void EmitError(
+		Layers activationLayers,
+		string template,
+		IReadOnlyDictionary<string, string>? parameters = null) =>
+		Emit(activationLayers, Level.Error, template, parameters);
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void Warning(string template, params string[] parameters) =>
-		Warning(Layers.Default, template, parameters);
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void Error(string template, params string[] parameters) =>
-		Error(Layers.Default, template, parameters);
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void Critical(string template, params string[] parameters) =>
-		Critical(Layers.Default, template, parameters);
+	public static void EmitFatal(
+		Layers activationLayers,
+		string template,
+		IReadOnlyDictionary<string, string>? parameters = null) =>
+		Emit(activationLayers, Level.Fatal, template, parameters);
 
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -163,12 +136,12 @@ public struct Log
 
 	public enum Level
 	{
-		Verbose		= 1,
+		Trace		= 1,
 		Debug		= 2,
-		Info		= 4,
+		Information	= 4,
 		Warning		= 8,
 		Error		= 16,
-		Critical	= 32,
+		Fatal		= 32,
 	}
 
 	[Flags]
@@ -208,6 +181,40 @@ public struct Log
 					result[i] = (IntPtr)pNext;
 			}
 		}
+		return result;
+	}
+
+	private static FrostApi.Logging.LogParameter[]? DictionaryToParameters(
+		IReadOnlyDictionary<string, string>? dictionary,
+		out GCHandle[]? handles)
+	{
+		if (dictionary is null)
+		{
+			handles = null;
+			return null;
+		}
+
+		var result = new FrostApi.Logging.LogParameter[dictionary.Count];
+		handles = new GCHandle[result.Length * 2];
+
+		int i = 0;
+		foreach (var entry in dictionary)
+		{
+			var keyHandle = GCHandle.Alloc(entry.Key, GCHandleType.Pinned);
+			var valueHandle = GCHandle.Alloc(entry.Value, GCHandleType.Pinned);
+			handles[2 * i]		= keyHandle;
+			handles[2 * i + 1]	= valueHandle;
+			
+			result[i] = new FrostApi.Logging.LogParameter
+			{
+				name = keyHandle.AddrOfPinnedObject(),
+				value = valueHandle.AddrOfPinnedObject(),
+				name_length = (ulong)entry.Key.Length,
+				value_length = (ulong)entry.Value.Length
+			};
+			i++;
+		}
+
 		return result;
 	}
 }
