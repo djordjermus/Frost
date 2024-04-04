@@ -738,7 +738,8 @@ namespace frost::impl
 	}
 	LRESULT window::wm_nc_activate(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 	{
-		return 0; // PREVENT BORDER FROM BEING DRAWN
+		
+		return ::DefWindowProcW(hwnd, msg, w, l);; // PREVENT BORDER FROM BEING DRAWN
 	}
 
 	LRESULT window::wm_create(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
@@ -777,7 +778,7 @@ namespace frost::impl
 		}
 		rid[0].usUsage = HID_USAGE_GENERIC_MOUSE;
 		rid[1].usUsage = HID_USAGE_GENERIC_KEYBOARD;
-
+		
 		if (!::RegisterRawInputDevices(rid, sizeof(rid) / sizeof(*rid), sizeof(*rid)))
 		{
 			::DestroyWindow(result->get_hwnd());
@@ -840,17 +841,17 @@ namespace frost::impl
 		{
 		case WM_INPUT:
 			return wm_input(hwnd, msg, w, l);
-
+		
 		case WM_MOUSEMOVE:
 			return wm_mouse_move(hwnd, msg, w, l);
 		case WM_MOUSELEAVE:
 			return wm_mouse_leave(hwnd, msg, w, l);
-
+		
 		case WM_MOVE:
 			return wm_move(hwnd, msg, w, l);
 		case WM_SIZE:
 			return wm_size(hwnd, msg, w, l);
-
+		
 		case WM_ENABLE:
 			return wm_enable(hwnd, msg, w, l);
 		case WM_ACTIVATE:
@@ -859,11 +860,10 @@ namespace frost::impl
 			return wm_set_focus(hwnd, msg, w, l);
 		case WM_KILLFOCUS:
 			return wm_kill_focus(hwnd, msg, w, l);
-
-
+			
 		case WM_PAINT:
 			return wm_paint(hwnd, msg, w, l);
-
+		
 		case WM_NCHITTEST:
 			return wm_nc_hit_test(hwnd, msg, w, l);
 		case WM_NCCALCSIZE:
@@ -889,7 +889,8 @@ namespace frost::impl
 		auto hwnd = ::CreateWindowExW(
 			WS_EX_LAYERED,
 			(LPCWSTR)_window_class,
-			nullptr, WS_CLIPCHILDREN | WS_SIZEBOX,
+			nullptr,
+			WS_CLIPCHILDREN | WS_SIZEBOX,
 			description->position.x,
 			description->position.y,
 			description->size.width,
