@@ -12,7 +12,7 @@ options.procedure = e =>
 	{
 		Log.EmitDebug(1, $"KEY DOWN: {keyDown.key}");
 	}
-	if (e is WindowEvent.KeyDown keyUp)
+	if (e is WindowEvent.KeyUp keyUp)
 	{
 		Log.EmitDebug(1, $"KEY UP: {keyUp.key}");
 		if (keyUp.key == Keycode.Escape)
