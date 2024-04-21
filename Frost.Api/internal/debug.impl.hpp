@@ -7,6 +7,6 @@ namespace frost::impl
 	{
 	public:
 		static void log_resource_creation(const frost::api::resource* target);
-		static void log_resource_destruction(const frost::api::resource* target, const std::type_info& type);
+		static void log_resource_destruction(const frost::api::resource* target);
 	};
 }

@@ -12,7 +12,7 @@ namespace Frost
 		public Window(WindowOptions options)
 		{
 			_procedure = options.procedure;
-			Handle = InternalCreate(options);
+			Handle = InternalCreate(options, out _internalProc);
 		}
 
 		public bool Enabled
@@ -61,16 +61,16 @@ namespace Frost
 
 
 
-		private IntPtr InternalCreate(WindowOptions options)
+		private IntPtr InternalCreate(WindowOptions options, out FrostApi.Procedure procedure)
 		{
 			unsafe
 			{
-				_internalProc = InternalProcedure;
+				procedure = InternalProcedure;
 
 				var desc		= new FrostApi.Window.Description();
 				desc.position	= new FrostApi.Point2D { x = options.x, y = options.y };
 				desc.size		= new FrostApi.Size2D { width = options.width, height = options.height };
-				desc.procedure	= Marshal.GetFunctionPointerForDelegate(_internalProc);
+				desc.procedure	= Marshal.GetFunctionPointerForDelegate(procedure);
 				desc.state		= (byte)options.state;
 
 				return FrostApi.Window.Create((IntPtr)(&desc));

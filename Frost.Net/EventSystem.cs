@@ -140,10 +140,10 @@ public static class EventSystem
 	{
 		unsafe
 		{
-			FrostApi.EventSystem.RawLogEvent* pLog = (FrostApi.EventSystem.RawLogEvent*)pLogEvent;
+			FrostApi.Logging.RawLogEvent* pLog = (FrostApi.Logging.RawLogEvent*)pLogEvent;
 
 			/* Read message template */
-			Span<char> templateSpan = stackalloc char[(int)pLog->template_length];
+			Span<char> templateSpan = stackalloc char[(int)pLog->message_template_length];
 			Unmanaged.ReadCWSTR(pLog->message_template, templateSpan);
 
 			/* Read message */
@@ -151,23 +151,30 @@ public static class EventSystem
 			Unmanaged.ReadCWSTR(pLog->message, messageSpan);
 
 			/* Find largers parameter, use it for stack alloc parameter span*/
-			int maximumParameterSize = 0;
-			for (int i = 0; i < (int)pLog->parameter_count; i++) 
+			ulong maxParamNameSize = 0;
+			ulong maxParamValueSize = 0;
+			for (ulong i = 0; i < pLog->parameter_count; i++) 
 			{
-				if (maximumParameterSize < ((int*)pLog->parameter_lengths)[i])
-				{
-					maximumParameterSize = ((int*)pLog->parameter_lengths)[i];
-				}
+				FrostApi.Logging.LogParameter* pParameter = ((FrostApi.Logging.LogParameter*)pLog->parameters) + i;
+				if (maxParamNameSize < pParameter->name_length)
+					maxParamNameSize = pParameter->name_length;
+
+				if (maxParamValueSize < pParameter->value_length)
+					maxParamValueSize = pParameter->value_length;
 			}
 
 			/* Read parameters */
-			Span<char> paramBuffer = stackalloc char[maximumParameterSize];
-			List<string> parameters = new List<string>();
+			Span<char> paramNameBuf = stackalloc char[(int)maxParamNameSize];
+			Span<char> paramValueBuf = stackalloc char[(int)maxParamValueSize];
+			Dictionary<string, string> parameters = new Dictionary<string, string>();
 			for (int i = 0; i < (int)pLog->parameter_count; i++)
 			{
-				Unmanaged.ReadCWSTR((IntPtr)((char**)pLog->parameters)[i], paramBuffer);
-				var parameter = paramBuffer.Slice(0, ((int*)pLog->parameter_lengths)[i]);
-				parameters.Add(parameter.ToString());
+				FrostApi.Logging.LogParameter* pParameter = ((FrostApi.Logging.LogParameter*)pLog->parameters) + i;
+				var key = paramNameBuf.Slice(0, (int)pParameter->name_length);
+				var value = paramValueBuf.Slice(0, (int)pParameter->value_length);
+				Unmanaged.ReadCWSTR(pParameter->name, key);
+				Unmanaged.ReadCWSTR(pParameter->value, value);
+				parameters[key.ToString()] = value.ToString();
 			}
 
 			Logging.Log e = new Logging.Log()
@@ -175,8 +182,6 @@ public static class EventSystem
 				template	= templateSpan.ToString(),
 				message		= messageSpan.ToString(),
 				parameters	= parameters,
-				timeStamp	= pLog->timestamp,
-				threadId	= pLog->thread_id,
 				level		= (Logging.Log.Level)pLog->level
 			};
 

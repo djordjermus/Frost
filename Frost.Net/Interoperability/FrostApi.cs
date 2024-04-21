@@ -141,25 +141,6 @@ internal static partial class FrostApi
 
     public static partial class EventSystem
     {
-        public struct RawLogEvent
-        {
-            public RawLogEvent() { }
-
-            public IntPtr message_template = default;
-            public ulong template_length = default;
-
-            public IntPtr message = default;
-            public ulong message_length = default;
-
-            public IntPtr parameters = default;
-            public IntPtr parameter_lengths = default;
-            public ulong parameter_count = default;
-
-            public ulong timestamp = default;
-            public ulong thread_id = default;
-            public byte level = default;
-        }
-
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate void HandlerSig(IntPtr pData);
 
@@ -209,6 +190,29 @@ internal static partial class FrostApi
 
     public static partial class Logging
     {
+		[StructLayout(LayoutKind.Sequential)]
+		public struct LogParameter
+		{
+			public IntPtr name;
+			public IntPtr value;
+			public ulong name_length;
+			public ulong value_length;
+		};
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct RawLogEvent
+		{
+			public IntPtr message_template;
+			public ulong message_template_length;
+
+			public IntPtr message;
+			public ulong message_length;
+			
+			public IntPtr parameters;
+			public ulong parameter_count;
+			public byte level;
+		}
+
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_logging_get_log_event_tag")]
@@ -217,76 +221,28 @@ internal static partial class FrostApi
 
 		[LibraryImport(
 			frostApiPath,
-			EntryPoint = "frost_api_logging_verbose")]
-        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void LogVerbose(
-            IntPtr message_template,
-            ulong template_length,
-            IntPtr parameters,
-            IntPtr lengths,
-            ulong param_count,
-            ulong activation_layers);
+			EntryPoint = "frost_api_logging_render_message")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial ulong Render(
+			IntPtr message_template,
+			ulong message_template_length,
+			IntPtr parameters,
+			ulong parameter_count,
+			IntPtr output,
+			ulong output_length);
 
 		[LibraryImport(
 			frostApiPath,
-			EntryPoint = "frost_api_logging_debug")]
-        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void LogDebug(
-            IntPtr message_template,
-            ulong template_length,
-            IntPtr parameters,
-            IntPtr lengths,
-            ulong param_count,
-            ulong activation_layers);
-
-		[LibraryImport(
-			frostApiPath,
-			EntryPoint = "frost_api_logging_info")]
-        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void LogInfo(
-            IntPtr message_template,
-            ulong template_length,
-            IntPtr parameters,
-            IntPtr lengths,
-            ulong param_count,
-            ulong activation_layers);
-
-		[LibraryImport(
-			frostApiPath,
-			EntryPoint = "frost_api_logging_warning")]
-        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void LogWarning(
-            IntPtr message_template,
-            ulong template_length,
-            IntPtr parameters,
-            IntPtr lengths,
-            ulong param_count,
-            ulong activation_layers);
-
-		[LibraryImport(
-			frostApiPath,
-			EntryPoint = "frost_api_logging_error")]
-        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void LogError(
-            IntPtr message_template,
-            ulong template_length,
-            IntPtr parameters,
-            IntPtr lengths,
-            ulong param_count,
-            ulong activation_layers);
-
-		[LibraryImport(
-			frostApiPath,
-			EntryPoint = "frost_api_logging_critical")]
-        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void LogCritical(
-            IntPtr message_template,
-            ulong template_length,
-            IntPtr parameters,
-            IntPtr lengths,
-            ulong param_count,
-            ulong activation_layers);
-    }
+			EntryPoint = "frost_api_logging_log")]
+		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+		public static partial ulong Log(
+			ulong activation_layers,
+			IntPtr message_template,
+			ulong message_template_length,
+			IntPtr parameters,
+			ulong parameter_count,
+			byte level);
+	}
 
 
 

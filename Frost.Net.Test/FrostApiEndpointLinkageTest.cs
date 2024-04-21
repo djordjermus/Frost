@@ -111,11 +111,7 @@ public class FrostApiEndpointLinkageTest
 	public void TestLog()
 	{
 		EventSystem.Subscribe(1, (ref Log l) => Console.WriteLine($"[{l.level}]{l.message}"));
-		Log.Verbose("{1}, {0}!", "World", "Hello");
-		Log.Debug("{1}, {0}!", "World", "Hello");
-		Log.Info("{1}, {0}!", "World", "Hello");
-		Log.Warning("{1}, {0}!", "World", "Hello");
-		Log.Error("{1}, {0}!", "World", "Hello");
-		Log.Critical("{1}, {0}!", "World", "Hello");
+		Log.Emit(1, Log.Level.Trace, "Hello, World!", null);
+		Log.Render("{@Greeting}, {@Subject}!", new Dictionary<string, string> { { "Greeting", "Hello" }, { "Subject", "World" } });
 	}
 }
