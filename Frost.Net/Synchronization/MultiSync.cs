@@ -1,11 +1,10 @@
 ﻿using Frost.Interoperability;
-using Frost.Synchronization.Interface;
 
 namespace Frost.Synchronization;
 
 public static class MultiSync
 {
-	public static int WaitOne(ReadOnlySpan<ISynchronizable> syncObjects)
+	public static int WaitOne(ReadOnlySpan<SynchronizationResource> syncObjects)
 	{
 		unsafe
 		{
@@ -17,7 +16,7 @@ public static class MultiSync
 				return FrostApi.Synchronizable.WaitOne((IntPtr)ptr, arr.Length);
 		}
 	}
-	public static bool WaitAll(ReadOnlySpan<ISynchronizable> syncObjects)
+	public static bool WaitAll(ReadOnlySpan<SynchronizationResource> syncObjects)
 	{
 		unsafe
 		{
@@ -30,7 +29,7 @@ public static class MultiSync
 				return FrostApi.Synchronizable.WaitAll((IntPtr)ptr, arr.Length);
 		}
 	}
-	public static int TryWaitOne(ReadOnlySpan<ISynchronizable> syncObjects)
+	public static int TryWaitOne(ReadOnlySpan<SynchronizationResource> syncObjects)
 	{
 		unsafe
 		{
@@ -42,7 +41,7 @@ public static class MultiSync
 				return FrostApi.Synchronizable.TryWaitOne((IntPtr)ptr, arr.Length);
 		}
 	}
-	public static bool TryWaitAll(ReadOnlySpan<ISynchronizable> syncObjects)
+	public static bool TryWaitAll(ReadOnlySpan<SynchronizationResource> syncObjects)
 	{
 		unsafe
 		{

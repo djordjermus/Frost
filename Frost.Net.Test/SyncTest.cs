@@ -1,5 +1,4 @@
 ﻿using Frost.Synchronization;
-using Frost.Synchronization.Interface;
 
 namespace Frost.Test;
 
@@ -36,7 +35,7 @@ public class SyncTest
 	{
 		var sf = new Synchronization.Semaphore(2, 4);
 		var mx = new Synchronization.Mutex(false);
-		ReadOnlySpan<ISynchronizable> span = new ISynchronizable[2] { sf, mx };
+		ReadOnlySpan<SynchronizationResource> span = new SynchronizationResource[2] { sf, mx };
 
 		Assert.AreEqual(MultiSync.WaitAll(span), true);
 		Assert.AreEqual(MultiSync.WaitAll(span), true);

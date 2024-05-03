@@ -1,5 +1,4 @@
 ﻿using Frost.Synchronization;
-using Frost.Synchronization.Interface;
 using System.Runtime.CompilerServices;
 
 namespace Frost.Extensions;
@@ -7,22 +6,22 @@ namespace Frost.Extensions;
 public static class MultiSyncExtensions
 {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static int WaitOne(this ReadOnlySpan<ISynchronizable> syncObjects) => MultiSync.WaitOne(syncObjects);
+	public static int WaitOne(this ReadOnlySpan<SynchronizationResource> syncObjects) => MultiSync.WaitOne(syncObjects);
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool WaitAll(this ReadOnlySpan<ISynchronizable> syncObjects) => MultiSync.WaitAll(syncObjects);
+	public static bool WaitAll(this ReadOnlySpan<SynchronizationResource> syncObjects) => MultiSync.WaitAll(syncObjects);
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static int TryWaitOne(this ReadOnlySpan<ISynchronizable> syncObjects) => MultiSync.TryWaitOne(syncObjects);
+	public static int TryWaitOne(this ReadOnlySpan<SynchronizationResource> syncObjects) => MultiSync.TryWaitOne(syncObjects);
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool TryWaitAllExtension(this ReadOnlySpan<ISynchronizable> syncObjects) => MultiSync.TryWaitAll(syncObjects);
+	public static bool TryWaitAllExtension(this ReadOnlySpan<SynchronizationResource> syncObjects) => MultiSync.TryWaitAll(syncObjects);
 
 
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static int WaitOne(this ISynchronizable[] syncObjects) => MultiSync.WaitOne(syncObjects);
+	public static int WaitOne(this SynchronizationResource[] syncObjects) => MultiSync.WaitOne(syncObjects);
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool WaitAll(this ISynchronizable[] syncObjects) => MultiSync.WaitAll(syncObjects);
+	public static bool WaitAll(this SynchronizationResource[] syncObjects) => MultiSync.WaitAll(syncObjects);
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static int TryWaitOne(this ISynchronizable[] syncObjects) => MultiSync.TryWaitOne(syncObjects);
+	public static int TryWaitOne(this SynchronizationResource[] syncObjects) => MultiSync.TryWaitOne(syncObjects);
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool TryWaitAll(this ISynchronizable[] syncObjects) => MultiSync.TryWaitAll(syncObjects);
+	public static bool TryWaitAll(this SynchronizationResource[] syncObjects) => MultiSync.TryWaitAll(syncObjects);
 }
