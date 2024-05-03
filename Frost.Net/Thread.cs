@@ -1,9 +1,9 @@
 ﻿using Frost.Interoperability;
-using Frost.Synchronization.Interface;
+using Frost.Synchronization;
 
 namespace Frost;
 
-public class Thread : FrostResource, ISynchronizable
+public class Thread : SynchronizationResource
 {
 	private readonly FrostApi.Procedure? _pin = null;
 	private Thread() :
@@ -26,10 +26,6 @@ public class Thread : FrostResource, ISynchronizable
 
 
 	public static Thread ThisThread => new Thread(FrostApi.Thread.GetCurrent());
-
-	public bool Wait() => FrostApi.Synchronizable.Wait(Handle);
-	public bool TryWait() => FrostApi.Synchronizable.TryWait(Handle);
-	public bool Signal() => FrostApi.Synchronizable.Signal(Handle);
 
 	public class Message : FrostResource
 	{

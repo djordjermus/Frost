@@ -1,16 +1,9 @@
 ﻿using Frost.Interoperability;
-using Frost.Synchronization.Interface;
 
 namespace Frost.Synchronization;
 
-public class SyncEvent : FrostResource, ISynchronizableEvent
+public class SyncEvent : SynchronizationResource
 {
         public SyncEvent() :
-		base(FrostApi.Synchronizable.CreateEvent())
-	{ }
-
-        public bool Wait() => FrostApi.Synchronizable.Wait(Handle);
-	public bool TryWait() => FrostApi.Synchronizable.TryWait(Handle);
-	public bool Signal() => FrostApi.Synchronizable.Signal(Handle);
-	public bool Reset() => FrostApi.Synchronizable.ResetEvent(Handle);
+		base(FrostApi.Synchronizable.CreateEvent()) { }
 }

@@ -27,7 +27,7 @@ public class FileSink
 			_target = GetTarget(e.message);
 			File.AppendAllText(_target!, $"{e.message}\r\n");
 		}
-		catch (Exception ex)
+		catch (Exception)
 		{
 			// SILENTLY CONTINUE
 		}

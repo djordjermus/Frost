@@ -1,12 +1,12 @@
 ﻿using Frost.Interoperability;
 using Frost.Net.Models;
-using Frost.Synchronization.Interface;
+using Frost.Synchronization;
 using System.Runtime.InteropServices;
 
 namespace Frost
 {
-	public sealed class Window : FrostResource, ISynchronizable
-	{
+	public sealed class Window : SynchronizationResource
+    {
 		private FrostApi.Procedure _internalProc;
 		private Procedure<WindowEvent> _procedure;
 		public Window(WindowOptions options)

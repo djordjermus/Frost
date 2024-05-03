@@ -1,7 +1,6 @@
 using Frost.Models;
 using Frost.Logging;
 using Frost.Synchronization;
-using Frost.Synchronization.Interface;
 
 namespace Frost.Test;
 
@@ -60,7 +59,7 @@ public class FrostApiEndpointLinkageTest
 		var mx = new Synchronization.Mutex(false);
 		var sf = new Synchronization.Semaphore(2, 2);
 
-		ReadOnlySpan<ISynchronizable> span = new ISynchronizable[2] { sf, mx };
+		ReadOnlySpan<SynchronizationResource> span = new SynchronizationResource[2] { sf, mx };
 		MultiSync.WaitOne(span);
 		MultiSync.WaitAll(span);
 		MultiSync.TryWaitOne(span);
