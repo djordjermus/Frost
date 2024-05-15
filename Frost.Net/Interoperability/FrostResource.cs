@@ -7,23 +7,23 @@ namespace Frost.Interoperability;
 /// </summary>
 public class FrostResource : IFrostResource
 {
-    private IntPtr _handle;
+    private nint _handle;
 
     /// <summary>
     /// Consturct null resource
     /// </summary>
     protected FrostResource()
     {
-        _handle = IntPtr.Zero;
+        _handle = nint.Zero;
 	}
 
     /// <summary>
     /// Constructs a resource from handle
     /// </summary>
     /// <param name="handle">Raw handle to Frost.Api resource</param>
-    protected FrostResource(IntPtr handle)
+    protected FrostResource(nint handle)
     {
-        if (handle != IntPtr.Zero)
+        if (handle != nint.Zero)
         {
             FrostApi.Resource.AcquireReference(handle);
             _handle = handle;
@@ -35,16 +35,16 @@ public class FrostResource : IFrostResource
     /// <summary>
     /// Returns true if handle to api resource is valid
     /// </summary>
-    public bool Valid => Handle != IntPtr.Zero;
+    public bool Valid => Handle != nint.Zero;
         
-    public IntPtr Handle
+    public nint Handle
     {
         get => _handle;
         protected set
         {
-            if (_handle != IntPtr.Zero)
+            if (_handle != nint.Zero)
                 FrostApi.Resource.ReleaseReference(_handle);
-            if (value != IntPtr.Zero)
+            if (value != nint.Zero)
                 FrostApi.Resource.AcquireReference(value);
 
             _handle = value;
@@ -52,7 +52,7 @@ public class FrostResource : IFrostResource
     }
         
     public ulong ReferenceCount =>
-        Handle != IntPtr.Zero ?
+        Handle != nint.Zero ?
             FrostApi.Resource.GetRefCount(Handle) :
             0;
 
@@ -60,14 +60,14 @@ public class FrostResource : IFrostResource
 
     ~FrostResource()
     {
-        if (_handle != IntPtr.Zero)
+        if (_handle != nint.Zero)
             FrostApi.Resource.ReleaseReference(_handle);
     }
 
     public void Dispose()
     {
         GC.SuppressFinalize(this);
-        if (_handle != IntPtr.Zero)
+        if (_handle != nint.Zero)
             FrostApi.Resource.ReleaseReference(_handle);
 	}
 }

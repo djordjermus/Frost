@@ -57,7 +57,7 @@ public struct Color
             Unsafe.SkipInit(out a); // Skip initialization, value initialized
 
             fixed (void* output = &value)
-                FrostApi.Color.Rgba32ToRgba8(new IntPtr(&rgba.r), new IntPtr(output));
+                FrostApi.Color.Rgba32ToRgba8(new nint(&rgba.r), new nint(output));
         }
     }
     public Color(HSVA hsva)
@@ -66,7 +66,7 @@ public struct Color
         {
             Unsafe.SkipInit(out value);
             float* rgba32 = stackalloc float[4];
-            FrostApi.Color.HsvaToRgba32(new IntPtr(&hsva.h), new IntPtr(rgba32));
+            FrostApi.Color.HsvaToRgba32(new nint(&hsva.h), new nint(rgba32));
             r = unchecked((byte)(rgba32[0] * 255));
             g = unchecked((byte)(rgba32[1] * 255));
             b = unchecked((byte)(rgba32[2] * 255));
@@ -79,7 +79,7 @@ public struct Color
         {
             Unsafe.SkipInit(out value);
             float* rgba32 = stackalloc float[4];
-            FrostApi.Color.HslaToRgba32(new IntPtr(&hsla.h), new IntPtr(rgba32));
+            FrostApi.Color.HslaToRgba32(new nint(&hsla.h), new nint(rgba32));
             r = unchecked((byte)(rgba32[0] * 255));
             g = unchecked((byte)(rgba32[1] * 255));
             b = unchecked((byte)(rgba32[2] * 255));
@@ -92,7 +92,7 @@ public struct Color
         {
             Unsafe.SkipInit(out value);
             float* rgba32 = stackalloc float[4];
-            FrostApi.Color.CmykToRgba32(new IntPtr(&cmyk.c), new IntPtr(rgba32));
+            FrostApi.Color.CmykToRgba32(new nint(&cmyk.c), new nint(rgba32));
             r = unchecked((byte)(rgba32[0] * 255));
             g = unchecked((byte)(rgba32[1] * 255));
             b = unchecked((byte)(rgba32[2] * 255));
@@ -108,8 +108,8 @@ public struct Color
         {
             float* rgba32 = stackalloc float[4];
             float* hsva = stackalloc float[4];
-            FrostApi.Color.Rgba8ToRgba32(value, new IntPtr(rgba32));
-            FrostApi.Color.Rgba32ToHsva(new IntPtr(rgba32), new IntPtr(hsva));
+            FrostApi.Color.Rgba8ToRgba32(value, new nint(rgba32));
+            FrostApi.Color.Rgba32ToHsva(new nint(rgba32), new nint(hsva));
             return new HSVA() { h = hsva[0], s = hsva[1], v = hsva[2], a = hsva[3] };
         }
     }
@@ -119,8 +119,8 @@ public struct Color
         {
             float* rgba32 = stackalloc float[4];
             float* hsla = stackalloc float[4];
-            FrostApi.Color.Rgba8ToRgba32(value, new IntPtr(rgba32));
-            FrostApi.Color.Rgba32ToHsla(new IntPtr(rgba32), new IntPtr(hsla));
+            FrostApi.Color.Rgba8ToRgba32(value, new nint(rgba32));
+            FrostApi.Color.Rgba32ToHsla(new nint(rgba32), new nint(hsla));
             return new HSLA() { h = hsla[0], s = hsla[1], l = hsla[2], a = hsla[3] };
         }
     }
@@ -130,8 +130,8 @@ public struct Color
         {
             float* rgba32 = stackalloc float[4];
             float* cmyk = stackalloc float[4];
-            FrostApi.Color.Rgba8ToRgba32(value, new IntPtr(rgba32));
-            FrostApi.Color.Rgba32ToCmyk(new IntPtr(rgba32), new IntPtr(cmyk));
+            FrostApi.Color.Rgba8ToRgba32(value, new nint(rgba32));
+            FrostApi.Color.Rgba32ToCmyk(new nint(rgba32), new nint(cmyk));
             return new CMYK() { c = cmyk[0], m = cmyk[1], y = cmyk[2], k = cmyk[3] };
         }
     }
