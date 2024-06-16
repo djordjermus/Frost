@@ -53,7 +53,7 @@
     <ClCompile Include="_src\random.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_src\semantic_version.api.cpp">
+    <ClCompile Include="_src\version.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_src\logging.api.cpp">

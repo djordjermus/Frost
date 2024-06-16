@@ -329,12 +329,12 @@ namespace frost::api
 		};
 	};
 
-	struct semantic_version final
+	struct version final
 	{
 		u16 major_version;
 		u16 minor_version;
-		u32 patch;
-		const wchar_t* decoration;
+		u16 build_number;
+		u16 revision;
 	};
 
 
@@ -461,8 +461,7 @@ extern "C" // RESOURCE API
 
 extern "C" // VERSIONING API 
 {
-	FROST_API bool _stdcall frost_api_semantic_version_check_compatibility(frost::api::semantic_version version, frost::api::semantic_version target);
-	FROST_API void _stdcall frost_api_semantic_version_get_api_version(frost::api::semantic_version* output);
+	FROST_API void _stdcall frost_api_version_get_api_version(frost::api::version* output);
 }
 
 extern "C" // SYNCHRONIZABLE API

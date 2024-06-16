@@ -157,7 +157,7 @@
     <ClCompile Include="_src\resource.api.cpp" />
     <ClCompile Include="_src\synchronizable.api.cpp" />
     <ClCompile Include="_src\random.api.cpp" />
-    <ClCompile Include="_src\semantic_version.api.cpp" />
+    <ClCompile Include="_src\version.api.cpp" />
     <ClCompile Include="_src\system_resource.api.cpp" />
     <ClCompile Include="_src\thread.api.cpp" />
     <ClCompile Include="_src\window.api.cpp" />

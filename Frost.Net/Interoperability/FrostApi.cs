@@ -113,30 +113,21 @@ internal static partial class FrostApi
         public static partial double GenerateF64(nint pSeed, double min, double range);
     }
 
-    public static partial class SemanticVersion
+    public static partial class Version
     {
         [StructLayout(LayoutKind.Sequential)]
-        public struct FrostSemanticVersion
+        public struct FrostVersion
         {
             public ushort major;
             public ushort minor;
-            public uint patch;
-            public nint decoration;
+            public ushort build;
+            public ushort revision;
         }
 		[LibraryImport(
 			frostApiPath,
-			EntryPoint = "frost_api_semantic_version_get_api_version")]
+			EntryPoint = "frost_api_version_get_api_version")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void GetApiVersion(out FrostSemanticVersion output);
-
-		[LibraryImport(
-			frostApiPath,
-			EntryPoint = "frost_api_semantic_version_check_compatibility")]
-        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool CheckCompatibility(
-            FrostSemanticVersion version,
-            FrostSemanticVersion target);
+        public static partial void GetApiVersion(out FrostVersion output);
     }
 
     public static partial class EventSystem
