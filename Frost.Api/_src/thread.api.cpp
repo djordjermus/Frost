@@ -1,5 +1,5 @@
 #include "../internal/thread.impl.hpp"
-#include "../thread.api.hpp"
+#include "../include.hpp"
 #include "../ref.hpp"
 #define TO_IMPL(x) static_cast<frost::impl::thread*>(x)
 #define TO_IMPL_MSG(x) static_cast<frost::impl::thread::message*>(x)

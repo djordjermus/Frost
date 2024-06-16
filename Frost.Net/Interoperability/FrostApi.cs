@@ -651,4 +651,14 @@ internal static partial class FrostApi
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static partial bool IsWindow(nint resource);
 	}
+
+	public static partial class Audio
+	{
+
+        [LibraryImport(
+            frostApiPath,
+            EntryPoint = "test_audio")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void TestAudio();
+    }
 }

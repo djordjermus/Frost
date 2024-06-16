@@ -25,11 +25,11 @@ FROST_API bool _stdcall frost_api_window_get_key_state(frost::api::resource* tar
 	return TO_IMPL(target)->get_key_state((u64)key);
 }
 
-FROST_API void _stdcall frost_api_window_get_position(frost::api::resource* target, point2d<i32>* output)
+FROST_API void _stdcall frost_api_window_get_position(frost::api::resource* target, frost::api::point2d<i32>* output)
 {
 	*output = TO_IMPL(target)->get_position();
 }
-FROST_API void _stdcall frost_api_window_get_size(frost::api::resource* target, size2d<i32>* output)
+FROST_API void _stdcall frost_api_window_get_size(frost::api::resource* target, frost::api::size2d<i32>* output)
 {
 	*output = TO_IMPL(target)->get_size();
 }
@@ -52,11 +52,11 @@ FROST_API void _stdcall frost_api_window_set_state(frost::api::resource* target,
 	TO_IMPL(target)->set_state(state);
 }
 
-FROST_API void _stdcall frost_api_window_set_position(frost::api::resource* target, point2d<i32> position)
+FROST_API void _stdcall frost_api_window_set_position(frost::api::resource* target, frost::api::point2d<i32> position)
 {
 	TO_IMPL(target)->set_position(position);
 }
-FROST_API void _stdcall frost_api_window_set_size(frost::api::resource* target, size2d<i32> size)
+FROST_API void _stdcall frost_api_window_set_size(frost::api::resource* target, frost::api::size2d<i32> size)
 {
 	TO_IMPL(target)->set_size(size);
 }

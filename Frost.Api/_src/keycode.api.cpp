@@ -1,4 +1,4 @@
-#include "../keycode.api.hpp"
+#include "../include.hpp"
 #include "../internal/sysmap.impl.hpp"
 FROST_API u64 _stdcall frost_api_keycode_to_wcs(
 	frost::api::keycode keycode,

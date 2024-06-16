@@ -15,36 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="macro.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="primitives.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="clock.api.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="color.api.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="random.api.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="semantic_version.api.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="event_system.api.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="logging.api.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="synchronizable.api.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.api.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ref.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -57,22 +27,10 @@
     <ClInclude Include="internal\debug.impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="keycode.api.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="internal\sysmap.impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="composites.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="window.api.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="internal\window.impl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="thread.api.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="internal\thread.impl.hpp">
@@ -81,7 +39,7 @@
     <ClInclude Include="internal\system_resource.impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="system_resource.api.hpp">
+    <ClInclude Include="include.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
