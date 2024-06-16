@@ -2,8 +2,7 @@
 #include <exception>
 #include <stdio.h>
 #include "../debug.impl.hpp"
-#include "../../event_system.api.hpp"
-#include "../../logging.api.hpp"
+#include "../../include.hpp"
 void frost::impl::debug::log_resource_creation(const frost::api::resource* target)
 {
 #if FROST_API_DEBUG_LOG_RESOURCE_CREATION == 1

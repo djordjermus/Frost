@@ -4,7 +4,7 @@ namespace Frost.Utilities;
 
 internal static class Unmanaged
 {
-    public static string StringFromUnmanagedWstr(IntPtr pString)
+    public static string StringFromUnmanagedWstr(nint pString)
     {
         unsafe
         {
@@ -19,7 +19,7 @@ internal static class Unmanaged
         }
     }
 
-    public static void ReadCWSTR(IntPtr pString, Span<char> output)
+    public static void ReadCWSTR(nint pString, Span<char> output)
     {
         unsafe
         {

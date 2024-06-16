@@ -1,5 +1,5 @@
 #include <math.h>
-#include "../random.api.hpp"
+#include "../include.hpp"
 
 static constexpr u64 x = 12;
 static constexpr u64 y = 25;

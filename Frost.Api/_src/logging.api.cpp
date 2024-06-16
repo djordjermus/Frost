@@ -1,8 +1,7 @@
 #include <typeinfo>
 #include <vector>
 #include <string>
-#include "../event_system.api.hpp"
-#include "../logging.api.hpp"
+#include "../include.hpp"
 
 static u64 read_placeholder(
 	const wchar_t* start,

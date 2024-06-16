@@ -12,7 +12,7 @@ internal static partial class FrostApi
 	public struct Point2D { public int x; public int y; }
 	public struct Size2D { public int width; public int height; }
 	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate void Procedure(IntPtr pData);
+	public delegate void Procedure(nint pData);
 
 	public static partial class Clock
 	{
@@ -43,13 +43,13 @@ internal static partial class FrostApi
 			frostApiPath,
             EntryPoint = "frost_api_color_rgba8_to_rgba32")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void Rgba8ToRgba32(int input, IntPtr output);
+        public static partial void Rgba8ToRgba32(int input, nint output);
 
 		[LibraryImport(
 	        frostApiPath,
 	        EntryPoint = "frost_api_color_rgba32_to_rgba8")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void Rgba32ToRgba8(IntPtr input, IntPtr output);
+        public static partial void Rgba32ToRgba8(nint input, nint output);
 
 
 
@@ -57,19 +57,19 @@ internal static partial class FrostApi
 			frostApiPath,
 			EntryPoint = "frost_api_color_rgba32_to_hsva")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void Rgba32ToHsva(IntPtr input, IntPtr output);
+        public static partial void Rgba32ToHsva(nint input, nint output);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_color_rgba32_to_hsla")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void Rgba32ToHsla(IntPtr input, IntPtr output);
+        public static partial void Rgba32ToHsla(nint input, nint output);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_color_rgba32_to_cmyk")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void Rgba32ToCmyk(IntPtr input, IntPtr output);
+        public static partial void Rgba32ToCmyk(nint input, nint output);
 
 
 
@@ -77,19 +77,19 @@ internal static partial class FrostApi
 			frostApiPath,
 			EntryPoint = "frost_api_color_hsva_to_rgba32")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void HsvaToRgba32(IntPtr input, IntPtr output);
+        public static partial void HsvaToRgba32(nint input, nint output);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_color_hsla_to_rgba32")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void HslaToRgba32(IntPtr input, IntPtr output);
+        public static partial void HslaToRgba32(nint input, nint output);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_color_cmyk_to_rgba32")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void CmykToRgba32(IntPtr input, IntPtr output);
+        public static partial void CmykToRgba32(nint input, nint output);
     }
 
     public static partial class Random
@@ -98,19 +98,19 @@ internal static partial class FrostApi
 			frostApiPath,
 			EntryPoint = "frost_api_random_generate")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial ulong Generate(IntPtr pSeed);
+        public static partial ulong Generate(nint pSeed);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_random_generate_range")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial ulong GenerateRange(IntPtr pSeed, ulong min, ulong range);
+        public static partial ulong GenerateRange(nint pSeed, ulong min, ulong range);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_random_generate_range_double")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial double GenerateF64(IntPtr pSeed, double min, double range);
+        public static partial double GenerateF64(nint pSeed, double min, double range);
     }
 
     public static partial class SemanticVersion
@@ -121,7 +121,7 @@ internal static partial class FrostApi
             public ushort major;
             public ushort minor;
             public uint patch;
-            public IntPtr decoration;
+            public nint decoration;
         }
 		[LibraryImport(
 			frostApiPath,
@@ -142,10 +142,10 @@ internal static partial class FrostApi
     public static partial class EventSystem
     {
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        public delegate void HandlerSig(IntPtr pData);
+        public delegate void HandlerSig(nint pData);
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        public delegate void RelaySig(ulong tag, ulong layers, IntPtr pData);
+        public delegate void RelaySig(ulong tag, ulong layers, nint pData);
 
 
 
@@ -159,7 +159,7 @@ internal static partial class FrostApi
 			frostApiPath,
 			EntryPoint = "frost_api_event_system_emit")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void Emit(ulong tag, ulong layer, IntPtr p_data);
+        public static partial void Emit(ulong tag, ulong layer, nint p_data);
 
 		[LibraryImport(
 			frostApiPath,
@@ -193,8 +193,8 @@ internal static partial class FrostApi
 		[StructLayout(LayoutKind.Sequential)]
 		public struct LogParameter
 		{
-			public IntPtr name;
-			public IntPtr value;
+			public nint name;
+			public nint value;
 			public ulong name_length;
 			public ulong value_length;
 		};
@@ -202,13 +202,13 @@ internal static partial class FrostApi
 		[StructLayout(LayoutKind.Sequential)]
 		public struct RawLogEvent
 		{
-			public IntPtr message_template;
+			public nint message_template;
 			public ulong message_template_length;
 
-			public IntPtr message;
+			public nint message;
 			public ulong message_length;
 			
-			public IntPtr parameters;
+			public nint parameters;
 			public ulong parameter_count;
 			public byte level;
 		}
@@ -224,11 +224,11 @@ internal static partial class FrostApi
 			EntryPoint = "frost_api_logging_render_message")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		public static partial ulong Render(
-			IntPtr message_template,
+			nint message_template,
 			ulong message_template_length,
-			IntPtr parameters,
+			nint parameters,
 			ulong parameter_count,
-			IntPtr output,
+			nint output,
 			ulong output_length);
 
 		[LibraryImport(
@@ -237,9 +237,9 @@ internal static partial class FrostApi
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		public static partial ulong Log(
 			ulong activation_layers,
-			IntPtr message_template,
+			nint message_template,
 			ulong message_template_length,
-			IntPtr parameters,
+			nint parameters,
 			ulong parameter_count,
 			byte level);
 	}
@@ -252,19 +252,19 @@ internal static partial class FrostApi
 			frostApiPath,
 			EntryPoint = "frost_api_resource_get_reference_count")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial ulong GetRefCount(IntPtr ptr);
+        public static partial ulong GetRefCount(nint ptr);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_resource_acquire_reference")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void AcquireReference(IntPtr ptr);
+        public static partial void AcquireReference(nint ptr);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_resource_release_reference")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void ReleaseReference(IntPtr ptr);
+        public static partial void ReleaseReference(nint ptr);
     }
 
 	public static partial class SystemResource
@@ -273,7 +273,7 @@ internal static partial class FrostApi
 			frostApiPath,
 			EntryPoint = "frost_api_system_resource_get_system_handle")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial IntPtr GetSystemHandle(IntPtr target);
+		public static partial nint GetSystemHandle(nint target);
 	}
 
     public static partial class Synchronizable
@@ -282,18 +282,18 @@ internal static partial class FrostApi
             frostApiPath,
             EntryPoint = "frost_api_synchronizable_create_mutex")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial IntPtr CreateMutex([MarshalAs(UnmanagedType.Bool)] bool initialOwner);
+        public static partial nint CreateMutex([MarshalAs(UnmanagedType.Bool)] bool initialOwner);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_synchronizable_create_semaphore")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial IntPtr CreateSemaphore(int count, int max);
+        public static partial nint CreateSemaphore(int count, int max);
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_synchronizable_create_event")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial IntPtr CreateEvent();
+        public static partial nint CreateEvent();
 
 
 
@@ -303,21 +303,21 @@ internal static partial class FrostApi
 			EntryPoint = "frost_api_synchronizable_wait")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static partial bool Wait(IntPtr target);
+		public static partial bool Wait(nint target);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_synchronizable_try_wait")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool TryWait(IntPtr target);
+        public static partial bool TryWait(nint target);
 
 		[LibraryImport(
 	        frostApiPath,
 	        EntryPoint = "frost_api_synchronizable_signal")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool Signal(IntPtr target);
+        public static partial bool Signal(nint target);
 
 
 
@@ -326,7 +326,7 @@ internal static partial class FrostApi
 			EntryPoint = "frost_api_synchronizable_event_reset")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool ResetEvent(IntPtr target);
+        public static partial bool ResetEvent(nint target);
 
 
 
@@ -335,27 +335,27 @@ internal static partial class FrostApi
 			frostApiPath,
 			EntryPoint = "frost_api_synchronizable_wait_one")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial int WaitOne(IntPtr pArray, int count);
+        public static partial int WaitOne(nint pArray, int count);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_synchronizable_wait_all")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool WaitAll(IntPtr pArray, int count);
+        public static partial bool WaitAll(nint pArray, int count);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_synchronizable_try_wait_one")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial int TryWaitOne(IntPtr pArray, int count);
+        public static partial int TryWaitOne(nint pArray, int count);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_synchronizable_try_wait_all")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool TryWait(IntPtr pArray, int count);
+        public static partial bool TryWait(nint pArray, int count);
 
 
 
@@ -364,7 +364,7 @@ internal static partial class FrostApi
 			EntryPoint = "frost_api_resource_is_synchronizable")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool IsSynchronizable(IntPtr handle);
+        public static partial bool IsSynchronizable(nint handle);
 	}
 
     public static partial class Keycode
@@ -375,7 +375,7 @@ internal static partial class FrostApi
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
         public static partial ulong ToString(
 			byte keycode,
-            IntPtr output,
+            nint output,
             ulong capacity,
             [MarshalAs(UnmanagedType.Bool)]bool normalize_case);
 
@@ -383,7 +383,7 @@ internal static partial class FrostApi
 			frostApiPath,
 			EntryPoint = "frost_api_keycode_get_name")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial IntPtr GetName(byte keycode);
+        public static partial nint GetName(byte keycode);
     }
 
     public static partial class Thread
@@ -392,13 +392,13 @@ internal static partial class FrostApi
 		    frostApiPath,
 		    EntryPoint = "frost_api_thread_create")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial IntPtr Create(Procedure procedure, IntPtr argument);
+		public static partial nint Create(Procedure procedure, nint argument);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_thread_get_current")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial IntPtr GetCurrent();
+		public static partial nint GetCurrent();
 
 
 
@@ -406,31 +406,31 @@ internal static partial class FrostApi
 			frostApiPath,
 			EntryPoint = "frost_api_thread_message_create")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial IntPtr CreateMessage();
+		public static partial nint CreateMessage();
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_thread_message_wait")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial void WaitMessage(IntPtr messagePtr);
+		public static partial void WaitMessage(nint messagePtr);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_thread_message_peek")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial void PeekMessage(IntPtr messagePtr);
+		public static partial void PeekMessage(nint messagePtr);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_thread_message_dispatch")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial void DispatchMessage(IntPtr messagePtr);
+		public static partial void DispatchMessage(nint messagePtr);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_thread_message_discard")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial void DiscardMessage(IntPtr messagePtr);
+		public static partial void DiscardMessage(nint messagePtr);
 
 
 
@@ -439,14 +439,14 @@ internal static partial class FrostApi
 			EntryPoint = "frost_api_thread_message_send")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static partial bool SendMessage(IntPtr thread, Procedure procedure, IntPtr argument);
+		public static partial bool SendMessage(nint thread, Procedure procedure, nint argument);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_thread_message_send_async")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static partial bool SendMessageAsync(IntPtr thread, IntPtr sync, Procedure procedure, IntPtr argument);
+		public static partial bool SendMessageAsync(nint thread, nint sync, Procedure procedure, nint argument);
 	}
 
 	public static partial class Window
@@ -458,8 +458,8 @@ internal static partial class FrostApi
             public Point2D position = new Point2D() { x = 200, y = 200 };
 			public Size2D size = new Size2D() { width = 1280, height = 720 };
 
-			public IntPtr procedure = IntPtr.Zero;
-			public IntPtr data = IntPtr.Zero;
+			public nint procedure = nint.Zero;
+			public nint data = nint.Zero;
 
 			public byte state = 2;
 		}
@@ -470,7 +470,7 @@ internal static partial class FrostApi
 			[FieldOffset(0)]
 			public ulong type;
 			[FieldOffset(8)]
-			public IntPtr target;
+			public nint target;
 
 			[FieldOffset(16)]
 			public Point2D position;
@@ -497,8 +497,8 @@ internal static partial class FrostApi
 			public Point2D mouseScroll;
 
 			public struct DoubleClick { public Point2D position; public byte key; }
-			public struct KeyDown { public byte key; public IntPtr text; public bool repeat; }
-			public struct KeyUp { public byte key; public IntPtr text; }
+			public struct KeyDown { public byte key; public nint text; public bool repeat; }
+			public struct KeyUp { public byte key; public nint text; }
 
 			public const ulong 
 				invalid			= 0x00,
@@ -537,118 +537,128 @@ internal static partial class FrostApi
 			EntryPoint = "frost_api_window_is_enabled")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static partial bool IsEnabled(IntPtr window);
+		public static partial bool IsEnabled(nint window);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_window_is_active")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static partial bool IsActive(IntPtr window);
+		public static partial bool IsActive(nint window);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_window_is_focused")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static partial bool IsFocused(IntPtr window);
+		public static partial bool IsFocused(nint window);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_window_get_state")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial byte GetState(IntPtr window);
+		public static partial byte GetState(nint window);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_window_get_position")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial Point2D GetPosition(IntPtr window);
+		public static partial Point2D GetPosition(nint window);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_window_get_size")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial Size2D GetSize(IntPtr window);
+		public static partial Size2D GetSize(nint window);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_window_get_procedure")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial IntPtr GetProcedure(IntPtr window);
+		public static partial nint GetProcedure(nint window);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_window_get_data")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial IntPtr GetData(IntPtr window);
+		public static partial nint GetData(nint window);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_window_set_enabled")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial void SetEnabled(IntPtr window, [MarshalAs(UnmanagedType.Bool)]bool enabled);
+		public static partial void SetEnabled(nint window, [MarshalAs(UnmanagedType.Bool)]bool enabled);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_window_set_active")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial void SetActive(IntPtr window, [MarshalAs(UnmanagedType.Bool)]bool active);
+		public static partial void SetActive(nint window, [MarshalAs(UnmanagedType.Bool)]bool active);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_window_set_focused")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial void SetFocused(IntPtr window, [MarshalAs(UnmanagedType.Bool)]bool focused);
+		public static partial void SetFocused(nint window, [MarshalAs(UnmanagedType.Bool)]bool focused);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_window_set_state")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial void SetState(IntPtr window, byte state);
+		public static partial void SetState(nint window, byte state);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_window_set_position")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial void SetPosition(IntPtr window, Point2D position);
+		public static partial void SetPosition(nint window, Point2D position);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_window_set_size")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial void SetSize(IntPtr window, Size2D size);
+		public static partial void SetSize(nint window, Size2D size);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_window_set_procedure")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial void SetProcedure(IntPtr window, Procedure procedure);
+		public static partial void SetProcedure(nint window, Procedure procedure);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_window_set_data")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial void SetData(IntPtr window, IntPtr pData);
+		public static partial void SetData(nint window, nint pData);
 
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_window_pump_messages")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial void Pump(IntPtr window);
+		public static partial void Pump(nint window);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_window_create")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial IntPtr Create(IntPtr pDesc);
+		public static partial nint Create(nint pDesc);
 
 		[LibraryImport(
 			frostApiPath,
 			EntryPoint = "frost_api_resource_is_window")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static partial bool IsWindow(IntPtr resource);
+		public static partial bool IsWindow(nint resource);
 	}
+
+	public static partial class Audio
+	{
+
+        [LibraryImport(
+            frostApiPath,
+            EntryPoint = "test_audio")]
+        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+        public static partial void TestAudio();
+    }
 }

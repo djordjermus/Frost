@@ -1,8 +1,6 @@
 #include "../window.impl.hpp"
 #include "../sysmap.impl.hpp"
-#include "../../keycode.api.hpp"
-#include "../../event_system.api.hpp"
-#include "../../logging.api.hpp"
+#include "../../include.hpp"
 #include "../thread.impl.hpp"
 
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
@@ -53,11 +51,11 @@ namespace frost::impl
 		return _state;
 	}
 
-	point2d<i32> window::get_position() const
+	frost::api::point2d<i32> window::get_position() const
 	{
 		return { _rect.left, _rect.top };
 	}
-	size2d<i32> window::get_size() const
+	frost::api::size2d<i32> window::get_size() const
 	{
 		return { _rect.right - _rect.left, _rect.bottom - _rect.top };
 	}
@@ -178,7 +176,7 @@ namespace frost::impl
 		}
 	}
 
-	void window::set_position(point2d<i32> position)
+	void window::set_position(frost::api::point2d<i32> position)
 	{
 		if (is_direct_invoke_required())
 		{
@@ -193,12 +191,12 @@ namespace frost::impl
 				static_cast<frost::impl::thread_reference*>(this->_thread.get()),
 				[](void* arg) {
 					auto& d = *reinterpret_cast<execute_deferred_data*>(arg);
-					d.target->set_position(*reinterpret_cast<point2d<i32>*>(d.p_argument));
+					d.target->set_position(*reinterpret_cast<frost::api::point2d<i32>*>(d.p_argument));
 				},
 				&data);
 		}
 	}
-	void window::set_size(size2d<i32> size)
+	void window::set_size(frost::api::size2d<i32> size)
 	{
 		if (is_direct_invoke_required())
 		{
@@ -213,7 +211,7 @@ namespace frost::impl
 				static_cast<frost::impl::thread_reference*>(this->_thread.get()),
 				[](void* arg) {
 					auto& d = *reinterpret_cast<execute_deferred_data*>(arg);
-					d.target->set_size(*reinterpret_cast<size2d<i32>*>(d.p_argument));
+					d.target->set_size(*reinterpret_cast<frost::api::size2d<i32>*>(d.p_argument));
 				},
 				&data);
 		}
@@ -698,8 +696,8 @@ namespace frost::impl
 		constexpr LONG edge_margin = 5;
 	
 		data->update_rect();
-		point2d<i32> top_left = { data->_rect.left, data->_rect.top };
-		point2d<i32> bottom_right = { data->_rect.right, data->_rect.bottom };
+		frost::api::point2d<i32> top_left = { data->_rect.left, data->_rect.top };
+		frost::api::point2d<i32> bottom_right = { data->_rect.right, data->_rect.bottom };
 	
 		// EDGE DETECTION
 		if (x >= top_left.x && x < (top_left.x + edge_margin))

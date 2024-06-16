@@ -33,21 +33,21 @@ public struct Log
 			fixed (void* pTemplate = template, pParams = logParams)
 			{
 				ulong length = FrostApi.Logging.Render(
-					(IntPtr)pTemplate,
+					(nint)pTemplate,
 					(ulong)template.Length,
-					(IntPtr)pParams,
+					(nint)pParams,
 					(ulong)(logParams?.Length ?? 0),
-					IntPtr.Zero,
+					nint.Zero,
 					0);
 
 				result = new string('\0', (int)length);
 				fixed (void* pResult = result)
 				FrostApi.Logging.Render(
-					(IntPtr)pTemplate,
+					(nint)pTemplate,
 					(ulong)template.Length,
-					(IntPtr)pParams,
+					(nint)pParams,
 					(ulong)(logParams?.Length ?? 0),
-					(IntPtr)pResult,
+					(nint)pResult,
 					length);
 			}
 			if (handles is not null)
@@ -74,9 +74,9 @@ public struct Log
 			{
 				FrostApi.Logging.Log(
 					activationLayers.Value,
-					(IntPtr)pTemplate,
+					(nint)pTemplate,
 					(ulong)template.Length,
-					(IntPtr)pParams, 
+					(nint)pParams, 
 					(ulong)(logParams?.Length ?? 0),
 					(byte)level);
 			}
@@ -169,16 +169,16 @@ public struct Log
 			result[i] = (ulong)(parameters[i]?.Length ?? 0);
 		return result;
 	}
-	private static IntPtr[] ParamsToIntPtrArray(string[] parameters)
+	private static nint[] ParamsTonintArray(string[] parameters)
 	{
-		var result = new IntPtr[parameters.Length];
+		var result = new nint[parameters.Length];
 		for (int i = 0; i < result.Length; i++)
 		{
 			string next = parameters[i];
 			unsafe
 			{
 				fixed (void* pNext = next)
-					result[i] = (IntPtr)pNext;
+					result[i] = (nint)pNext;
 			}
 		}
 		return result;

@@ -76,7 +76,7 @@ public class Random
 		unsafe
 		{
 			fixed (ulong* pSeed = &seed)
-				return FrostApi.Random.Generate(new IntPtr(pSeed));
+				return FrostApi.Random.Generate(new nint(pSeed));
 		}
 	}
 
@@ -93,7 +93,7 @@ public class Random
 		unsafe
 		{
 			fixed (ulong* pSeed = &seed)
-				return FrostApi.Random.GenerateRange(new IntPtr(pSeed), minimum, range);
+				return FrostApi.Random.GenerateRange(new nint(pSeed), minimum, range);
 		}
 	}
 	
@@ -110,7 +110,7 @@ public class Random
 			unchecked
 			{
 				fixed (ulong* pSeed = &seed)
-					return (long)FrostApi.Random.Generate(new IntPtr(pSeed));
+					return (long)FrostApi.Random.Generate(new nint(pSeed));
 			}
 		}
 	}
@@ -130,7 +130,7 @@ public class Random
 			unchecked
 			{
 				fixed (ulong* pSeed = &seed)
-					return (long)FrostApi.Random.GenerateRange(new IntPtr(pSeed), (ulong)minimum, range);
+					return (long)FrostApi.Random.GenerateRange(new nint(pSeed), (ulong)minimum, range);
 			}
 		}
 	}
@@ -150,7 +150,7 @@ public class Random
 			unchecked
 			{
 				fixed (ulong* pSeed = &seed)
-					return FrostApi.Random.GenerateF64(new IntPtr(pSeed), minimum, range);
+					return FrostApi.Random.GenerateF64(new nint(pSeed), minimum, range);
 			}
 		}
 	}

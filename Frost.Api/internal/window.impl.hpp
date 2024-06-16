@@ -1,5 +1,5 @@
 #include "synchronizable.impl.hpp"
-#include "../window.api.hpp"
+#include "../include.hpp"
 #include "../ref.hpp"
 #pragma once
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
@@ -17,7 +17,7 @@ namespace frost::impl
 		u64 _keystates[4] = {};
 		RECT _rect = {};
 		TRACKMOUSEEVENT _track_mouse_event = {};
-		point2d<i32> _last_cursor_position = {};
+		frost::api::point2d<i32> _last_cursor_position = {};
 		HKL _hkl = nullptr;
 		u64 _flags = 0;
 
@@ -84,8 +84,8 @@ namespace frost::impl
 		api::window_state get_state() const;
 		bool get_key_state(u64 index);
 
-		point2d<i32> get_position() const;
-		size2d<i32> get_size() const;
+		frost::api::point2d<i32> get_position() const;
+		frost::api::size2d<i32> get_size() const;
 		api::window_procedure_sig get_procedure() const;
 		void* get_data() const;
 
@@ -95,8 +95,8 @@ namespace frost::impl
 
 		void set_state(api::window_state state);
 
-		void set_position(point2d<i32> position);
-		void set_size(size2d<i32> size);
+		void set_position(frost::api::point2d<i32> position);
+		void set_size(frost::api::size2d<i32> size);
 		void set_procedure(api::window_procedure_sig procedure);
 		void set_data(void* data);
 

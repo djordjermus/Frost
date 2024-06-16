@@ -13,7 +13,7 @@ public static class Key
 		{
 			fixed (char* output = chars)
 			{
-				var length = FrostApi.Keycode.ToString((byte)keycode, new IntPtr(output), size, normalizeCase);
+				var length = FrostApi.Keycode.ToString((byte)keycode, new nint(output), size, normalizeCase);
 				return new string(chars.Slice(0, (int)length));
 			}
 		}

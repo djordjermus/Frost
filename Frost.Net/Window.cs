@@ -61,7 +61,7 @@ namespace Frost
 
 
 
-		private IntPtr InternalCreate(WindowOptions options, out FrostApi.Procedure procedure)
+		private nint InternalCreate(WindowOptions options, out FrostApi.Procedure procedure)
 		{
 			unsafe
 			{
@@ -73,11 +73,11 @@ namespace Frost
 				desc.procedure	= Marshal.GetFunctionPointerForDelegate(procedure);
 				desc.state		= (byte)options.state;
 
-				return FrostApi.Window.Create((IntPtr)(&desc));
+				return FrostApi.Window.Create((nint)(&desc));
 			}
 		}
 
-		private unsafe void InternalProcedure(IntPtr ptr)
+		private unsafe void InternalProcedure(nint ptr)
 		{
 			var ptrEvent = (FrostApi.Window.WindowEvent*)ptr.ToPointer();
 			var e = FormEvent(ref *ptrEvent);

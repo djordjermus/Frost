@@ -22,7 +22,7 @@ public sealed class SemanticVersion
 			major = Major,
 			minor = Minor,
 			patch = Patch,
-			decoration = IntPtr.Zero,
+			decoration = nint.Zero,
 		};
 
 		var target_fsv = new FrostApi.SemanticVersion.FrostSemanticVersion()
@@ -30,7 +30,7 @@ public sealed class SemanticVersion
 			major = target.Major,
 			minor = target.Minor,
 			patch = target.Patch,
-			decoration = IntPtr.Zero,
+			decoration = nint.Zero,
 		};
 
 		return FrostApi.SemanticVersion.CheckCompatibility(current_fsv, target_fsv);

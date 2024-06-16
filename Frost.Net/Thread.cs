@@ -9,7 +9,7 @@ public class Thread : SynchronizationResource
 	private Thread() :
 		base() { }
 
-	private Thread(IntPtr handle) :
+	private Thread(nint handle) :
 		base(handle) { }
 
 	public Thread(Procedure procedure) :
@@ -19,7 +19,7 @@ public class Thread : SynchronizationResource
 
 		unsafe
 		{
-			Handle = FrostApi.Thread.Create(_pin, IntPtr.Zero);
+			Handle = FrostApi.Thread.Create(_pin, nint.Zero);
 		}
 	}
 
@@ -53,7 +53,7 @@ public class Thread : SynchronizationResource
 					FrostApi.Thread.SendMessage(
 						target.Handle,
 						ProcedureWrapper.Dispatch,
-						(IntPtr)(&dispatcher));
+						(nint)(&dispatcher));
 				return result;
 			}
 		}
@@ -74,7 +74,7 @@ public class Thread : SynchronizationResource
 					FrostApi.Thread.SendMessage(
 						target.Handle,
 						ProcedureWrapper<T1>.Dispatch,
-						(IntPtr)(&dispatcher));
+						(nint)(&dispatcher));
 				return result;
 			}
 		}
@@ -96,7 +96,7 @@ public class Thread : SynchronizationResource
 					FrostApi.Thread.SendMessage(
 						target.Handle,
 						ProcedureWrapper<T1, T2>.Dispatch,
-						(IntPtr)(&dispatcher));
+						(nint)(&dispatcher));
 				return result;
 			}
 		}
@@ -120,7 +120,7 @@ public class Thread : SynchronizationResource
 					FrostApi.Thread.SendMessage(
 						target.Handle,
 						ProcedureWrapper<T1, T2, T3>.Dispatch,
-						(IntPtr)(&dispatcher));
+						(nint)(&dispatcher));
 				return result;
 			}
 		}
@@ -146,7 +146,7 @@ public class Thread : SynchronizationResource
 					FrostApi.Thread.SendMessage(
 						target.Handle,
 						ProcedureWrapper<T1, T2, T3, T4>.Dispatch,
-						(IntPtr)(&dispatcher));
+						(nint)(&dispatcher));
 				return result;
 			}
 		}
@@ -174,7 +174,7 @@ public class Thread : SynchronizationResource
 					FrostApi.Thread.SendMessage(
 						target.Handle,
 						ProcedureWrapper<T1, T2, T3, T4, T5>.Dispatch,
-						(IntPtr)(&dispatcher));
+						(nint)(&dispatcher));
 				return result;
 			}
 		}
@@ -204,7 +204,7 @@ public class Thread : SynchronizationResource
 					FrostApi.Thread.SendMessage(
 						target.Handle,
 						ProcedureWrapper<T1, T2, T3, T4, T5, T6>.Dispatch,
-						(IntPtr)(&dispatcher));
+						(nint)(&dispatcher));
 				return result;
 			}
 		}
@@ -236,7 +236,7 @@ public class Thread : SynchronizationResource
 					FrostApi.Thread.SendMessage(
 						target.Handle,
 						ProcedureWrapper<T1, T2, T3, T4, T5, T6, T7>.Dispatch,
-						(IntPtr)(&dispatcher));
+						(nint)(&dispatcher));
 				return result;
 			}
 		}
@@ -270,7 +270,7 @@ public class Thread : SynchronizationResource
 					FrostApi.Thread.SendMessage(
 						target.Handle,
 						ProcedureWrapper<T1, T2, T3, T4, T5, T6, T7, T8>.Dispatch,
-						(IntPtr)(&dispatcher));
+						(nint)(&dispatcher));
 				return result;
 			}
 		}

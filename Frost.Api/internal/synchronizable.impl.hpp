@@ -1,4 +1,4 @@
-#include "../synchronizable.api.hpp"
+#include "../include.hpp"
 #include "system_resource.impl.hpp"
 #pragma once
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)

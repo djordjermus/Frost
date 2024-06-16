@@ -93,7 +93,7 @@ public static class EventSystem
 		{
 #pragma warning disable CS8500
 			fixed (void* pEventData = &eventData)
-			FrostApi.EventSystem.Emit((ulong)typeof(T).GetHashCode(), activationLayers.Value, (IntPtr)pEventData);
+			FrostApi.EventSystem.Emit((ulong)typeof(T).GetHashCode(), activationLayers.Value, (nint)pEventData);
 #pragma warning restore CS8500
 		}
 	}
@@ -125,7 +125,7 @@ public static class EventSystem
 		}
 	}
 
-	private static void InteropRelay(ulong tag, ulong activationLayers, IntPtr pData)
+	private static void InteropRelay(ulong tag, ulong activationLayers, nint pData)
 	{
 		if (tag == _logEventsTag)
 		{
@@ -136,7 +136,7 @@ public static class EventSystem
 		 	relay(tag, activationLayers, pData);
 		}
 	}
-	private static void LogEventsRelay(ulong tag, ulong activationLayers, IntPtr pLogEvent)
+	private static void LogEventsRelay(ulong tag, ulong activationLayers, nint pLogEvent)
 	{
 		unsafe
 		{
@@ -189,7 +189,7 @@ public static class EventSystem
 		}
 	}
 
-	private static void TaggedDirectRelay<T>(ulong tag, ulong activationLayers, IntPtr pData) where T : struct
+	private static void TaggedDirectRelay<T>(ulong tag, ulong activationLayers, nint pData) where T : struct
 	{
 		unsafe
 		{
@@ -208,7 +208,7 @@ public static class EventSystem
 		FrostApi.EventSystem.SubscribeRelay(InteropRelay);
 	}
 
-	private delegate void Relay(ulong tag, ulong activationLayers, IntPtr pData);
+	private delegate void Relay(ulong tag, ulong activationLayers, nint pData);
 
 	private static Dictionary<ulong, Dictionary<ulong, object>> _handlers = new();
 	private static Dictionary<ulong, Relay> _relays = new();
