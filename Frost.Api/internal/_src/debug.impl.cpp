@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "../debug.impl.hpp"
 #include "../../include.hpp"
-void frost::impl::debug::log_resource_creation(const frost::api::resource* target)
+void frost::impl::debug::log_resource_creation(const frost::api::object* target)
 {
 #if FROST_API_DEBUG_LOG_RESOURCE_CREATION == 1
 	constexpr u64 param_count = 1;
@@ -73,7 +73,7 @@ void frost::impl::debug::log_resource_creation(const frost::api::resource* targe
 	}
 #endif
 }
-void frost::impl::debug::log_resource_destruction(const frost::api::resource* target)
+void frost::impl::debug::log_resource_destruction(const frost::api::object* target)
 {
 #if FROST_API_DEBUG_LOG_RESOURCE_DESTRUCTION == 1
 	constexpr u64 param_count = 1;

@@ -3,15 +3,15 @@
 class ref final
 {
 private:
-	frost::api::resource* _ptr;
-	static inline frost::api::resource* inc(frost::api::resource* ptr) { if (ptr != nullptr) frost_api_resource_acquire_reference(ptr); return ptr; }
-	static inline frost::api::resource* dec(frost::api::resource* ptr) { if (ptr != nullptr) frost_api_resource_release_reference(ptr); return ptr; }
+	frost::api::object* _ptr;
+	static inline frost::api::object* inc(frost::api::object* ptr) { if (ptr != nullptr) frost_api_object_acquire_reference(ptr); return ptr; }
+	static inline frost::api::object* dec(frost::api::object* ptr) { if (ptr != nullptr) frost_api_object_release_reference(ptr); return ptr; }
 
 public:
 	/* CONSTRUCTORS */
 	inline ref() :
 		_ptr(nullptr) {}
-	inline ref(frost::api::resource* ptr) :
+	inline ref(frost::api::object* ptr) :
 		_ptr(inc(ptr)) {}
 	inline ref(const ref& reference) :
 		_ptr(inc(reference._ptr)) {}
@@ -20,7 +20,7 @@ public:
 	inline ~ref() { dec(_ptr); }
 
 	/* OPERATORS */
-	inline ref& operator=(frost::api::resource* ptr)
+	inline ref& operator=(frost::api::object* ptr)
 	{
 		dec(_ptr);
 		_ptr = inc(ptr);
@@ -39,7 +39,7 @@ public:
 		return *this;
 	}
 
-	inline operator frost::api::resource* ()
+	inline operator frost::api::object* ()
 	{
 		return _ptr;
 	}
@@ -48,11 +48,11 @@ public:
 		return _ptr != nullptr;
 	}
 
-	inline bool operator == (frost::api::resource* ptr) const
+	inline bool operator == (frost::api::object* ptr) const
 	{
 		return _ptr == ptr;
 	}
-	inline bool operator != (frost::api::resource* ptr) const
+	inline bool operator != (frost::api::object* ptr) const
 	{
 		return _ptr != ptr;
 	}
@@ -66,18 +66,18 @@ public:
 		return _ptr != rhs._ptr;
 	}
 
-	inline frost::api::resource* operator->() const
+	inline frost::api::object* operator->() const
 	{
 		return _ptr;
 	}
 
 	/* METHODS */
-	inline frost::api::resource* get() const
+	inline frost::api::object* get() const
 	{
 		return _ptr;
 	}
 
-	inline frost::api::resource* const* get_array() const
+	inline frost::api::object* const* get_array() const
 	{
 		return &_ptr;
 	}

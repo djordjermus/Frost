@@ -1,11 +1,5 @@
-﻿#include "Frost.Api/keycode.api.hpp"
-#include "Frost.Api/window.api.hpp"
-#include "Frost.Api/synchronizable.api.hpp"
-#include "Frost.Api/resource.api.hpp"
-#include "Frost.Api/thread.api.hpp"
+﻿#include "Frost.Api/include.hpp"
 #include "Frost.Api/ref.hpp"
-#include "Frost.Api/event_system.api.hpp"
-#include "Frost.Api/logging.api.hpp"
 #include <iostream>
 #include <thread>
 #include <fstream>
@@ -25,9 +19,9 @@ int main()
 	window = frost_api_window_create(&desc);
 	msg = frost_api_thread_message_create();
 
-	while (true)
+	while (frost_api_window_get_state(window) != frost::api::window_state::hidden)
 	{
-		frost_api_thread_message_wait(msg);
+		frost_api_synchronizable_wait(msg);
 		frost_api_thread_message_dispatch(msg);
 	}
 }
@@ -36,4 +30,5 @@ void _stdcall fn(frost::api::window_event* e)
 {
 	if (e->type == frost::api::window_event::event_type::key_down && e->key_down.key == frost::api::keycode::escape)
 		frost_api_window_set_state(e->target, frost::api::window_state::hidden);
+	frost_api_logging_log(0x00, L"Hello, World!", 13, nullptr, 0,frost::api::log_level::error);
 }

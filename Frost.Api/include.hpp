@@ -74,6 +74,8 @@ static_assert(sizeof(i64) == 8, "i64 must be an signed 64bit integer!");
 static_assert(sizeof(f32) == 4, "f32 must be an 32bit floating point number!");
 static_assert(sizeof(f64) == 8, "f64 must be an 64bit floating point number!");
 
+
+
 namespace frost::api
 {
 	/* FORWARD DECLARATION */
@@ -81,11 +83,12 @@ namespace frost::api
 	enum class keycode : u8;
 	enum class window_state : u8;
 	enum class log_level : u8;
+	enum class object_type: u64;
 
 	struct window_description;
 	struct window_event;
 
-	class resource;
+	struct object;
 
 
 
@@ -232,8 +235,21 @@ namespace frost::api
 		error		= 16,
 		fatal		= 32,
 	};
-	
+	// TODO destroy for everyone + everything for window...
+	enum class object_type : u64
+	{
+		basic_object,
 
+		sync_mutex,
+		sync_semaphore,
+		sync_event,
+
+		thread_reference,
+		thread,
+		thread_message,
+
+		window
+	};
 
 	/* FUNCTION POINTER DEFINITIONS */
 
@@ -279,7 +295,7 @@ namespace frost::api
 		enum class event_type : u64;
 
 		event_type type;
-		resource* target;
+		object* target;
 
 		union
 		{
@@ -360,6 +376,8 @@ namespace frost::api
 		log_level level;
 	};
 }
+
+
 
 extern "C" // CLOCK API
 {
@@ -454,9 +472,9 @@ extern "C" // RANDOM API
 
 extern "C" // RESOURCE API
 {
-	FROST_API u64  _stdcall frost_api_resource_get_reference_count(frost::api::resource* target);
-	FROST_API void _stdcall frost_api_resource_acquire_reference(frost::api::resource* target);
-	FROST_API void _stdcall frost_api_resource_release_reference(frost::api::resource* target);
+	FROST_API u64  _stdcall frost_api_object_get_reference_count(frost::api::object* target);
+	FROST_API void _stdcall frost_api_object_acquire_reference(frost::api::object* target);
+	FROST_API void _stdcall frost_api_object_release_reference(frost::api::object* target);
 }
 
 extern "C" // VERSIONING API 
@@ -466,84 +484,79 @@ extern "C" // VERSIONING API
 
 extern "C" // SYNCHRONIZABLE API
 {
-	FROST_API bool _stdcall  frost_api_synchronizable_wait(frost::api::resource* target);
-	FROST_API bool _stdcall  frost_api_synchronizable_try_wait(frost::api::resource* target);
-	FROST_API bool _stdcall  frost_api_synchronizable_signal(frost::api::resource* target);
+	FROST_API bool _stdcall  frost_api_synchronizable_wait(frost::api::object* target);
+	FROST_API bool _stdcall  frost_api_synchronizable_try_wait(frost::api::object* target);
+	FROST_API bool _stdcall  frost_api_synchronizable_signal(frost::api::object* target);
 
-	FROST_API bool _stdcall frost_api_synchronizable_event_reset(frost::api::resource* target);
+	FROST_API bool _stdcall frost_api_synchronizable_event_reset(frost::api::object* target);
 
-	FROST_API i32  _stdcall frost_api_synchronizable_wait_one(frost::api::resource* const* target_list, i32 count);
-	FROST_API bool _stdcall frost_api_synchronizable_wait_all(frost::api::resource* const* target_list, i32 count);
-	FROST_API i32  _stdcall frost_api_synchronizable_try_wait_one(frost::api::resource* const* target_list, i32 count);
-	FROST_API bool _stdcall frost_api_synchronizable_try_wait_all(frost::api::resource* const* target_list, i32 count);
+	FROST_API i32  _stdcall frost_api_synchronizable_wait_one(frost::api::object* const* target_list, i32 count);
+	FROST_API bool _stdcall frost_api_synchronizable_wait_all(frost::api::object* const* target_list, i32 count);
+	FROST_API i32  _stdcall frost_api_synchronizable_try_wait_one(frost::api::object* const* target_list, i32 count);
+	FROST_API bool _stdcall frost_api_synchronizable_try_wait_all(frost::api::object* const* target_list, i32 count);
 
-	FROST_API frost::api::resource* _stdcall frost_api_synchronizable_create_mutex(bool initial_owner);
-	FROST_API frost::api::resource* _stdcall frost_api_synchronizable_create_semaphore(i32 count, i32 max);
-	FROST_API frost::api::resource* _stdcall frost_api_synchronizable_create_event();
-
-	FROST_API bool _stdcall frost_api_resource_is_synchronizable(frost::api::resource* target);
+	FROST_API frost::api::object* _stdcall frost_api_synchronizable_create_mutex(bool initial_owner);
+	FROST_API frost::api::object* _stdcall frost_api_synchronizable_create_semaphore(i32 count, i32 max);
+	FROST_API frost::api::object* _stdcall frost_api_synchronizable_create_event();
 }
 
 extern "C" // SYSTEM RESOURCE API
 {
-	FROST_API void* _stdcall frost_api_system_resource_get_system_handle(frost::api::resource* target);
+	FROST_API void* _stdcall frost_api_system_handle_host_get_system_handle(frost::api::object* target);
 }
 
 extern "C" // THREADING API
 {
-	FROST_API frost::api::resource* _stdcall frost_api_thread_create(void(_stdcall* procedure)(void*), void* argument);
-	FROST_API frost::api::resource* _stdcall frost_api_thread_get_current();
+	FROST_API frost::api::object* _stdcall frost_api_thread_create(void(_stdcall* procedure)(void*), void* argument);
+	FROST_API frost::api::object* _stdcall frost_api_thread_get_current();
 
-	FROST_API frost::api::resource* _stdcall frost_api_thread_message_create();
-	FROST_API void _stdcall frost_api_thread_message_wait(frost::api::resource* message);
-	FROST_API void _stdcall frost_api_thread_message_peek(frost::api::resource* message);
-	FROST_API void _stdcall frost_api_thread_message_dispatch(frost::api::resource* message);
-	FROST_API void _stdcall frost_api_thread_message_discard(frost::api::resource* message);
+	FROST_API frost::api::object* _stdcall frost_api_thread_message_create();
+	FROST_API void _stdcall frost_api_thread_message_dispatch(frost::api::object* message);
+	FROST_API void _stdcall frost_api_thread_message_discard(frost::api::object* message);
 
 	FROST_API bool _stdcall frost_api_thread_message_send(
-		frost::api::resource* thread,
+		frost::api::object* thread,
 		void(_stdcall* procedure)(void*),
 		void* argument);
 	FROST_API bool _stdcall frost_api_thread_message_send_async(
-		frost::api::resource* thread,
-		frost::api::resource* sync,
+		frost::api::object* thread,
+		frost::api::object* sync,
 		void(_stdcall* procedure)(void*),
 		void* argument);
 }
 
 extern "C" // WINDOW API
 {
-	FROST_API bool _stdcall frost_api_window_is_enabled(frost::api::resource* target);
-	FROST_API bool _stdcall frost_api_window_is_active(frost::api::resource* target);
-	FROST_API bool _stdcall frost_api_window_is_focused(frost::api::resource* target);
+	FROST_API bool _stdcall frost_api_window_is_enabled(frost::api::object* target);
+	FROST_API bool _stdcall frost_api_window_is_active(frost::api::object* target);
+	FROST_API bool _stdcall frost_api_window_is_focused(frost::api::object* target);
 	
-	FROST_API frost::api::window_state _stdcall frost_api_window_get_state(frost::api::resource* target);
+	FROST_API frost::api::window_state _stdcall frost_api_window_get_state(frost::api::object* target);
 
-	FROST_API bool _stdcall frost_api_window_get_key_state(frost::api::resource* target, frost::api::keycode key);
+	FROST_API bool _stdcall frost_api_window_get_key_state(frost::api::object* target, frost::api::keycode key);
 	
-	FROST_API void _stdcall frost_api_window_get_position(frost::api::resource* target, frost::api::point2d<i32>* output);
-	FROST_API void _stdcall frost_api_window_get_size(frost::api::resource* target, frost::api::size2d<i32>* output);
+	FROST_API void _stdcall frost_api_window_get_position(frost::api::object* target, frost::api::point2d<i32>* output);
+	FROST_API void _stdcall frost_api_window_get_size(frost::api::object* target, frost::api::size2d<i32>* output);
 	
-	FROST_API frost::api::window_procedure_sig _stdcall frost_api_window_get_procedure(frost::api::resource* target);
-	FROST_API void* _stdcall frost_api_window_get_data(frost::api::resource* target);
+	FROST_API frost::api::window_procedure_sig _stdcall frost_api_window_get_procedure(frost::api::object* target);
+	FROST_API void* _stdcall frost_api_window_get_data(frost::api::object* target);
 
 
 
-	FROST_API void _stdcall frost_api_window_set_enabled(frost::api::resource* target, bool enabled);
-	FROST_API void _stdcall frost_api_window_set_active(frost::api::resource* target, bool active);
-	FROST_API void _stdcall frost_api_window_set_focused(frost::api::resource* target, bool focused);
+	FROST_API void _stdcall frost_api_window_set_enabled(frost::api::object* target, bool enabled);
+	FROST_API void _stdcall frost_api_window_set_active(frost::api::object* target, bool active);
+	FROST_API void _stdcall frost_api_window_set_focused(frost::api::object* target, bool focused);
 	
-	FROST_API void _stdcall frost_api_window_set_state(frost::api::resource* target, frost::api::window_state state);
+	FROST_API void _stdcall frost_api_window_set_state(frost::api::object* target, frost::api::window_state state);
 	
-	FROST_API void _stdcall frost_api_window_set_position(frost::api::resource* target, frost::api::point2d<i32> position);
-	FROST_API void _stdcall frost_api_window_set_size(frost::api::resource* target, frost::api::size2d<i32> size);
-	FROST_API void _stdcall frost_api_window_set_procedure(frost::api::resource* target, frost::api::window_procedure_sig procedure);
-	FROST_API void _stdcall frost_api_window_set_data(frost::api::resource* target, void* data);
+	FROST_API void _stdcall frost_api_window_set_position(frost::api::object* target, frost::api::point2d<i32> position);
+	FROST_API void _stdcall frost_api_window_set_size(frost::api::object* target, frost::api::size2d<i32> size);
+	FROST_API void _stdcall frost_api_window_set_procedure(frost::api::object* target, frost::api::window_procedure_sig procedure);
+	FROST_API void _stdcall frost_api_window_set_data(frost::api::object* target, void* data);
 
 
 
-	FROST_API frost::api::resource* _stdcall frost_api_window_create(const frost::api::window_description* description);
-	FROST_API bool _stdcall frost_api_resource_is_window(frost::api::resource* target);
+	FROST_API frost::api::object* _stdcall frost_api_window_create(const frost::api::window_description* description);
 }
 
 extern "C" // KEYCODE API
