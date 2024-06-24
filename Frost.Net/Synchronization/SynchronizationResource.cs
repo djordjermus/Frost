@@ -2,7 +2,7 @@
 
 namespace Frost.Synchronization;
 
-public class SynchronizationResource : FrostResource
+public class SynchronizationResource : FrostObject
 {
     protected SynchronizationResource() :
         base() { }

@@ -67,10 +67,9 @@ public class FrostApiEndpointLinkageTest
 	}
 
 	[TestMethod]
-	public void TestSemanticVersionApi()
+	public void TestVersionApi()
 	{
-		var version = SemanticVersion.GetApiVersion();
-		version.CheckCompatibility(version);
+		var version = Models.Version.GetApiVersion();
 	}
 
 	[TestMethod]

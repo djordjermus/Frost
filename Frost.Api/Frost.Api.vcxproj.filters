@@ -18,60 +18,42 @@
     <ClInclude Include="ref.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="internal\resource.impl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="internal\synchronizable.impl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="internal\debug.impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="internal\sysmap.impl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="internal\window.impl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="internal\thread.impl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="internal\system_resource.impl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="_src\object.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="_src\clock.api.cpp">
+    <ClCompile Include="_src\clock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_src\color.api.cpp">
+    <ClCompile Include="_src\color.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_src\random.api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_src\semantic_version.api.cpp">
+    <ClCompile Include="_src\version.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_src\logging.api.cpp">
+    <ClCompile Include="_src\logging.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_src\event_system.api.cpp">
+    <ClCompile Include="_src\event_system.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_src\synchronizable.api.cpp">
+    <ClCompile Include="_src\synchronizable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_src\resource.api.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="internal\_src\resource.impl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="internal\_src\synchronizable.impl.cpp">
+    <ClCompile Include="_src\object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="internal\_src\debug.impl.cpp">
@@ -80,25 +62,16 @@
     <ClCompile Include="internal\_src\sysmap.impl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="internal\_src\window.impl.cpp">
+    <ClCompile Include="_src\window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_src\window.api.cpp">
+    <ClCompile Include="_src\keycode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_src\keycode.api.cpp">
+    <ClCompile Include="_src\thread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="internal\_src\thread.impl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="_src\thread.api.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="internal\_src\system_resource.impl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="_src\system_resource.api.cpp">
+    <ClCompile Include="_src\system_resource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

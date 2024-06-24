@@ -84,7 +84,7 @@ public struct Log
 			{
 				foreach (var handle in handles)
 					handle.Free();
-			}
+            }
 		}
 	}
 
@@ -160,29 +160,7 @@ public struct Log
 		ErrorAndUp		= 0b110000,
 	}
 
-
-
-	private static ulong[] ExtractParamsLengths(string[] parameters)
-	{
-		var result = new ulong[parameters.Length];
-		for (int i = 0; i < result.Length; i++)
-			result[i] = (ulong)(parameters[i]?.Length ?? 0);
-		return result;
-	}
-	private static nint[] ParamsTonintArray(string[] parameters)
-	{
-		var result = new nint[parameters.Length];
-		for (int i = 0; i < result.Length; i++)
-		{
-			string next = parameters[i];
-			unsafe
-			{
-				fixed (void* pNext = next)
-					result[i] = (nint)pNext;
-			}
-		}
-		return result;
-	}
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 
 	private static FrostApi.Logging.LogParameter[]? DictionaryToParameters(
 		IReadOnlyDictionary<string, string>? dictionary,

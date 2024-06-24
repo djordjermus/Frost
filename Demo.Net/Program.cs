@@ -106,9 +106,10 @@ var consoleLogger = new ConsoleSink(
 	colorOptions = ConsoleSink.Options.ColorOptions.Colored
 });
 
-
 Log.Subscribe(Layers.All, consoleLogger.Handler);
-
+while (true)
+	Log.EmitFatal(1, "{@Greeting}, {@Subject}!", new Dictionary<string, string> { { "Greeting", "Hello" }, { "Subject", "World" } });
+/*
 using var window = new Window(options);
 var msg = new Frost.Thread.Message();
 while (window.State != WindowState.Hidden)
@@ -116,3 +117,4 @@ while (window.State != WindowState.Hidden)
 	msg.Wait();
 	msg.Dispatch();
 }
+ */

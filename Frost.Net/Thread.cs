@@ -27,15 +27,15 @@ public class Thread : SynchronizationResource
 
 	public static Thread ThisThread => new Thread(FrostApi.Thread.GetCurrent());
 
-	public class Message : FrostResource
+	public class Message : FrostObject
 	{
 
 		public Message() :
 			base(FrostApi.Thread.CreateMessage())
 		{ }
 
-		public void Wait() => FrostApi.Thread.WaitMessage(Handle);
-		public void Peek() => FrostApi.Thread.PeekMessage(Handle);
+		public void Wait() => FrostApi.Synchronizable.Wait(Handle);
+		public void Peek() => FrostApi.Synchronizable.TryWait(Handle);
 		public void Dispatch() => FrostApi.Thread.DispatchMessage(Handle);
 		public void Discard() => FrostApi.Thread.DiscardMessage(Handle);
 

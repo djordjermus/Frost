@@ -113,30 +113,21 @@ internal static partial class FrostApi
         public static partial double GenerateF64(nint pSeed, double min, double range);
     }
 
-    public static partial class SemanticVersion
+    public static partial class Version
     {
         [StructLayout(LayoutKind.Sequential)]
-        public struct FrostSemanticVersion
+        public struct FrostVersion
         {
             public ushort major;
             public ushort minor;
-            public uint patch;
-            public nint decoration;
+            public ushort build;
+            public ushort revision;
         }
 		[LibraryImport(
 			frostApiPath,
-			EntryPoint = "frost_api_semantic_version_get_api_version")]
+			EntryPoint = "frost_api_version_get_api_version")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        public static partial void GetApiVersion(out FrostSemanticVersion output);
-
-		[LibraryImport(
-			frostApiPath,
-			EntryPoint = "frost_api_semantic_version_check_compatibility")]
-        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool CheckCompatibility(
-            FrostSemanticVersion version,
-            FrostSemanticVersion target);
+        public static partial void GetApiVersion(out FrostVersion output);
     }
 
     public static partial class EventSystem
@@ -246,32 +237,32 @@ internal static partial class FrostApi
 
 
 
-    public static partial class Resource
+    public static partial class Object
     {
 		[LibraryImport(
 			frostApiPath,
-			EntryPoint = "frost_api_resource_get_reference_count")]
+			EntryPoint = "frost_api_object_get_reference_count")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
         public static partial ulong GetRefCount(nint ptr);
 
 		[LibraryImport(
 			frostApiPath,
-			EntryPoint = "frost_api_resource_acquire_reference")]
+			EntryPoint = "frost_api_object_acquire_reference")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
         public static partial void AcquireReference(nint ptr);
 
 		[LibraryImport(
 			frostApiPath,
-			EntryPoint = "frost_api_resource_release_reference")]
+			EntryPoint = "frost_api_object_release_reference")]
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
         public static partial void ReleaseReference(nint ptr);
     }
 
-	public static partial class SystemResource
+	public static partial class SystemHandleHost
 	{
 		[LibraryImport(
 			frostApiPath,
-			EntryPoint = "frost_api_system_resource_get_system_handle")]
+			EntryPoint = "frost_api_system_handle_host_get_system_handle")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		public static partial nint GetSystemHandle(nint target);
 	}
@@ -356,15 +347,6 @@ internal static partial class FrostApi
         [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		[return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool TryWait(nint pArray, int count);
-
-
-
-		[LibraryImport(
-			frostApiPath,
-			EntryPoint = "frost_api_resource_is_synchronizable")]
-        [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		[return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool IsSynchronizable(nint handle);
 	}
 
     public static partial class Keycode
@@ -407,18 +389,6 @@ internal static partial class FrostApi
 			EntryPoint = "frost_api_thread_message_create")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		public static partial nint CreateMessage();
-
-		[LibraryImport(
-			frostApiPath,
-			EntryPoint = "frost_api_thread_message_wait")]
-		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial void WaitMessage(nint messagePtr);
-
-		[LibraryImport(
-			frostApiPath,
-			EntryPoint = "frost_api_thread_message_peek")]
-		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		public static partial void PeekMessage(nint messagePtr);
 
 		[LibraryImport(
 			frostApiPath,
@@ -643,13 +613,6 @@ internal static partial class FrostApi
 			EntryPoint = "frost_api_window_create")]
 		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
 		public static partial nint Create(nint pDesc);
-
-		[LibraryImport(
-			frostApiPath,
-			EntryPoint = "frost_api_resource_is_window")]
-		[UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		public static partial bool IsWindow(nint resource);
 	}
 
 	public static partial class Audio

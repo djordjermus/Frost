@@ -1,18 +1,16 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Frost.Interoperability;
+﻿namespace Frost.Interoperability;
 
 /// <summary>
 /// Frost.Api resource encapsulation
 /// </summary>
-public class FrostResource : IFrostResource
+public class FrostObject : IFrostObject
 {
     private nint _handle;
 
     /// <summary>
     /// Consturct null resource
     /// </summary>
-    protected FrostResource()
+    protected FrostObject()
     {
         _handle = nint.Zero;
 	}
@@ -21,11 +19,11 @@ public class FrostResource : IFrostResource
     /// Constructs a resource from handle
     /// </summary>
     /// <param name="handle">Raw handle to Frost.Api resource</param>
-    protected FrostResource(nint handle)
+    protected FrostObject(nint handle)
     {
         if (handle != nint.Zero)
         {
-            FrostApi.Resource.AcquireReference(handle);
+            FrostApi.Object.AcquireReference(handle);
             _handle = handle;
 		}
 	}
@@ -43,9 +41,9 @@ public class FrostResource : IFrostResource
         protected set
         {
             if (_handle != nint.Zero)
-                FrostApi.Resource.ReleaseReference(_handle);
+                FrostApi.Object.ReleaseReference(_handle);
             if (value != nint.Zero)
-                FrostApi.Resource.AcquireReference(value);
+                FrostApi.Object.AcquireReference(value);
 
             _handle = value;
         }
@@ -53,21 +51,21 @@ public class FrostResource : IFrostResource
         
     public ulong ReferenceCount =>
         Handle != nint.Zero ?
-            FrostApi.Resource.GetRefCount(Handle) :
+            FrostApi.Object.GetRefCount(Handle) :
             0;
 
 
 
-    ~FrostResource()
+    ~FrostObject()
     {
         if (_handle != nint.Zero)
-            FrostApi.Resource.ReleaseReference(_handle);
+            FrostApi.Object.ReleaseReference(_handle);
     }
 
     public void Dispose()
     {
         GC.SuppressFinalize(this);
         if (_handle != nint.Zero)
-            FrostApi.Resource.ReleaseReference(_handle);
+            FrostApi.Object.ReleaseReference(_handle);
 	}
 }
