@@ -3,7 +3,7 @@
 /// <summary>
 /// Defines a Frost.Api resource methods
 /// </summary>
-public interface IFrostResource : IDisposable
+public interface IFrostObject : IDisposable
 {
 		/// <summary>
 		/// Returns raw handle of the api resource

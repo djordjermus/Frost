@@ -27,7 +27,7 @@ public class Thread : SynchronizationResource
 
 	public static Thread ThisThread => new Thread(FrostApi.Thread.GetCurrent());
 
-	public class Message : FrostResource
+	public class Message : FrostObject
 	{
 
 		public Message() :

@@ -237,7 +237,7 @@ internal static partial class FrostApi
 
 
 
-    public static partial class Resource
+    public static partial class Object
     {
 		[LibraryImport(
 			frostApiPath,
