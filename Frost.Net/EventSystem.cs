@@ -1,7 +1,8 @@
-﻿using Frost.Interoperability;
+﻿using System.Reflection;
+using Frost.Interoperability;
 using Frost.Models;
+using Frost.Net.Interoperability;
 using Frost.Utilities;
-using System.Reflection;
 
 namespace Frost;
 
@@ -10,15 +11,18 @@ public static class EventSystem
 	public delegate void Handler<T>(ref T data) where T : struct;
 	public delegate void HandlerRef<T>(ref T data) where T : struct;
 
+    private static readonly Dictionary<ulong, Dictionary<ulong, object>> _handlers = new();
+    private static readonly Dictionary<ulong, Relay> _relays = new();
+    private static readonly ulong _logEventsTag = 0;
+	private static readonly GCHandleHost _gcRelay;
 
-
-	/// <summary>
-	/// Subscribe method via reflections.
-	/// </summary>
-	/// <param name="activationLayers">Event layers that activate the method.</param>
-	/// <param name="method">Method info of target method.</param>
-	/// <param name="obj">Optional this parameter of the method.</param>
-	public static void Subscribe(Layers activationLayers, MethodInfo method, object? obj = null)
+    /// <summary>
+    /// Subscribe method via reflections.
+    /// </summary>
+    /// <param name="activationLayers">Event layers that activate the method.</param>
+    /// <param name="method">Method info of target method.</param>
+    /// <param name="obj">Optional this parameter of the method.</param>
+    public static void Subscribe(Layers activationLayers, MethodInfo method, object? obj = null)
 	{
 		var type = method.GetParameters().First().ParameterType.GetElementType();
 		var delegateType = typeof(Handler<>).MakeGenericType(type!);
@@ -153,7 +157,7 @@ public static class EventSystem
 			/* Find largers parameter, use it for stack alloc parameter span*/
 			ulong maxParamNameSize = 0;
 			ulong maxParamValueSize = 0;
-			for (ulong i = 0; i < pLog->parameter_count; i++) 
+			for (ulong i = 0; i < pLog->parameter_count; i++)
 			{
 				FrostApi.Logging.LogParameter* pParameter = ((FrostApi.Logging.LogParameter*)pLog->parameters) + i;
 				if (maxParamNameSize < pParameter->name_length)
@@ -205,12 +209,8 @@ public static class EventSystem
 	static EventSystem()
 	{
 		_logEventsTag = FrostApi.Logging.GetLogEventTag();
-		FrostApi.EventSystem.SubscribeRelay(InteropRelay);
-	}
+        FrostApi.EventSystem.SubscribeRelay(GCHandleHost.Alloc<FrostApi.EventSystem.RelaySig>(InteropRelay, out _gcRelay));
+    }
 
 	private delegate void Relay(ulong tag, ulong activationLayers, nint pData);
-
-	private static Dictionary<ulong, Dictionary<ulong, object>> _handlers = new();
-	private static Dictionary<ulong, Relay> _relays = new();
-	private static ulong _logEventsTag = 0;
 }
