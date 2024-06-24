@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using Frost.Interoperability;
 using Frost.Models;
-using Frost.Net.Interoperability;
 using Frost.Utilities;
 
 namespace Frost;
@@ -14,7 +13,7 @@ public static class EventSystem
     private static readonly Dictionary<ulong, Dictionary<ulong, object>> _handlers = new();
     private static readonly Dictionary<ulong, Relay> _relays = new();
     private static readonly ulong _logEventsTag = 0;
-	private static readonly GCHandleHost _gcRelay;
+	private static readonly FrostApi.EventSystem.RelaySig _relayHandle;
 
     /// <summary>
     /// Subscribe method via reflections.
@@ -209,7 +208,8 @@ public static class EventSystem
 	static EventSystem()
 	{
 		_logEventsTag = FrostApi.Logging.GetLogEventTag();
-        FrostApi.EventSystem.SubscribeRelay(GCHandleHost.Alloc<FrostApi.EventSystem.RelaySig>(InteropRelay, out _gcRelay));
+		_relayHandle = InteropRelay;
+        FrostApi.EventSystem.SubscribeRelay(_relayHandle);
     }
 
 	private delegate void Relay(ulong tag, ulong activationLayers, nint pData);
