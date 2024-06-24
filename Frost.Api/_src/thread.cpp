@@ -1,6 +1,7 @@
 #include "object.hpp"
 #include "../ref.hpp"
 using namespace frost::api;
+using namespace frost::impl;
 static constexpr u64 msg_execute_procedure_asynchronous = 0xBFFF;
 
 static thread_reference* create_local_thread_reference();
@@ -136,7 +137,7 @@ FROST_API bool _stdcall frost_api_thread_message_send(
 		return false;
 	}
 
-	auto handle = ((frost::api::thread*)thread)->handle;
+	auto handle = ((frost::impl::thread*)thread)->handle;
 	if (handle == nullptr)
 		return false;
 
@@ -202,7 +203,7 @@ FROST_API bool _stdcall frost_api_thread_message_send_async(
 	info->procedure = procedure;
 	info->argument = argument;
 
-	auto handle = ((frost::api::thread*)thread)->handle;
+	auto handle = ((frost::impl::thread*)thread)->handle;
 	if (handle == nullptr)
 		return false;
 

@@ -16,8 +16,8 @@
  * DEBUG
  */
 #if _DEBUG
-#define FROST_API_DEBUG_LOG_RESOURCE_CREATION 1
-#define FROST_API_DEBUG_LOG_RESOURCE_DESTRUCTION 1
+#define FROST_API_DEBUG_LOG_OBJECT_CREATION 1
+#define FROST_API_DEBUG_LOG_OBJECT_DESTRUCTION 1
 #endif
 
 /*
@@ -235,10 +235,13 @@ namespace frost::api
 		error		= 16,
 		fatal		= 32,
 	};
-	// TODO destroy for everyone + everything for window...
+	
 	enum class object_type : u64
 	{
 		basic_object,
+
+		data_blob,
+		data_blob_slice,
 
 		sync_mutex,
 		sync_semaphore,

@@ -3,6 +3,7 @@
 #include <windowsx.h>
 #include <hidusage.h>
 using namespace frost::api;
+using namespace frost::impl;
 #define WND(x) ((window*)(x))
 static bool is_direct_invoke_required(window* target);
 static inline void update_rect(window* target);

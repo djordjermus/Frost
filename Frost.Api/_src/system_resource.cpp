@@ -1,5 +1,6 @@
 #include "object.hpp"
 using namespace frost::api;
+using namespace frost::impl;
 
 FROST_API void* _stdcall frost_api_system_handle_host_get_system_handle(frost::api::object* target)
 {

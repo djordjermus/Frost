@@ -1,6 +1,7 @@
 #include <memory>
 #include "object.hpp"
 using namespace frost::api;
+using namespace frost::impl;
 
 FROST_API bool _stdcall frost_api_synchronizable_wait(object* target)
 {

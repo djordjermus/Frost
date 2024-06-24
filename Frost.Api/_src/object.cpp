@@ -2,6 +2,8 @@
 #include "../internal/debug.impl.hpp"
 #include <typeinfo>
 using namespace frost::api;
+using namespace frost::impl;
+
 FROST_API u64 _stdcall frost_api_object_get_reference_count(object* target)
 {
 	return target->reference_count;
@@ -32,9 +34,10 @@ FROST_API void _stdcall frost_api_object_release_reference(object* target)
 		::DestroyWindow((HWND)((window*)target)->handle);
 		break;
 	default:
+		frost::impl::debug::log_object_invalid_type(target);
 		break;
 	}
 
-	frost::impl::debug::log_resource_destruction(target);
+	frost::impl::debug::log_object_destruction(target);
 	delete target;
 }
