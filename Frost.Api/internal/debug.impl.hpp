@@ -1,4 +1,4 @@
-#include "resource.impl.hpp"
+#include "../include.hpp"
 #include <typeinfo>
 #pragma once
 namespace frost::impl
@@ -6,7 +6,7 @@ namespace frost::impl
 	class debug
 	{
 	public:
-		static void log_resource_creation(const frost::api::resource* target);
-		static void log_resource_destruction(const frost::api::resource* target);
+		static void log_resource_creation(const frost::api::object* target);
+		static void log_resource_destruction(const frost::api::object* target);
 	};
 }
