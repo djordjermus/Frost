@@ -1,5 +1,5 @@
 #include "object.hpp"
-FROST_API const frost::api::object* _stdcall frost_api_blob_create_from_buffer(void* buffer, u64 byte_size)
+FROST_API frost::api::object* _stdcall frost_api_blob_create_from_buffer(void* buffer, u64 byte_size)
 {
 	frost::impl::blob* result = new frost::impl::blob();
 	result->type = frost::api::object_type::data_blob;
@@ -8,7 +8,7 @@ FROST_API const frost::api::object* _stdcall frost_api_blob_create_from_buffer(v
 	return result;
 }
 
-FROST_API const frost::api::object* _stdcall frost_api_blob_copy_from_buffer(void* buffer, u64 byte_size)
+FROST_API frost::api::object* _stdcall frost_api_blob_copy_from_buffer(void* buffer, u64 byte_size)
 {
 	frost::impl::blob* result = new frost::impl::blob();
 	result->type = frost::api::object_type::data_blob;
@@ -18,7 +18,7 @@ FROST_API const frost::api::object* _stdcall frost_api_blob_copy_from_buffer(voi
 	return result;
 }
 
-FROST_API const void* _stdcall frost_api_blob_get_data(frost::api::object* target)
+FROST_API void* _stdcall frost_api_blob_get_data(frost::api::object* target)
 {
 	switch (target->type)
 	{
@@ -29,7 +29,7 @@ FROST_API const void* _stdcall frost_api_blob_get_data(frost::api::object* targe
 	}
 }
 
-FROST_API const u64 _stdcall frost_api_blob_get_byte_size(frost::api::object* target)
+FROST_API u64 _stdcall frost_api_blob_get_byte_size(frost::api::object* target)
 {
 	switch (target->type)
 	{
