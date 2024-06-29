@@ -155,6 +155,7 @@
     <ClInclude Include="_src\object.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="_src\blob.cpp" />
     <ClCompile Include="_src\_internal\_src\debug.impl.cpp" />
     <ClCompile Include="_src\_internal\_src\sysmap.impl.cpp" />
     <ClCompile Include="_src\clock.cpp" />
