@@ -11,6 +11,8 @@ namespace frost::api
 		object_type type;
 	};
 }
+
+/* OBJECTS WITH PLATFORM AGNOSTIC IMPLEMENTATION */
 namespace frost::impl {
 	struct blob final : public api::object
 	{
@@ -18,16 +20,9 @@ namespace frost::impl {
 		void* data;
 		u64 byte_size;
 	};
-
-	struct blob_slice final : public api::object
-	{
-	public:
-		ref blob;
-		u64 offset;
-		u64 length;
-	};
 }
 
+/* OBJECTS WITH PLATFORM SPECIFIC IMPLEMENTATION */
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
 #include "windows.h"
 namespace frost::impl

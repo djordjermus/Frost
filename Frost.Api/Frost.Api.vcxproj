@@ -131,15 +131,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="enum\keycode.hpp" />
+    <ClInclude Include="enum\log_level.hpp" />
+    <ClInclude Include="enum\window_event_type.hpp" />
+    <ClInclude Include="function\event_system_handler.hpp" />
+    <ClInclude Include="function\event_system_relay.hpp" />
+    <ClInclude Include="function\window_procedure.hpp" />
+    <ClInclude Include="macro.hpp" />
+    <ClInclude Include="enum\object_type.hpp" />
+    <ClInclude Include="enum\window_state.hpp" />
+    <ClInclude Include="primitives.hpp" />
     <ClInclude Include="include.hpp" />
-    <ClInclude Include="internal\debug.impl.hpp" />
-    <ClInclude Include="internal\sysmap.impl.hpp" />
+    <ClInclude Include="_src\_internal\debug.impl.hpp" />
+    <ClInclude Include="_src\_internal\sysmap.impl.hpp" />
     <ClInclude Include="ref.hpp" />
+    <ClInclude Include="struct\log_event_data.hpp" />
+    <ClInclude Include="struct\log_parameter.hpp" />
+    <ClInclude Include="struct\point.hpp" />
+    <ClInclude Include="struct\size.hpp" />
+    <ClInclude Include="struct\version.hpp" />
+    <ClInclude Include="struct\window_description.hpp" />
+    <ClInclude Include="struct\window_event.hpp" />
     <ClInclude Include="_src\object.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="internal\_src\debug.impl.cpp" />
-    <ClCompile Include="internal\_src\sysmap.impl.cpp" />
+    <ClCompile Include="_src\_internal\_src\debug.impl.cpp" />
+    <ClCompile Include="_src\_internal\_src\sysmap.impl.cpp" />
     <ClCompile Include="_src\clock.cpp" />
     <ClCompile Include="_src\color.cpp" />
     <ClCompile Include="_src\event_system.cpp" />
