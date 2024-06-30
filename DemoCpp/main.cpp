@@ -43,7 +43,7 @@ int main()
 	auto riff_fmt = frost_api_riff_get_subchunk(buffer, frost_api_riff_ascii_to_id("fmt "));
 	auto riff_data = frost_api_riff_get_subchunk(buffer, frost_api_riff_ascii_to_id("data"));
 	auto riff_data_size = frost_api_riff_get_chunk_size(riff_data);
-	frost_api_test_audio_2();
+
 	frost_api_audio_test(frost_api_riff_get_chunk_data(riff_fmt), frost_api_riff_get_chunk_data(riff_data), riff_data_size);
 
 	frost::api::window_description desc = frost::api::window_description();
