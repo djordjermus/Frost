@@ -69,7 +69,7 @@ public class FrostApiEndpointLinkageTest
 	[TestMethod]
 	public void TestVersionApi()
 	{
-		var version = Models.Version.GetApiVersion();
+		var version = Api.GetApiVersion();
 	}
 
 	[TestMethod]
