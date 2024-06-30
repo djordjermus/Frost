@@ -128,5 +128,11 @@
     <ClCompile Include="_src\blob.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="_src\riff.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="_src\audio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

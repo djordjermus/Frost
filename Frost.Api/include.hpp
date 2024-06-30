@@ -222,6 +222,24 @@ extern "C" // BLOB API
 	FROST_API u64 _stdcall frost_api_blob_get_byte_size(frost::api::object* target);
 }
 
-extern "C" // RIFF API
+extern "C" // RIFF API (UNSTABLE, DO NOT USE)
 {
+	FROST_API u32 _stdcall frost_api_riff_get_riff_id();
+	FROST_API u32 _stdcall frost_api_riff_get_list_id();
+	FROST_API u32 _stdcall frost_api_riff_ascii_to_id(const char* id);
+	FROST_API bool _stdcall frost_api_riff_id_to_ascii(u32 id, char* out_ascii);
+
+	FROST_API u32 _stdcall frost_api_riff_get_type(const void* riff);
+	FROST_API u32 _stdcall frost_api_riff_get_chunk_id(const void* chunk);
+	FROST_API u32 _stdcall frost_api_riff_get_chunk_size(const void* chunk);
+	FROST_API void* _stdcall frost_api_riff_get_chunk_data(void* chunk);
+
+	FROST_API u64 _stdcall frost_api_riff_get_subchunk_count(void* chunk);
+	FROST_API void* _stdcall frost_api_riff_get_subchunk_indexed(void* chunk, u64 index);
+	FROST_API void* _stdcall frost_api_riff_get_subchunk(void* chunk, u32 chunk_id);
+}
+
+extern "C" // AUDIO API  (UNSTABLE, DO NOT USE)
+{
+	FROST_API u32 _stdcall frost_api_audio_test(void* riff_fmt, void* riff_data, u64 data_byte_size);
 }

@@ -3,6 +3,12 @@ using Frost.Logging;
 using Frost.Models;
 using Frost.Net.Logging.Sink;
 using Frost.Net.Models;
+var bytes = File.ReadAllBytes(@"C:\Users\Admin\Desktop\gunshot.wav");
+var ints = new uint[bytes.Length / 4 + 1];
+Buffer.BlockCopy(bytes, 0, ints, 0, bytes.Length);
+
+var text = ints.Select(b => $"{b}").ToArray();
+File.WriteAllLines(@"C:\Users\Admin\Desktop\gunshot.txt", text);
 
 
 var options = new WindowOptions();
