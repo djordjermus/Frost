@@ -215,7 +215,7 @@ extern "C" // KEYCODE API
 
 extern "C" // BLOB API
 {
-	FROST_API frost::api::object* _stdcall frost_api_blob_create_from_buffer(void* buffer, u64 byte_size);
+	FROST_API frost::api::object* _stdcall frost_api_blob_from_owned_buffer(void* buffer, u64 byte_size);
 	FROST_API frost::api::object* _stdcall frost_api_blob_copy_from_buffer(void* buffer, u64 byte_size);
 
 	FROST_API void* _stdcall frost_api_blob_get_data(frost::api::object* target);

@@ -20,6 +20,12 @@ namespace frost::impl {
 		void* data;
 		u64 byte_size;
 	};
+
+	struct blob_inlined final : public api::object
+	{
+	public:
+		u64 byte_size;
+	};
 }
 
 /* OBJECTS WITH PLATFORM SPECIFIC IMPLEMENTATION */

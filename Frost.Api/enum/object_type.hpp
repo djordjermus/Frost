@@ -7,6 +7,7 @@ namespace frost::api
 		basic_object,
 
 		data_blob,
+		data_blob_inlined,
 
 		sync_mutex,
 		sync_semaphore,

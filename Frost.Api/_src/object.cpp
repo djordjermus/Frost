@@ -33,11 +33,16 @@ FROST_API void _stdcall frost_api_object_release_reference(object* target)
 	case object_type::window:
 		::DestroyWindow((HWND)((window*)target)->handle);
 		break;
+	case object_type::data_blob:
+		delete ((blob*)target)->data;
+		break;
+	case object_type::data_blob_inlined:
+		break;
 	default:
 		frost::impl::debug::log_object_invalid_type(target);
 		break;
 	}
 
 	frost::impl::debug::log_object_destruction(target);
-	delete target;
+	free(target);
 }
