@@ -69,7 +69,7 @@ FROST_API u32 _stdcall frost_api_audio_test(void* riff_fmt, void* riff_data, u64
 		return hr;
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
+	
 	pMasterVoice->DestroyVoice();
 	pSourceVoice->DestroyVoice();
 

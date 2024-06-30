@@ -29,17 +29,7 @@ int main()
 	if (!infile.read(buffer, length))
 		int i;
 	infile.close();
-	//frost_api_audio_test();
-	// Read file
 
-	char ascii[5] = {};
-
-	u32 id = frost_api_riff_get_chunk_id(buffer);
-	u32 file_type = frost_api_riff_get_type(buffer);
-	void* list = frost_api_riff_get_subchunk(buffer, frost_api_riff_get_list_id());
-	frost_api_riff_id_to_ascii(file_type, ascii);
-	bool is_riff = frost_api_riff_get_riff_id() == frost_api_riff_get_chunk_id(buffer);
-	auto chunk_count = frost_api_riff_get_subchunk_count(buffer);
 	auto riff_fmt = frost_api_riff_get_subchunk(buffer, frost_api_riff_ascii_to_id("fmt "));
 	auto riff_data = frost_api_riff_get_subchunk(buffer, frost_api_riff_ascii_to_id("data"));
 	auto riff_data_size = frost_api_riff_get_chunk_size(riff_data);
