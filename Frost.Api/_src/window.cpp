@@ -1,5 +1,5 @@
 #include "_internal/sysmap.impl.hpp"
-#include "object.hpp"
+#include "_internal/object.hpp"
 #include <windowsx.h>
 #include <hidusage.h>
 using namespace frost::api;
@@ -38,8 +38,6 @@ static LRESULT wm_enable(HWND hwnd, UINT msg, WPARAM w, LPARAM l);
 static LRESULT wm_activate(HWND hwnd, UINT msg, WPARAM w, LPARAM l);
 static LRESULT wm_set_focus(HWND hwnd, UINT msg, WPARAM w, LPARAM l);
 static LRESULT wm_kill_focus(HWND hwnd, UINT msg, WPARAM w, LPARAM l);
-
-static LRESULT wm_paint(HWND hwnd, UINT msg, WPARAM w, LPARAM l);
 
 static LRESULT wm_nc_calc_size(HWND hwnd, UINT msg, WPARAM w, LPARAM l);
 static LRESULT wm_nc_hit_test(HWND hwnd, UINT msg, WPARAM w, LPARAM l);
@@ -152,7 +150,7 @@ FROST_API void _stdcall frost_api_window_set_enabled(object* target, bool enable
 			data.target = WND(target);
 			data.p_argument = &enabled;
 			frost_api_thread_message_send(
-				WND(target)->_thread.get(),
+				WND(target)->_thread,
 				[](void* arg) {
 					auto& edd = *reinterpret_cast<execute_deferred_data*>(arg);
 					frost_api_window_set_enabled(edd.target, *reinterpret_cast<bool*>(edd.p_argument));
@@ -187,7 +185,7 @@ FROST_API void _stdcall frost_api_window_set_active(object* target, bool active)
 			data.target = WND(target);
 			data.p_argument = &active;
 			frost_api_thread_message_send(
-				WND(target)->_thread.get(),
+				WND(target)->_thread,
 				[](void* arg) {
 					auto& edd = *reinterpret_cast<execute_deferred_data*>(arg);
 					frost_api_window_set_active(edd.target, *reinterpret_cast<bool*>(edd.p_argument));
@@ -222,7 +220,7 @@ FROST_API void _stdcall frost_api_window_set_focused(object* target, bool focus)
 			data.target = WND(target);
 			data.p_argument = &focus;
 			frost_api_thread_message_send(
-				WND(target)->_thread.get(),
+				WND(target)->_thread,
 				[](void* arg) {
 					auto& edd = *reinterpret_cast<execute_deferred_data*>(arg);
 					frost_api_window_set_enabled(edd.target, *reinterpret_cast<bool*>(edd.p_argument));
@@ -251,7 +249,7 @@ FROST_API void _stdcall frost_api_window_set_state(object* target, window_state 
 			data.target = WND(target);
 			data.p_argument = &state;
 			frost_api_thread_message_send(
-				WND(target)->_thread.get(),
+				WND(target)->_thread,
 				[](void* arg) {
 					auto& edd = *reinterpret_cast<execute_deferred_data*>(arg);
 					frost_api_window_set_state(edd.target, (*reinterpret_cast<window_state*>(edd.p_argument)));
@@ -278,7 +276,7 @@ FROST_API void _stdcall frost_api_window_set_position(object* target, point2d<i3
 			data.target = WND(target);
 			data.p_argument = &position;
 			frost_api_thread_message_send(
-				WND(target)->_thread.get(),
+				WND(target)->_thread,
 				[](void* arg) {
 					auto& edd = *reinterpret_cast<execute_deferred_data*>(arg);
 					frost_api_window_set_position(edd.target, *reinterpret_cast<point2d<i32>*>(edd.p_argument));
@@ -304,7 +302,7 @@ FROST_API void _stdcall frost_api_window_set_size(object* target, size2d<i32> si
 			data.target = WND(target);
 			data.p_argument = &size;
 			frost_api_thread_message_send(
-				WND(target)->_thread.get(),
+				WND(target)->_thread,
 				[](void* arg) {
 					auto& edd = *reinterpret_cast<execute_deferred_data*>(arg);
 					frost_api_window_set_size(edd.target, *reinterpret_cast<size2d<i32>*>(edd.p_argument));
@@ -526,9 +524,6 @@ static LRESULT window_procedure(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 		return wm_set_focus(hwnd, msg, w, l);
 	case WM_KILLFOCUS:
 		return wm_kill_focus(hwnd, msg, w, l);
-
-	case WM_PAINT:
-		return wm_paint(hwnd, msg, w, l);
 
 	case WM_NCHITTEST:
 		return wm_nc_hit_test(hwnd, msg, w, l);
@@ -909,23 +904,6 @@ LRESULT wm_kill_focus(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 	return ::DefWindowProcW(hwnd, msg, w, l);
 }
 
-LRESULT wm_paint(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
-{
-	auto data = get_hwnd_data(hwnd);
-
-	RECT rect = {};
-	::GetWindowRect(hwnd, &rect);
-	rect = { 0, 0, rect.right - rect.left, rect.bottom - rect.top };
-
-	auto hdc = ::GetDC(hwnd);
-	auto br = ::CreateSolidBrush(RGB(255, 0, 255));
-	::FillRect(hdc, &rect, br);
-
-	::ReleaseDC(hwnd, hdc);
-	::DeleteObject(br);
-	return ::DefWindowProcW(hwnd, msg, w, l);
-}
-
 LRESULT wm_nc_calc_size(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 {
 	if (static_cast<bool>(w))
@@ -997,7 +975,7 @@ LRESULT wm_create(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 	result->_state = fold_state(desc->state);
 	result->_procedure = desc->procedure;
 	result->_data = desc->data;
-	result->_thread = frost_api_thread_get_current();
+	result->_thread = (thread_reference*)frost_api_thread_get_current();
 	result->_thread_id = ::GetCurrentThreadId();
 	result->_hkl = ::GetKeyboardLayout(result->_thread_id);
 	result->_rect = {
@@ -1037,6 +1015,52 @@ LRESULT wm_create(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 	::ShowWindow(hwnd, state_to_int(result->_state));
 	auto data = get_hwnd_data(hwnd);
 
+	/* GRAPHICS */
+	if (desc->graphics.root == nullptr || desc->graphics.root->type != frost::api::object_type::graphics_root)
+	{
+		::DestroyWindow(hwnd);
+		frost_api_object_acquire_reference(result);
+		frost_api_object_release_reference(result);
+		return ::DefWindowProcW(hwnd, msg, w, l);
+	}
+	result->graphics.root = (frost::impl::graphics_root*)desc->graphics.root;
+	result->graphics.buffer_count = desc->graphics.buffer_count;
+	result->graphics.buffer_size = desc->graphics.buffer_size;
+
+	HRESULT hr = S_OK;
+	IDXGIFactory2* factory;
+	if ((hr = result->graphics.root->factory->QueryInterface(IID_PPV_ARGS(&factory))) != S_OK)
+	{
+		::DestroyWindow(hwnd);
+		frost_api_object_acquire_reference(result);
+		frost_api_object_release_reference(result);
+		return ::DefWindowProcW(hwnd, msg, w, l);
+	}
+
+	DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
+	swapChainDesc.BufferCount = desc->graphics.buffer_count;
+	swapChainDesc.Width = desc->graphics.buffer_size.width;
+	swapChainDesc.Height = desc->graphics.buffer_size.height;
+	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	swapChainDesc.SampleDesc.Count = 1;
+
+	if ((hr = factory->CreateSwapChainForHwnd(
+			result->graphics.root->queue,
+			hwnd,
+			&swapChainDesc,
+			nullptr,
+			nullptr,
+			&data->graphics.swapchain)) != S_OK)
+	{
+		::DestroyWindow(hwnd);
+		frost_api_object_acquire_reference(result);
+		frost_api_object_release_reference(result);
+		return ::DefWindowProcW(hwnd, msg, w, l);
+	}
+
+	data->graphics.swapchain->Present(0, 0);
 	/* EMIT EVENT */
 	if (data->_procedure)
 	{
@@ -1045,6 +1069,7 @@ LRESULT wm_create(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 		e.type = window_event::event_type::create;
 		data->_procedure(&e);
 	}
+
 	return ::DefWindowProcW(hwnd, msg, w, l);
 }
 LRESULT wm_close(HWND hwnd, UINT msg, WPARAM w, LPARAM l)

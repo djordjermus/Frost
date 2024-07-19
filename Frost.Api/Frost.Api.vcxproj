@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="enum\graphics_api.hpp" />
     <ClInclude Include="enum\keycode.hpp" />
     <ClInclude Include="enum\log_level.hpp" />
     <ClInclude Include="enum\window_event_type.hpp" />
@@ -152,11 +153,12 @@
     <ClInclude Include="struct\version.hpp" />
     <ClInclude Include="struct\window_description.hpp" />
     <ClInclude Include="struct\window_event.hpp" />
-    <ClInclude Include="_src\object.hpp" />
+    <ClInclude Include="_src\_internal\object.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_src\audio.cpp" />
     <ClCompile Include="_src\blob.cpp" />
+    <ClCompile Include="_src\graphics.cpp" />
     <ClCompile Include="_src\riff.cpp" />
     <ClCompile Include="_src\_internal\_src\debug.impl.cpp" />
     <ClCompile Include="_src\_internal\_src\sysmap.impl.cpp" />
@@ -165,7 +167,7 @@
     <ClCompile Include="_src\event_system.cpp" />
     <ClCompile Include="_src\keycode.cpp" />
     <ClCompile Include="_src\logging.cpp" />
-    <ClCompile Include="_src\object.cpp" />
+    <ClCompile Include="_src\_internal\_src\object.cpp" />
     <ClCompile Include="_src\synchronizable.cpp" />
     <ClCompile Include="_src\random.api.cpp" />
     <ClCompile Include="_src\version.cpp" />

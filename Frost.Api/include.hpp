@@ -2,6 +2,7 @@
 #include "macro.hpp"
 
 #include "enum/keycode.hpp"
+#include "enum/graphics_api.hpp"
 #include "enum/log_level.hpp"
 #include "enum/object_type.hpp"
 #include "enum/window_state.hpp"
@@ -242,4 +243,10 @@ extern "C" // RIFF API (UNSTABLE, DO NOT USE)
 extern "C" // AUDIO API  (UNSTABLE, DO NOT USE)
 {
 	FROST_API u32 _stdcall frost_api_audio_test(void* riff_fmt, void* riff_data, u64 data_byte_size);
+}
+
+extern "C"
+{
+	FROST_API frost::api::graphics_api frost_api_graphics_get_preset_apis();
+	FROST_API frost::api::object* frost_api_graphics_create_root(frost::api::graphics_api selected_apis);
 }

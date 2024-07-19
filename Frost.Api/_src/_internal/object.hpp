@@ -1,5 +1,5 @@
-#include "../include.hpp"
-#include "../ref.hpp"
+#include "../../include.hpp"
+#include "../../ref.hpp"
 #include <atomic>
 #pragma once
 namespace frost::api
@@ -30,7 +30,14 @@ namespace frost::impl {
 
 /* OBJECTS WITH PLATFORM SPECIFIC IMPLEMENTATION */
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
 #include "windows.h"
+#include <d3d12.h>
+#include <dxgi1_6.h>
+#pragma comment(lib, "d3d12")
+#pragma comment(lib, "dxgi")
 namespace frost::impl
 {
 	struct system_handle_host : public api::object
@@ -57,6 +64,7 @@ namespace frost::impl
 		MSG message;
 	};
 
+	struct graphics_root;
 	struct window : public system_handle_host
 	{
 	public:
@@ -72,8 +80,16 @@ namespace frost::impl
 		frost::api::window_procedure_sig _procedure = nullptr;
 		void* _data = nullptr;
 
-		ref _thread = nullptr;
+		frost::impl::thread_reference* _thread = nullptr;
 		DWORD _thread_id = 0;
+
+		struct
+		{
+			graphics_root* root;
+			frost::api::size2d<u32> buffer_size;
+			u32 buffer_count;
+			IDXGISwapChain1* swapchain;
+		} graphics;
 
 		frost::api::window_state _state = frost::api::window_state::invalid;
 
@@ -82,7 +98,22 @@ namespace frost::impl
 		constexpr static u64 _flag_focused = (1ull << 2);
 		constexpr static u64 _flag_cursor_inside = (1ull << 3);
 	};
+
+	struct graphics_root : public api::object
+	{
+	public:
+		static const frost::api::graphics_api preset_apis;
+
+		frost::api::graphics_api target;
+
+		IDXGIFactory1* factory;
+		IDXGIAdapter1* adapter;
+
+		ID3D12Device* device;
+		ID3D12CommandQueue* queue;
+		ID3D12CommandAllocator* allocator;
+	};
 }
 #else
-static_assert("PLATFORM NOT SUPPORTED")
+static_assert("PLATFORM NOT SUPPORTED!" == nullptr);
 #endif

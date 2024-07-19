@@ -1,4 +1,4 @@
-#include "object.hpp"
+#include "_internal/object.hpp"
 #include "../ref.hpp"
 using namespace frost::api;
 using namespace frost::impl;

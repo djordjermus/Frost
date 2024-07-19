@@ -17,26 +17,28 @@ static void _stdcall log_handler(void* p_data)
 char buffer[800'000];
 int main()
 {
-	std::ifstream infile("gunshot.wav", std::ios::binary);
-	infile.seekg(0, std::ios::end);
-	size_t length = infile.tellg();
-	infile.seekg(0, std::ios::beg);
-
-	// Don't overflow the buffer!
-	if (length > sizeof(buffer)) {
-		length = sizeof(buffer);
-	}
-	if (!infile.read(buffer, length))
-		int i;
-	infile.close();
-
-	auto riff_fmt = frost_api_riff_get_subchunk(buffer, frost_api_riff_ascii_to_id("fmt "));
-	auto riff_data = frost_api_riff_get_subchunk(buffer, frost_api_riff_ascii_to_id("data"));
-	auto riff_data_size = frost_api_riff_get_chunk_size(riff_data);
-
-	frost_api_audio_test(frost_api_riff_get_chunk_data(riff_fmt), frost_api_riff_get_chunk_data(riff_data), riff_data_size);
+	auto root = frost_api_graphics_create_root(frost::api::graphics_api::d3d12);
+	// std::ifstream infile("gunshot.wav", std::ios::binary);
+	// infile.seekg(0, std::ios::end);
+	// size_t length = infile.tellg();
+	// infile.seekg(0, std::ios::beg);
+	// 
+	// // Don't overflow the buffer!
+	// if (length > sizeof(buffer)) {
+	// 	length = sizeof(buffer);
+	// }
+	// if (!infile.read(buffer, length))
+	// 	int i;
+	// infile.close();
+	// 
+	// auto riff_fmt = frost_api_riff_get_subchunk(buffer, frost_api_riff_ascii_to_id("fmt "));
+	// auto riff_data = frost_api_riff_get_subchunk(buffer, frost_api_riff_ascii_to_id("data"));
+	// auto riff_data_size = frost_api_riff_get_chunk_size(riff_data);
+	// 
+	// frost_api_audio_test(frost_api_riff_get_chunk_data(riff_fmt), frost_api_riff_get_chunk_data(riff_data), riff_data_size);
 
 	frost::api::window_description desc = frost::api::window_description();
+	desc.graphics.root = root;
 	desc.procedure = fn;
 	window = frost_api_window_create(&desc);
 	msg = frost_api_thread_message_create();

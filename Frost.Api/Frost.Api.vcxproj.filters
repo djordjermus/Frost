@@ -27,7 +27,7 @@
     <ClInclude Include="include.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="_src\object.hpp">
+    <ClInclude Include="_src\_internal\object.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="enum\keycode.hpp">
@@ -81,6 +81,9 @@
     <ClInclude Include="struct\window_event.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="enum\graphics_api.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_src\clock.cpp">
@@ -104,7 +107,7 @@
     <ClCompile Include="_src\synchronizable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_src\object.cpp">
+    <ClCompile Include="_src\_internal\_src\object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_src\_internal\_src\debug.impl.cpp">
@@ -132,6 +135,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_src\audio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="_src\graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

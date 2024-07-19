@@ -17,6 +17,8 @@ namespace frost::api
 		thread,
 		thread_message,
 
-		window
+		window,
+
+		graphics_root,
 	};
 }

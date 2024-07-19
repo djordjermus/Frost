@@ -6,6 +6,7 @@
 #pragma once
 namespace frost::api
 {
+	struct object;
 	struct window_description final
 	{
 	public:
@@ -16,5 +17,13 @@ namespace frost::api
 		void* data = nullptr;
 
 		window_state state = window_state::normal;
+
+		struct
+		{
+			frost::api::object* root = nullptr;
+
+			size2d<u32> buffer_size = { 1280, 720 };
+			u32 buffer_count = 2;
+		} graphics;
 	};
 }
