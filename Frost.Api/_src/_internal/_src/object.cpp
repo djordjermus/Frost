@@ -1,5 +1,5 @@
 #include "../object.hpp"
-#include "../debug.impl.hpp"
+#include "../debug.hpp"
 #include <typeinfo>
 using namespace frost::api;
 using namespace frost::impl;

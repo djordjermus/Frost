@@ -77,6 +77,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);FROST_API_BUILD_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -92,6 +93,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);FROST_API_BUILD_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,6 +109,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);FROST_API_BUILD_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -122,6 +125,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);FROST_API_BUILD_DLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,8 +147,8 @@
     <ClInclude Include="enum\window_state.hpp" />
     <ClInclude Include="primitives.hpp" />
     <ClInclude Include="include.hpp" />
-    <ClInclude Include="_src\_internal\debug.impl.hpp" />
-    <ClInclude Include="_src\_internal\sysmap.impl.hpp" />
+    <ClInclude Include="_src\_internal\debug.hpp" />
+    <ClInclude Include="_src\_internal\sysmap.hpp" />
     <ClInclude Include="ref.hpp" />
     <ClInclude Include="struct\log_event_data.hpp" />
     <ClInclude Include="struct\log_parameter.hpp" />
@@ -160,8 +164,8 @@
     <ClCompile Include="_src\blob.cpp" />
     <ClCompile Include="_src\graphics.cpp" />
     <ClCompile Include="_src\riff.cpp" />
-    <ClCompile Include="_src\_internal\_src\debug.impl.cpp" />
-    <ClCompile Include="_src\_internal\_src\sysmap.impl.cpp" />
+    <ClCompile Include="_src\_internal\_src\debug.cpp" />
+    <ClCompile Include="_src\_internal\_src\sysmap.cpp" />
     <ClCompile Include="_src\clock.cpp" />
     <ClCompile Include="_src\color.cpp" />
     <ClCompile Include="_src\event_system.cpp" />

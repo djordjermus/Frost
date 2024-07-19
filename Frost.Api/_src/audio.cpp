@@ -52,9 +52,9 @@ FROST_API u32 _stdcall frost_api_audio_test(void* riff_fmt, void* riff_data, u64
 	 * Populate an XAUDIO2_BUFFER structure.
 	 */
 
-	buffer.AudioBytes = data_byte_size;			// size of the audio buffer in bytes
-	buffer.pAudioData = (const u8*)riff_data;	// buffer containing audio data
-	buffer.Flags = XAUDIO2_END_OF_STREAM;		// tell the source voice not to expect any data after this buffer
+	buffer.AudioBytes = static_cast<UINT32>(data_byte_size);	// size of the audio buffer in bytes
+	buffer.pAudioData = (const u8*)riff_data;					// buffer containing audio data
+	buffer.Flags = XAUDIO2_END_OF_STREAM;						// tell the source voice not to expect any data after this buffer
 
 	/* * * PLAY SOUND * * */
 

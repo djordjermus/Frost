@@ -1,7 +1,7 @@
 #include <string>
 #include <exception>
 #include <stdio.h>
-#include "../debug.impl.hpp"
+#include "../debug.hpp"
 #include "../../../include.hpp"
 void frost::impl::debug::log_object_creation(const frost::api::object* target)
 {

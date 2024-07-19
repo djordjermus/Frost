@@ -34,10 +34,10 @@ FROST_API bool _stdcall frost_api_riff_id_to_ascii(u32 id, char* out_ascii)
 {
 	try
 	{
-		out_ascii[0] = (id >> 0);
-		out_ascii[1] = (id >> 8);
-		out_ascii[2] = (id >> 16);
-		out_ascii[3] = (id >> 24);
+		out_ascii[0] = static_cast<char>(id >> 0);
+		out_ascii[1] = static_cast<char>(id >> 8);
+		out_ascii[2] = static_cast<char>(id >> 16);
+		out_ascii[3] = static_cast<char>(id >> 24);
 		out_ascii[4] = '\0';
 		return true;
 	}

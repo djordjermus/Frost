@@ -1,4 +1,4 @@
-#include "_internal/sysmap.impl.hpp"
+#include "_internal/sysmap.hpp"
 #include "_internal/object.hpp"
 #include <windowsx.h>
 #include <hidusage.h>

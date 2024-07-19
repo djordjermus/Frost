@@ -18,10 +18,10 @@
     <ClInclude Include="ref.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="_src\_internal\debug.impl.hpp">
+    <ClInclude Include="_src\_internal\debug.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="_src\_internal\sysmap.impl.hpp">
+    <ClInclude Include="_src\_internal\sysmap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include.hpp">
@@ -110,10 +110,10 @@
     <ClCompile Include="_src\_internal\_src\object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_src\_internal\_src\debug.impl.cpp">
+    <ClCompile Include="_src\_internal\_src\debug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="_src\_internal\_src\sysmap.impl.cpp">
+    <ClCompile Include="_src\_internal\_src\sysmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_src\window.cpp">
