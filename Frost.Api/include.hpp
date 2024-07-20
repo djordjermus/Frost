@@ -22,7 +22,6 @@
 
 #pragma once
 
-
 extern "C" // CLOCK API
 {
 	FROST_API u64 _stdcall frost_api_clock_get_frequency();

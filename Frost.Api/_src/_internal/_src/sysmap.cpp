@@ -230,5 +230,4 @@ namespace frost::impl
 }
 
 #else
-static_assert("PLATFORM NOT SUPPORTED!" == nullptr);
 #endif

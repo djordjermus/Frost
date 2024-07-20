@@ -1,5 +1,6 @@
 #include "../../include.hpp"
 #include "../../ref.hpp"
+#include "platform.hpp"
 #include <atomic>
 #pragma once
 namespace frost::api
@@ -30,14 +31,6 @@ namespace frost::impl {
 
 /* OBJECTS WITH PLATFORM SPECIFIC IMPLEMENTATION */
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-#include "windows.h"
-#include <d3d12.h>
-#include <dxgi1_6.h>
-#pragma comment(lib, "d3d12")
-#pragma comment(lib, "dxgi")
 namespace frost::impl
 {
 	struct system_handle_host : public api::object
@@ -115,5 +108,4 @@ namespace frost::impl
 	};
 }
 #else
-static_assert("PLATFORM NOT SUPPORTED!" == nullptr);
 #endif

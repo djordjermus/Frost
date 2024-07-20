@@ -1,7 +1,6 @@
 #include "../include.hpp"
-
+#include "_internal/platform.hpp"
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
-#include <Windows.h>
 static inline u64 query_frequency();
 static u64 _cached_frequency = query_frequency();
 static f64 _cached_period    = 1.0 / query_frequency();
@@ -33,5 +32,4 @@ static inline u64 query_frequency()
 
 }
 #else
-static_assert("INVALID PLATFORM");
 #endif

@@ -85,5 +85,4 @@ static void destroy_graphics_root(frost::impl::graphics_root* target)
 }
 
 #else
-static_assert("PLATFORM NOT SUPPORTED!" == nullptr);
 #endif

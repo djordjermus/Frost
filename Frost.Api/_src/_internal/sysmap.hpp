@@ -1,7 +1,8 @@
 #include "../../include.hpp"
+#include "platform.hpp"
 #pragma once
+
 #if defined (TARGET_BUILD_PLATFORM_WINDOWS)
-#include <windows.h>
 #include <utility>
 namespace frost::impl
 {
@@ -34,5 +35,4 @@ namespace frost::impl
 	};
 }
 #else
-static_assert("PLATFORM NOT SUPPORTED!" == nullptr);
 #endif
