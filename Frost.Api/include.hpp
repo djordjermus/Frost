@@ -19,6 +19,7 @@
 #include "struct/log_event_data.hpp"
 #include "struct/window_description.hpp"
 #include "struct/window_event.hpp"
+#include "struct/vertex.hpp"
 
 #pragma once
 
@@ -184,7 +185,9 @@ extern "C" // WINDOW API
 	FROST_API frost::api::window_procedure_sig _stdcall frost_api_window_get_procedure(frost::api::object* target);
 	FROST_API void* _stdcall frost_api_window_get_data(frost::api::object* target);
 
-
+	FROST_API u64 frost_api_window_get_frame_count(frost::api::object* target);
+	FROST_API u64 frost_api_window_get_frame_index(frost::api::object* target);
+	FROST_API frost::api::object* frost_api_window_get_frame_buffer(frost::api::object* target, u64 frame);
 
 	FROST_API void _stdcall frost_api_window_set_enabled(frost::api::object* target, bool enabled);
 	FROST_API void _stdcall frost_api_window_set_active(frost::api::object* target, bool active);
@@ -244,8 +247,14 @@ extern "C" // AUDIO API  (UNSTABLE, DO NOT USE)
 	FROST_API u32 _stdcall frost_api_audio_test(void* riff_fmt, void* riff_data, u64 data_byte_size);
 }
 
-extern "C"
+extern "C" // GRAPHICS API
 {
 	FROST_API frost::api::graphics_api frost_api_graphics_get_preset_apis();
 	FROST_API frost::api::object* frost_api_graphics_create_root(frost::api::graphics_api selected_apis);
+
+	FROST_API frost::api::object* frost_api_graphics_command_create(frost::api::object* root);
+	FROST_API void frost_api_graphics_command_clear_target(frost::api::object* command, frost::api::object* target, const float* rgba);
+	FROST_API void frost_api_graphics_command_reset(frost::api::object* command);
+	FROST_API void frost_api_graphics_command_close(frost::api::object* command);
+	FROST_API void frost_api_graphics_command_execute(frost::api::object* command);
 }

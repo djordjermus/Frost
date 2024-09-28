@@ -147,6 +147,7 @@
     <ClInclude Include="enum\window_state.hpp" />
     <ClInclude Include="primitives.hpp" />
     <ClInclude Include="include.hpp" />
+    <ClInclude Include="struct\vertex.hpp" />
     <ClInclude Include="_src\_internal\debug.hpp" />
     <ClInclude Include="_src\_internal\platform.hpp" />
     <ClInclude Include="_src\_internal\sysmap.hpp" />

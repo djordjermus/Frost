@@ -17,6 +17,7 @@ FROST_API void _stdcall frost_api_object_acquire_reference(object* target)
 #if defined(TARGET_BUILD_PLATFORM_WINDOWS)
 static void destroy_window(frost::impl::window* target);
 static void destroy_graphics_root(frost::impl::graphics_root* target);
+static void destroy_graphics_command(frost::impl::graphics_command* target);
 FROST_API void _stdcall frost_api_object_release_reference(object* target)
 {
 	if (target->reference_count.fetch_sub(1) != 1)
@@ -46,6 +47,9 @@ FROST_API void _stdcall frost_api_object_release_reference(object* target)
 	case object_type::graphics_root:
 		destroy_graphics_root((graphics_root*)target);
 		break;
+	case object_type::graphics_command:
+		destroy_graphics_command(static_cast<graphics_command*>(target));
+		break;
 	default:
 		frost::impl::debug::log_object_invalid_type(target);
 		break;
@@ -60,8 +64,20 @@ static void destroy_window(frost::impl::window* target)
 	::DestroyWindow((HWND)target->handle);
 	if (target->graphics.swapchain != nullptr)
 		target->graphics.swapchain->Release();
+
+	for (u64 i = 0; i < target->graphics.buffer_count; i++)
+	{
+		auto rtv = target->graphics.back_buffers[i];
+		if (rtv != nullptr)
+			frost_api_object_release_reference(rtv);
+	}
+
+	if (target->graphics.descriptor_heap != nullptr)
+		target->graphics.descriptor_heap->Release();
+
 	if (target->_thread != nullptr)
 		frost_api_object_release_reference(target->_thread);
+
 	if (target->graphics.root != nullptr)
 		frost_api_object_release_reference(target->graphics.root);
 }
@@ -83,6 +99,16 @@ static void destroy_graphics_root(frost::impl::graphics_root* target)
 	if (target->allocator)
 		target->allocator->Release();
 }
+static void destroy_graphics_command(frost::impl::graphics_command* target)
+{
+	if (target->root)
+		frost_api_object_release_reference(target->root);
+	
+	if (target->allocator)
+		target->allocator->Release();
 
+	if (target->command)
+		target->command->Release();
+}
 #else
 #endif

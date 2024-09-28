@@ -87,6 +87,9 @@
     <ClInclude Include="_src\_internal\platform.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="struct\vertex.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_src\clock.cpp">

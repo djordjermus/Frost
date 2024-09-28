@@ -217,24 +217,18 @@ FROST_API bool _stdcall frost_api_synchronizable_try_wait_all(object* const* tar
 
 FROST_API object* _stdcall frost_api_synchronizable_create_mutex(bool initial_owner)
 {
-	auto result = new sync_mutex();
-	result->type = object_type::sync_mutex;
-	result->handle = ::CreateMutexW(nullptr, initial_owner, nullptr);
+	auto result = new sync_mutex(::CreateMutexW(nullptr, initial_owner, nullptr));
 	return result;
 }
 
 FROST_API object* _stdcall frost_api_synchronizable_create_semaphore(i32 count, i32 max)
 {
-	auto result = new sync_semaphore();
-	result->type = object_type::sync_semaphore;
-	result->handle = ::CreateSemaphoreW(nullptr, count, max, nullptr);
+	auto result = new sync_semaphore(::CreateSemaphoreW(nullptr, count, max, nullptr));
 	return result;
 }
 
 FROST_API object* _stdcall frost_api_synchronizable_create_event()
 {
-	auto result = new sync_event();
-	result->type = object_type::sync_event;
-	result->handle = ::CreateEventW(nullptr, TRUE, FALSE, nullptr);
+	auto result = new sync_event(::CreateEventW(nullptr, TRUE, FALSE, nullptr));
 	return result;
 }

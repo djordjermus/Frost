@@ -11,7 +11,7 @@ namespace frost::api
 	{
 	public:
 		point2d<i32> position = { 200, 200 };
-		size2d<i32> size = { 1280, 720 };
+		size2d<i32> size = { 1920, 1080 };
 
 		window_procedure_sig procedure = nullptr;
 		void* data = nullptr;
@@ -22,7 +22,7 @@ namespace frost::api
 		{
 			frost::api::object* root = nullptr;
 
-			size2d<u32> buffer_size = { 1280, 720 };
+			size2d<u32> buffer_size = { 1920, 1080 };
 			u32 buffer_count = 2;
 		} graphics;
 	};

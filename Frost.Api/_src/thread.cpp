@@ -28,11 +28,9 @@ struct procedure_message_info
 
 FROST_API object* _stdcall frost_api_thread_create(void(_stdcall* procedure)(void*), void* argument)
 {
-	auto result = new thread();
-	result->type = object_type::thread;
 	DWORD id = 0;
 	auto info = new thread_startup_info(procedure, argument);
-	result->handle = ::CreateThread(nullptr, 0, thread_procedure, info, 0, &id);
+	auto result = new thread(::CreateThread(nullptr, 0, thread_procedure, info, 0, &id));
 	result->thread_id = id;
 	if (result->handle == nullptr)
 		delete info;
@@ -221,11 +219,8 @@ FROST_API bool _stdcall frost_api_thread_message_send_async(
 }
 static thread_reference* create_local_thread_reference()
 {
-	auto result = new thread_reference();
-	auto thread_id		= ::GetCurrentThreadId();
-	result->type		= object_type::thread_reference;
-	result->handle		= ::OpenThread(THREAD_ALL_ACCESS, FALSE, ::GetCurrentThreadId());
-	result->thread_id	= thread_id;
+	auto result = new thread_reference(::OpenThread(THREAD_ALL_ACCESS, FALSE, ::GetCurrentThreadId()));
+	result->thread_id = ::GetCurrentThreadId();
 
 	return result;
 }

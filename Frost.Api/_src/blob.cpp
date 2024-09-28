@@ -1,10 +1,7 @@
 #include "_internal/object.hpp"
 FROST_API frost::api::object* _stdcall frost_api_blob_from_owned_buffer(void* buffer, u64 byte_size)
 {
-	frost::impl::blob* result = new frost::impl::blob();
-	result->type = frost::api::object_type::data_blob;
-	result->data = buffer;
-	result->byte_size = byte_size;
+	frost::impl::blob* result = new frost::impl::blob(buffer, byte_size);
 	return result;
 }
 

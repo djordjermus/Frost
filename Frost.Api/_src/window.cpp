@@ -2,6 +2,7 @@
 #include "_internal/object.hpp"
 #include <windowsx.h>
 #include <hidusage.h>
+#include <iostream>
 using namespace frost::api;
 using namespace frost::impl;
 #define WND(x) ((window*)(x))
@@ -46,6 +47,33 @@ static LRESULT wm_nc_activate(HWND hwnd, UINT msg, WPARAM w, LPARAM l);
 static LRESULT wm_create(HWND hwnd, UINT msg, WPARAM w, LPARAM l);
 static LRESULT wm_close(HWND hwnd, UINT msg, WPARAM w, LPARAM l);
 static LRESULT wm_destroy(HWND hwnd, UINT msg, WPARAM w, LPARAM l);
+
+static LRESULT wm_paint(HWND hwnd, UINT msg, WPARAM w, LPARAM l);
+static ID3D12GraphicsCommandList* commandList;
+static frost::api::object* cmd = nullptr;
+static LRESULT wm_paint(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
+{
+	auto result = get_hwnd_data(hwnd);
+	auto t = frost_api_clock_get_timestamp() * frost_api_clock_get_period();
+	float hsla[] = { fmodf(static_cast<f32>(t) * 0.1f, 1.0f), 1.0f, 0.5f, 1.0f};
+	
+	float clearColor[] = { 0, 0, 0,	0 };
+	frost_api_color_hsla_to_rgba32(hsla, clearColor);
+	result->graphics.root->allocator->Reset();
+	if (cmd == nullptr)
+	{
+		cmd = ::frost_api_graphics_command_create(result->graphics.root);
+		frost_api_object_acquire_reference(cmd);
+	}
+	frost_api_graphics_command_reset(cmd);
+	frost_api_graphics_command_clear_target(cmd, result->graphics.back_buffers[result->graphics.buffer_index], clearColor);
+	frost_api_graphics_command_close(cmd);
+	frost_api_graphics_command_execute(cmd);
+
+	result->graphics.swapchain->Present(4, 0);
+	result->graphics.buffer_index = result->graphics.swapchain->GetCurrentBackBufferIndex();
+	return DefWindowProcW(hwnd, msg, w, l);
+}
 
 static LRESULT wm_input_language_changed(HWND hwnd, UINT msg, WPARAM w, LPARAM l);
 
@@ -174,7 +202,7 @@ FROST_API void _stdcall frost_api_window_set_active(object* target, bool active)
 		if (is_direct_invoke_required(WND(target)))
 		{
 			if (flag && !active)
-				::SetActiveWindow(nullptr);
+				::SetActiveWindow(::GetDesktopWindow());
 			else if (!flag && active)
 				::SetActiveWindow((HWND)WND(target)->handle);
 			return;
@@ -256,6 +284,7 @@ FROST_API void _stdcall frost_api_window_set_state(object* target, window_state 
 				},
 				&data);
 		}
+		break;
 	default:
 		break;
 	}
@@ -283,6 +312,7 @@ FROST_API void _stdcall frost_api_window_set_position(object* target, point2d<i3
 				},
 				&data);
 		}
+		break;
 	default:
 		break;
 	}
@@ -309,6 +339,7 @@ FROST_API void _stdcall frost_api_window_set_size(object* target, size2d<i32> si
 				},
 				&data);
 		}
+		break;
 	default:
 		break;
 	}
@@ -333,6 +364,29 @@ FROST_API void* _stdcall frost_api_window_get_data(object* target)
 	default:
 		return nullptr;
 	}
+}
+
+FROST_API u64 frost_api_window_get_frame_count(frost::api::object* target)
+{
+	if (target->type != object_type::window)
+		return 0;
+	return static_cast<frost::impl::window*>(target)->graphics.buffer_count;
+}
+FROST_API u64 frost_api_window_get_frame_index(frost::api::object* target)
+{
+	if (target->type != object_type::window)
+		return 0;
+	return static_cast<frost::impl::window*>(target)->graphics.buffer_index;
+}
+
+FROST_API frost::api::object* frost_api_window_get_frame_buffer(frost::api::object* target, u64 index)
+{
+	if (target->type != object_type::window)
+		return 0;
+	auto* window = static_cast<frost::impl::window*>(target);
+	if (index >= window->graphics.buffer_count)
+		return 0;
+	return window->graphics.back_buffers[index];
 }
 
 FROST_API void _stdcall frost_api_window_set_procedure(object* target, window_procedure_sig procedure)
@@ -538,6 +592,9 @@ static LRESULT window_procedure(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 		return wm_close(hwnd, msg, w, l);
 	case WM_DESTROY:
 		return wm_destroy(hwnd, msg, w, l);
+		
+	case WM_PAINT:
+		return wm_paint(hwnd, msg, w, l);
 
 	case WM_INPUTLANGCHANGE:
 		return wm_input_language_changed(hwnd, msg, w, l);
@@ -949,12 +1006,6 @@ LRESULT wm_nc_hit_test(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 		else
 			return HTCLIENT;
 	}
-	// 
-	// if (y > top_left.y && y < (top_left.y + 20))
-	// 	return HTCAPTION;
-	// else if ((x >= top_left.x && x < bottom_right.x) && (y >= top_left.y && y < bottom_right.y))
-	//else
-	//	return HTNOWHERE;
 }
 LRESULT wm_nc_activate(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 {
@@ -1023,10 +1074,11 @@ LRESULT wm_create(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 		frost_api_object_release_reference(result);
 		return ::DefWindowProcW(hwnd, msg, w, l);
 	}
-	result->graphics.root = (frost::impl::graphics_root*)desc->graphics.root;
-	result->graphics.buffer_count = desc->graphics.buffer_count;
-	result->graphics.buffer_size = desc->graphics.buffer_size;
+	result->graphics.root			= (frost::impl::graphics_root*)desc->graphics.root;
+	result->graphics.buffer_count	= desc->graphics.buffer_count;
+	result->graphics.frame_size	= desc->graphics.buffer_size;
 
+		/* GET DXGI FACTORY 2 */
 	HRESULT hr = S_OK;
 	IDXGIFactory2* factory;
 	if ((hr = result->graphics.root->factory->QueryInterface(IID_PPV_ARGS(&factory))) != S_OK)
@@ -1036,7 +1088,9 @@ LRESULT wm_create(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 		frost_api_object_release_reference(result);
 		return ::DefWindowProcW(hwnd, msg, w, l);
 	}
+	factory->MakeWindowAssociation(hwnd, DXGI_MWA_NO_ALT_ENTER);
 
+		/* GET DXGI SWAPCHAIN */
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
 	swapChainDesc.BufferCount = desc->graphics.buffer_count;
 	swapChainDesc.Width = desc->graphics.buffer_size.width;
@@ -1046,21 +1100,61 @@ LRESULT wm_create(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	swapChainDesc.SampleDesc.Count = 1;
 
+	IDXGISwapChain1* swapchain;
 	if ((hr = factory->CreateSwapChainForHwnd(
 			result->graphics.root->queue,
 			hwnd,
 			&swapChainDesc,
 			nullptr,
 			nullptr,
-			&data->graphics.swapchain)) != S_OK)
+			&swapchain)) != S_OK)
 	{
 		::DestroyWindow(hwnd);
 		frost_api_object_acquire_reference(result);
 		frost_api_object_release_reference(result);
+		factory->Release();
 		return ::DefWindowProcW(hwnd, msg, w, l);
 	}
+	factory->Release();
 
-	data->graphics.swapchain->Present(0, 0);
+		/* CREATE DESC HEAP */
+	swapchain->QueryInterface(&data->graphics.swapchain);
+	swapchain->Release();
+
+	result->graphics.buffer_index = data->graphics.swapchain->GetCurrentBackBufferIndex();
+
+	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
+	rtvHeapDesc.NumDescriptors = result->graphics.buffer_count;
+	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	if ((hr = result->graphics.root->device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&result->graphics.descriptor_heap))) != S_OK)
+	{
+		::DestroyWindow(hwnd);
+		frost_api_object_acquire_reference(result);
+		frost_api_object_release_reference(result);
+		factory->Release();
+		return ::DefWindowProcW(hwnd, msg, w, l);
+	}
+	
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = result->graphics.descriptor_heap->GetCPUDescriptorHandleForHeapStart();
+	ID3D12Resource* targets[16];
+	for (UINT i = 0; i < result->graphics.buffer_count; i++)
+	{
+		result->graphics.swapchain->GetBuffer(i, IID_PPV_ARGS(&targets[i]));
+		result->graphics.root->device->CreateRenderTargetView(targets[i], nullptr, rtvHandle);
+		rtvHandle.ptr = rtvHandle.ptr + result->graphics.root->rtv_descriptor_handle_increment_size;
+
+		result->graphics.back_buffers[i]				= new graphics_texture();
+		result->graphics.back_buffers[i]->type			= frost::api::object_type::graphics_texture;
+		result->graphics.back_buffers[i]->root			= result->graphics.root;
+		result->graphics.back_buffers[i]->resource		= targets[i];
+		result->graphics.back_buffers[i]->heap			= result->graphics.descriptor_heap;
+		result->graphics.back_buffers[i]->heap_offset	= result->graphics.root->rtv_descriptor_handle_increment_size * i;
+
+
+		frost_api_object_acquire_reference(result->graphics.back_buffers[i]);
+	}
+	
 	/* EMIT EVENT */
 	if (data->_procedure)
 	{
@@ -1094,7 +1188,6 @@ LRESULT wm_destroy(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 		e.type = window_event::event_type::destroy;
 		data->_procedure(&e);
 	}
-	// data->release_reference();
 	return ::DefWindowProcW(hwnd, msg, w, l);
 }
 
