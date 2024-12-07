@@ -81,7 +81,7 @@
     <ClInclude Include="struct\window_event.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="enum\graphics_api.hpp">
+    <ClInclude Include="enum\graphics_backend.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="_src\_internal\platform.hpp">

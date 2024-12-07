@@ -1,14 +1,14 @@
 #include "../include.hpp"
 #include "_internal/object.hpp"
-const frost::api::graphics_api frost::impl::graphics_root::preset_apis = (frost::api::graphics_api)(
-	(u32)(frost::api::graphics_api::d3d12) |
-	(u32)(frost::api::graphics_api::d3d12));
+const frost::api::graphics_backend frost::impl::graphics_root::preset_apis = (frost::api::graphics_backend)(
+	(u32)(frost::api::graphics_backend::d3d12) |
+	(u32)(frost::api::graphics_backend::d3d12));
 
-FROST_API frost::api::graphics_api frost_api_graphics_get_preset_apis()
+FROST_API frost::api::graphics_backend frost_api_graphics_get_preset_apis()
 {
 	return frost::impl::graphics_root::preset_apis;
 }
-FROST_API frost::api::object* frost_api_graphics_create_root(frost::api::graphics_api selected_apis)
+FROST_API frost::api::object* frost_api_graphics_create_root(frost::api::graphics_backend selected_apis)
 {
 	HRESULT hr = S_OK;
 	UINT factory_flags = 0;
@@ -88,6 +88,19 @@ FROST_API frost::api::object* frost_api_graphics_create_root(frost::api::graphic
 	}
 
 	result->rtv_descriptor_handle_increment_size = result->device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+	D3D12_INPUT_ELEMENT_DESC inputElementDescs[] =
+	{
+		// SEMANTIC, SEMANTIC INDEX, FORMAT, INPUT SLOT, ALIGNED OFFSET, CLASSIFICATION, INSTANCE STEPRATE
+		{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TANGENT",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD0",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD1",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD2",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD3",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "COLOR",		0, DXGI_FORMAT_R32G32B32A32_FLOAT,	0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	};
 
 	return result;
 }

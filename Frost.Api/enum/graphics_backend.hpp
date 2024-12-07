@@ -2,7 +2,7 @@
 #pragma once
 namespace frost::api
 {
-	enum class graphics_api : u32
+	enum class graphics_backend : u32
 	{
 		none		= 0x0000'0000,
 		d3d12		= 0x0000'0001,

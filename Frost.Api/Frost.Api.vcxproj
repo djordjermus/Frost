@@ -135,7 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="enum\graphics_api.hpp" />
+    <ClInclude Include="enum\graphics_backend.hpp" />
     <ClInclude Include="enum\keycode.hpp" />
     <ClInclude Include="enum\log_level.hpp" />
     <ClInclude Include="enum\window_event_type.hpp" />

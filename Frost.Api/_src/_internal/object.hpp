@@ -169,9 +169,9 @@ namespace frost::impl {
 		inline graphics_root() :
 			object(api::object_type::graphics_root) {}
 
-		static const frost::api::graphics_api preset_apis;
+		static const frost::api::graphics_backend preset_apis;
 
-		frost::api::graphics_api target;
+		frost::api::graphics_backend target;
 
 		IDXGIFactory1* factory;
 		IDXGIAdapter1* adapter;

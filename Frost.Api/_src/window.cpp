@@ -70,7 +70,7 @@ static LRESULT wm_paint(HWND hwnd, UINT msg, WPARAM w, LPARAM l)
 	frost_api_graphics_command_close(cmd);
 	frost_api_graphics_command_execute(cmd);
 
-	result->graphics.swapchain->Present(4, 0);
+	result->graphics.swapchain->Present(0, 0);
 	result->graphics.buffer_index = result->graphics.swapchain->GetCurrentBackBufferIndex();
 	return DefWindowProcW(hwnd, msg, w, l);
 }

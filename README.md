@@ -3,8 +3,8 @@
 ### TODO:
 Feature                 | API           | FROST C++         | FROST.NET
 -----------------------:|:--------------|:------------------|:--------------
-**`WINDOW API`**		| `TODO`		| `TODO`				| `TODO`
-**`INPUT API`**			| `TODO`		| `TODO`				| `TODO`
+**`WINDOW API`**		| `DONE`		| `TODO`				| `DONE`
+**`INPUT API`**			| `DONE`		| `TODO`				| `DONE`
 **`AUDIO API`**			| `TODO`		| `TODO`				| `TODO`
 **`GRAPHICS API`**		| `TODO`		| `TODO`				| `TODO`
 **`SCENE API`**			| `TODO`		| `TODO`				| `TODO`

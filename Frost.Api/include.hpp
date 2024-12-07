@@ -2,7 +2,7 @@
 #include "macro.hpp"
 
 #include "enum/keycode.hpp"
-#include "enum/graphics_api.hpp"
+#include "enum/graphics_backend.hpp"
 #include "enum/log_level.hpp"
 #include "enum/object_type.hpp"
 #include "enum/window_state.hpp"
@@ -249,8 +249,8 @@ extern "C" // AUDIO API  (UNSTABLE, DO NOT USE)
 
 extern "C" // GRAPHICS API
 {
-	FROST_API frost::api::graphics_api frost_api_graphics_get_preset_apis();
-	FROST_API frost::api::object* frost_api_graphics_create_root(frost::api::graphics_api selected_apis);
+	FROST_API frost::api::graphics_backend frost_api_graphics_get_preset_apis();
+	FROST_API frost::api::object* frost_api_graphics_create_root(frost::api::graphics_backend selected_backend);
 
 	FROST_API frost::api::object* frost_api_graphics_command_create(frost::api::object* root);
 	FROST_API void frost_api_graphics_command_clear_target(frost::api::object* command, frost::api::object* target, const float* rgba);

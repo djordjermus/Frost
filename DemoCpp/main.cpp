@@ -17,7 +17,7 @@ static void _stdcall log_handler(void* p_data)
 char buffer[800'000];
 int main()
 {
-	auto root = frost_api_graphics_create_root(frost::api::graphics_api::d3d12);
+	auto root = frost_api_graphics_create_root(frost::api::graphics_backend::d3d12);
 	// std::ifstream infile("gunshot.wav", std::ios::binary);
 	// infile.seekg(0, std::ios::end);
 	// size_t length = infile.tellg();
